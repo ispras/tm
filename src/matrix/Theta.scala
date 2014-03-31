@@ -15,7 +15,7 @@ class Theta private(expectation: Array[Array[Float]], stochasticMatrix: Array[Ar
 
 object Theta {
     def apply(expectationMatrix: Array[Array[Float]]) = {
-        val stochasticMatrix = Ogre.stockasticMatrix(expectationMatrix)
+        val stochasticMatrix = Ogre.stochasticMatrix(expectationMatrix)
         val theta = new Theta(expectationMatrix, stochasticMatrix)
         theta.dump()
         theta

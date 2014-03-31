@@ -7,7 +7,7 @@ import initialapproximationgenerator.RandomInitialApproximationGenerator
 import java.util.Random
 import regularizer.ZeroRegularizer
 import sparsifier.ZeroSparsifier
-import stoppingcriteria.MaxNumberOfIteration
+import stoppingcriteria.MaxNumberOfIterationStoppingCriteria
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,46 +16,45 @@ import stoppingcriteria.MaxNumberOfIteration
  * Time: 18:07
  */
 object Numerator {
-    def apply(textDocuments: Seq[TextualDocument]): (Alphabet, Seq[Document]) = {
+    //TODO logging
+    def apply(textDocuments: Seq[TextualDocument]): (Alphabet, Seq[Document]) = { //TODO  swap return values 
         var numOfDocsDone = 0
         val alphabet = mutable.Map[AttributeType, Map[Int, String]]().withDefaultValue(Map[Int, String]())
-        val maxWordNum = mutable.Map[AttributeType, Int]().withDefaultValue(0)
+        val numberOfWords = mutable.Map[AttributeType, Int]().withDefaultValue(0)
         val wordsToNumber = mutable.Map[(AttributeType, String), Int]()
-        val documents = textDocuments.toArray.map {
-            textDocument =>
+        val documents = textDocuments.toVector.map {textDocument =>
                 numOfDocsDone += 1
-                if (numOfDocsDone % 1000 == 0) println("done " + numOfDocsDone)
-                processOneDocument(textDocument, maxWordNum, alphabet, wordsToNumber)
+                if (numOfDocsDone % 1000 == 0) println("done " + numOfDocsDone) //TODO LOGGGING and sdelay DERG() 
+                processDocument(textDocument, numberOfWords, alphabet, wordsToNumber)
         }
-        (new Alphabet(alphabet.toMap), documents.toVector)
+        (new Alphabet(alphabet.toMap), documents)
 
     }
 
-    private def processOneDocument(textualDocument: TextualDocument,
-                                   maxWordNum: mutable.Map[AttributeType, Int],
+    private def processDocument(textualDocument: TextualDocument,
+                                   numberOfWords: mutable.Map[AttributeType, Int],
                                    alphabet: mutable.Map[AttributeType, Map[Int, String]],
                                    wordsToNumber: mutable.Map[(AttributeType, String), Int]) = {
         require(textualDocument.attributes.values.exists(_.nonEmpty), "empty document")
         val document = textualDocument.attributes.foldLeft(Map[AttributeType, Array[(Int, Int)]]()) {
             case (wordsInDocument, (attribute, words)) =>
-                wordsInDocument.updated(attribute, replaceWordsByNumber(words, attribute, maxWordNum, alphabet, wordsToNumber))
+                wordsInDocument.updated(attribute, replaceWordsByIndexes(words, attribute, numberOfWords, alphabet, wordsToNumber))
         }
 
         new Document(document)
     }
 
-    private def replaceWordsByNumber(words: Seq[String],
+    private def replaceWordsByIndexes(words: Seq[String],
                                      attribute: AttributeType,
-                                     maxWordNum: mutable.Map[AttributeType, Int],
+                                     numberOfWords: mutable.Map[AttributeType, Int],
                                      alphabet: mutable.Map[AttributeType, Map[Int, String]],
                                      wordsToNumber: mutable.Map[(AttributeType, String), Int]) = {
         val map = mutable.Map[Int, Int]().withDefaultValue(0)
-        words.foreach {
-            word =>
+        for (word <- words) {
                 if (!wordsToNumber.contains((attribute, word))) {
-                    wordsToNumber((attribute, word)) = maxWordNum(attribute)
-                    alphabet(attribute) = alphabet(attribute) + (maxWordNum(attribute) -> word)
-                    maxWordNum(attribute) += 1
+                    wordsToNumber((attribute, word)) = numberOfWords(attribute)
+                    alphabet(attribute) = alphabet(attribute) + (numberOfWords(attribute) -> word)
+                    numberOfWords(attribute) += 1
                 }
                 map(wordsToNumber((attribute, word))) += 1
         }
@@ -77,7 +76,7 @@ object Test extends App {
         2,
         new ZeroSparsifier(),
         new ZeroSparsifier(),
-        new MaxNumberOfIteration(33),
+        new MaxNumberOfIterationStoppingCriteria(33),
         alphabet)
 
     println(alphabet.wordsMap)

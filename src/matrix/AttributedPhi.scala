@@ -14,7 +14,7 @@ class AttributedPhi private(expectation: Array[Array[Float]], stochasticMatrix: 
 
 object AttributedPhi {
     def apply(expectationMatrix: Array[Array[Float]], attribute: AttributeType) = {
-        val stochasticMatrix = Ogre.stockasticMatrix(expectationMatrix)
+        val stochasticMatrix = Ogre.stochasticMatrix(expectationMatrix)
         val phi = new AttributedPhi(expectationMatrix, stochasticMatrix, attribute)
         phi.dump()
         phi

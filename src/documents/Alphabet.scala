@@ -8,6 +8,6 @@ import attribute.AttributeType
  * Date: 21.03.14
  * Time: 17:57
  */
-class Alphabet(val wordsMap: Map[AttributeType, Map[Int, String]]) {
+class Alphabet(val wordsMap: Map[AttributeType, Map[Int, String]]) { // TODO trove
     def apply(attribute: AttributeType, index: Int) = wordsMap(attribute)(index)
 }

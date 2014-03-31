@@ -1,15 +1,16 @@
 package scripts
 
 import documents.{TextualDocument, Numerator}
-import scala.reflect.io.File
 import attribute.Category
 import plsa.RobustPLSAFactory
 import initialapproximationgenerator.RandomInitialApproximationGenerator
 import regularizer.ZeroRegularizer
 import sparsifier.ZeroSparsifier
-import stoppingcriteria.MaxNumberOfIteration
+import stoppingcriteria.MaxNumberOfIterationStoppingCriteria
 import java.util.Random
 import brick.NoiseParameters
+import scala.io.Source
+import java.io.File
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +20,7 @@ import brick.NoiseParameters
  */
 object PigData extends App {
     def getDocs(path: String) = {
-        val lines = File(path).lines().map(line => new TextualDocument(Map(Category -> line.split(" "))))
+        val lines = Source.fromFile(new File(path)).getLines().take(100000).map(line => new TextualDocument(Map(Category -> line.split(" "))))
         val random = new Random
         random.setSeed(13)
         val (alphabet, docs) = Numerator(lines.toSeq)
@@ -30,16 +31,16 @@ object PigData extends App {
             10,
             new ZeroSparsifier(),
             new ZeroSparsifier(),
-            new MaxNumberOfIteration(33),
+            new MaxNumberOfIterationStoppingCriteria(33),
             alphabet,
             noiseParameter)
         (plsa, docs)
     }
 
 
-    val (plsa, docs) = getDocs("/media/3d6a5a46-cbd3-49cd-abd4-2907eed0831a/home/padre/data/arxiv/part")
+    val (plsa, docs) = getDocs("/mnt/first/pigdata/phis")
     val start = System.currentTimeMillis()
     val trainedModel = plsa.train(docs)
-    println(trainedModel.theta)
+    println(trainedModel)
     println(" time " + (System.currentTimeMillis() * 0.001 - start / 1000))
 }

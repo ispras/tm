@@ -30,10 +30,10 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
         var newPpx = 0f
         while (!stoppingCriteria(numberOfIteration, oldPpx, newPpx)) {
             oldPpx = newPpx
-            newPpx = perplexity(bricks.foldLeft(0f) {
-                case (sum, (attribute, brick)) => sum + brick.makeIteration(theta, phi(attribute), documents, numberOfIteration)
+            newPpx = perplexity(bricks.foldLeft(0f) { case (sum, (attribute, brick)) =>
+                sum + brick.makeIteration(theta, phi(attribute), documents, numberOfIteration)
             }, collectionLength)
-            println(newPpx)
+            println(newPpx)   //TODO logg
             applyRegularizer()
             theta.dump()
             numberOfIteration += 1
