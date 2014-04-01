@@ -7,6 +7,6 @@ package stoppingcriteria
  * Time: 17:49
  */
 trait StoppingCriteria {
-    def apply(numberOfIteration: Int, oldPerplexity: Float, newPerplexity: Float): Boolean
+    def apply(numberOfIteration: Int, oldPerplexity: Double, newPerplexity: Double): Boolean
 
 }

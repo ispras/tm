@@ -1,6 +1,6 @@
 package sparsifier
 
-import matrix.MatrixForSparsificator
+import matrix.MatrixForSparsifier
 
 
 /**
@@ -10,5 +10,5 @@ import matrix.MatrixForSparsificator
  * Time: 17:42
  */
 class ZeroSparsifier extends Sparsifier {
-    def apply(matrix: MatrixForSparsificator) {}
+    def apply(matrix: MatrixForSparsifier) {}
 }

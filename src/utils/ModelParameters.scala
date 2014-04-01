@@ -9,6 +9,6 @@ import attribute.AttributeType
  * Time: 14:56
  */
 class ModelParameters(val numberOfTopics: Int, val numberOfWords: Map[AttributeType, Int]) {
-    val topics = 0.until(numberOfTopics).toArray
+    val topics = (0 until numberOfTopics).toArray
 }
 

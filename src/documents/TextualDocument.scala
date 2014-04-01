@@ -9,5 +9,6 @@ import attribute.AttributeType
  * Time: 16:43
  */
 class TextualDocument(val attributes: Map[AttributeType, Seq[String]]) {
+    // TODO private
     def getAttributes(attributeType: AttributeType): Seq[String] = attributes(attributeType)
 }

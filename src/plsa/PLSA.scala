@@ -26,14 +26,15 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
             (sum, document) => sum + document.attributes.values.foldLeft(0)((sumOneDocument, words) => sumOneDocument + words.map(_._2).sum)
         }
         var numberOfIteration = 0
-        var oldPpx = 0f
-        var newPpx = 0f
+        var oldPpx = 0d
+        var newPpx = 0d
         while (!stoppingCriteria(numberOfIteration, oldPpx, newPpx)) {
             oldPpx = newPpx
-            newPpx = perplexity(bricks.foldLeft(0f) {
-                case (sum, (attribute, brick)) => sum + brick.makeIteration(theta, phi(attribute), documents, numberOfIteration)
+            newPpx = perplexity(bricks.foldLeft(0d) {
+                case (sum, (attribute, brick)) =>
+                    sum + brick.makeIteration(theta, phi(attribute), documents, numberOfIteration)
             }, collectionLength)
-            println(newPpx)
+            println(newPpx) //TODO logg
             applyRegularizer()
             theta.dump()
             numberOfIteration += 1
@@ -42,7 +43,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
         new TrainedModel(phi, theta)
     }
 
-    def perplexity(logLikelihood: Float, collectionLength: Int) = math.exp(-logLikelihood / collectionLength).toFloat
+    def perplexity(logLikelihood: Double, collectionLength: Int) = math.exp(-logLikelihood / collectionLength)
 
     private def applyRegularizer() {
         var t = 0

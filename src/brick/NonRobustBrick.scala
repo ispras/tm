@@ -15,43 +15,38 @@ import math.log
  * Time: 16:44
  */
 class NonRobustBrick(regularizer: Regularizer, phiSparsifier: Sparsifier, attribute: AttributeType, modelParameters: ModelParameters) extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters) {
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Float = {
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
         var documentNumber = 0
-        var logLikelihood = 0f
+        var logLikelihood = 0d
 
-        documents.foreach {
-            doc => logLikelihood += processOneDocument(doc, documentNumber, theta, phi); documentNumber += 1
+        for (doc <- documents if doc.attributes.contains(attribute)) {
+            logLikelihood += processSingleDocument(doc, documentNumber, theta, phi)
+            documentNumber += 1
         }
         applyRegularizer(theta, phi)
         phi.dump()
         logLikelihood
     }
 
-    private def processOneDocument(document: Document, documentNumber: Int, theta: Theta, phi: AttributedPhi) = {
-        if (document.attributes.contains(attribute)) {
-            var logLikelihood = 0f
-            var wordsNum = 0
-            while (wordsNum < document.getAttributes(attribute).length) {
-                val (wordIndex, numberOfWords) = document.getAttributes(attribute)(wordsNum)
-                logLikelihood += processOneWord(wordIndex, numberOfWords, documentNumber, phi, theta)
-                wordsNum += 1
-            }
-            logLikelihood
+    private def processSingleDocument(document: Document, documentIndex: Int, theta: Theta, phi: AttributedPhi) = {
+        var logLikelihood = 0d
+        for ((wordIndex, numberOfWords) <- document.getAttributes(attribute)) {
+            logLikelihood += processOneWord(wordIndex, numberOfWords, documentIndex, phi, theta)
         }
-        else 0f
+        logLikelihood
     }
 
-    protected def processOneWord(wordIndex: Int, numberOfWords: Int, documentNumber: Int, phi: AttributedPhi, theta: Theta): Float = {
-        val z = modelParameters.topics.foldLeft(0f)((sum, topic) => sum + theta.probability(documentNumber, topic) * phi.probability(topic, wordIndex))
+    protected def processOneWord(wordIndex: Int, numberOfWords: Int, documentIndex: Int, phi: AttributedPhi, theta: Theta): Double = {
+        val Z = countZ(phi, theta, wordIndex, documentIndex)
         var likelihood = 0f
         var topic = 0
         while (topic < modelParameters.numberOfTopics) {
-            val ndwt = numberOfWords * theta.probability(documentNumber, topic) * phi.probability(topic, wordIndex) / z
-            theta.addToExpectation(documentNumber, topic, ndwt)
+            val ndwt = numberOfWords * theta.probability(documentIndex, topic) * phi.probability(topic, wordIndex) / Z
+            theta.addToExpectation(documentIndex, topic, ndwt)
             phi.addToExpectation(topic, wordIndex, ndwt)
-            likelihood += phi.probability(topic, wordIndex) * theta.probability(documentNumber, topic)
+            likelihood += phi.probability(topic, wordIndex) * theta.probability(documentIndex, topic)
             topic += 1
         }
-        numberOfWords * log(likelihood).toFloat
+        numberOfWords * log(likelihood)
     }
 }

@@ -10,4 +10,6 @@ import attribute.AttributeType
  */
 class Document(val attributes: Map[AttributeType, Array[(Int, Int)]]) {
     def getAttributes(attributeType: AttributeType): Array[(Int, Int)] = attributes.getOrElse(attributeType, Array[(Int, Int)]())
+
+    //TODO make the map private
 }

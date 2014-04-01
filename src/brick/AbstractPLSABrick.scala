@@ -19,7 +19,7 @@ abstract class AbstractPLSABrick(private val regularizer: Regularizer,
                                  private val modelParameters: ModelParameters) {
 
 
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Float
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double
 
     protected def applyRegularizer(theta: Theta, phi: AttributedPhi) {
         var w = 0
@@ -32,5 +32,9 @@ abstract class AbstractPLSABrick(private val regularizer: Regularizer,
             w = 0
             t += 1
         }
+    }
+
+    protected def countZ(phi: AttributedPhi, theta: Theta, wordIndex: Int, documentIndex: Int) = modelParameters.topics.foldLeft(0f) {
+        (sum, topic) => sum + phi.probability(topic, wordIndex) * theta.probability(documentIndex, topic)
     }
 }

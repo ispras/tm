@@ -25,6 +25,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
     def numberOfColumns = expectationMatrix.head.length
 
     private def normalise() {
+        //todo in a different way
         var columnIndex = 0
         stochasticMatrix.foreach {
             row => val sum = row.sum
@@ -40,11 +41,11 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
     def dump() {
         var columnIndex = 0
         var rowIndex = 0
-        while (rowIndex < stochasticMatrix.length) {
-            while (columnIndex < stochasticMatrix.head.length) {
+        while (rowIndex < numberOfRows) {
+            while (columnIndex < numberOfColumns) {
                 stochasticMatrix(rowIndex)(columnIndex) = expectationMatrix(rowIndex)(columnIndex)
                 expectationMatrix(rowIndex)(columnIndex) = 0f
-                columnIndex += 1
+                columnIndex += 1 // TODO write method "copy my shit"
             }
             columnIndex = 0
             rowIndex += 1
@@ -53,18 +54,18 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
     }
 
     def sparsify(sparsifier: Sparsifier) {
-        val matrixForSparsifier = new MatrixForSparsificator(stochasticMatrix)
+        val matrixForSparsifier = new MatrixForSparsifier(stochasticMatrix) // TODO rename   Sparsificator
         sparsifier(matrixForSparsifier)
         if (!matrixForSparsifier.isNormalised) normalise()
-
     }
 
     override def toString = stochasticMatrix.map(_.mkString(", ")).mkString("\n")
 }
 
 object Ogre {
-    def stockasticMatrix(expectationMatrix: Array[Array[Float]]) = {
-        0.until(expectationMatrix.length).map(i => new Array[Float](expectationMatrix.head.length)).toArray
+    def stochasticMatrix(expectationMatrix: Array[Array[Float]]) = {
+        // TODO fill
+        (0 until expectationMatrix.length).map(i => new Array[Float](expectationMatrix.head.length)).toArray
     }
 }
 

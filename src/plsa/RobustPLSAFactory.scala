@@ -28,10 +28,10 @@ object RobustPLSAFactory {
             case (key, value) => (key, value.size)
         }
         val modelParameters = new ModelParameters(numberOfTopics, numberOfWords)
+        val (theta, phi) = initialApproximationGenerator.apply(modelParameters, documents)
         val bricks = alphabet.wordsMap.map {
             case (key, value) => (key, RobustBrick(regularizer, phiSparsifier, key, modelParameters, noiseParameter, documents))
         }
-        val (theta, phi) = initialApproximationGenerator.apply(modelParameters, documents)
         new PLSA(bricks, stoppingCriteria, thetaSparsifier, regularizer, phi, theta)
     }
 }

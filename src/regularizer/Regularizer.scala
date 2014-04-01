@@ -11,6 +11,7 @@ import attribute.AttributeType
  * Time: 15:30
  */
 abstract class Regularizer(private val regulizerParameter: Float) {
+    // TODO add abstraction level
     def apply(theta: Theta, phi: Map[AttributeType, AttributedPhi]): Float
 
     def derivativeByTheta(d: Int, t: Int, theta: Theta, phi: Map[AttributeType, AttributedPhi]): Float

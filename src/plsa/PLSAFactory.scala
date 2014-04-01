@@ -15,6 +15,7 @@ import stoppingcriteria.StoppingCriteria
  * Time: 17:34
  */
 object PLSAFactory {
+    //TODO BUILDer
     def apply(initialApproximationGenerator: InitialApproximationGenerator,
               regularizer: Regularizer,
               documents: Seq[Document],

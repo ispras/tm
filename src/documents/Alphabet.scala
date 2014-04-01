@@ -9,5 +9,6 @@ import attribute.AttributeType
  * Time: 17:57
  */
 class Alphabet(val wordsMap: Map[AttributeType, Map[Int, String]]) {
+    // TODO trove
     def apply(attribute: AttributeType, index: Int) = wordsMap(attribute)(index)
 }
