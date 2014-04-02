@@ -1,6 +1,7 @@
 package documents
 
 import attribute.AttributeType
+import gnu.trove.map.hash.TIntObjectHashMap
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,7 +9,6 @@ import attribute.AttributeType
  * Date: 21.03.14
  * Time: 17:57
  */
-class Alphabet(val wordsMap: Map[AttributeType, Map[Int, String]]) {
-    // TODO trove
-    def apply(attribute: AttributeType, index: Int) = wordsMap(attribute)(index)
+class Alphabet(val wordsMap: Map[AttributeType, TIntObjectHashMap[String]]) {
+    def apply(attribute: AttributeType, index: Int) = wordsMap(attribute).get(index)
 }

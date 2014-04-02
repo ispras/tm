@@ -2,7 +2,7 @@ package scripts
 
 import documents.{TextualDocument, Numerator}
 import plsa.RobustPLSAFactory
-import initialapproximationgenerator.RandomInitialApproximationGenerator
+import initialapproximationgenerator.{GibbsInitialApproximationGenerator, RandomInitialApproximationGenerator}
 import regularizer.ZeroRegularizer
 import sparsifier.ZeroSparsifier
 import stoppingcriteria.MaxNumberOfIterationStoppingCriteria
@@ -23,15 +23,15 @@ object PigData extends App {
         val lines = Source.fromFile(new File(path)).getLines().take(100000).map(line => new TextualDocument(Map(Category -> line.split(" "))))
         val random = new Random
         random.setSeed(13)
-        val (alphabet, docs) = Numerator(lines.toSeq)
-        val noiseParameter = new NoiseParameters(0.00f, 0.0f)
+        val (docs, alphabet) = Numerator(lines.toSeq)
+        val noiseParameter = new NoiseParameters(0.00f, 0.00f)
         val plsa = RobustPLSAFactory(new RandomInitialApproximationGenerator(random),
             new ZeroRegularizer(),
             docs,
             10,
             new ZeroSparsifier(),
             new ZeroSparsifier(),
-            new MaxNumberOfIterationStoppingCriteria(33),
+            new MaxNumberOfIterationStoppingCriteria(100), //33
             alphabet,
             noiseParameter)
         (plsa, docs)
@@ -39,7 +39,7 @@ object PigData extends App {
 
 
     val readDataTime = System.currentTimeMillis()
-    val (plsa, docs) = getDocs("/media/3d6a5a46-cbd3-49cd-abd4-2907eed0831a/home/padre/data/arxiv/phis")
+    val (plsa, docs) = getDocs("/media/3d6a5a46-cbd3-49cd-abd4-2907eed0831a/home/padre/data/PigData/news")
     println(" readDataTime " + (System.currentTimeMillis() * 0.001 - readDataTime / 1000))
     val start = System.currentTimeMillis()
     val trainedModel = plsa.train(docs)

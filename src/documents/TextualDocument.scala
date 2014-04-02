@@ -8,7 +8,9 @@ import attribute.AttributeType
  * Date: 21.03.14
  * Time: 16:43
  */
-class TextualDocument(val attributes: Map[AttributeType, Seq[String]]) {
-    // TODO private
-    def getAttributes(attributeType: AttributeType): Seq[String] = attributes(attributeType)
+class TextualDocument(private val attributes: Map[AttributeType, Seq[String]]) {
+    require(attributes.values.exists(_.nonEmpty), "empty document")
+    def words(attributeType: AttributeType): Seq[String] = attributes(attributeType)
+
+    def attributeSet() = attributes.keySet
 }

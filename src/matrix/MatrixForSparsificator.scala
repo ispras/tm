@@ -13,9 +13,8 @@ class MatrixForSparsifier(private val data: Array[Array[Float]]) {
 
     def apply(rowIndex: Int, columnIndex: Int) = data(rowIndex)(columnIndex)
 
-    def update(rowIndex: Int, columnIndex: Int, value: Float) {
-        //TODO SET_ZERO!!!
+    def setZero(rowIndex: Int, columnIndex: Int) {
         unchanged = false
-        data(rowIndex)(columnIndex) = value
+        data(rowIndex)(columnIndex) = 0f
     }
 }

@@ -9,6 +9,7 @@ import regularizer.ZeroRegularizer
 import sparsifier.ZeroSparsifier
 import stoppingcriteria.MaxNumberOfIterationStoppingCriteria
 import grizzled.slf4j.Logging
+import gnu.trove.map.hash.TIntObjectHashMap
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,46 +18,42 @@ import grizzled.slf4j.Logging
  * Time: 18:07
  */
 object Numerator extends Logging {
-    //TODO logging
-    def apply(textDocuments: Seq[TextualDocument]): (Alphabet, Seq[Document]) = {
-        //TODO  swap return values
-        var numOfDocsDone = 0
-        val alphabet = mutable.Map[AttributeType, Map[Int, String]]().withDefaultValue(Map[Int, String]())
+    def apply(textDocuments: Seq[TextualDocument]): (Seq[Document], Alphabet) = {
+        val alphabet = mutable.Map[AttributeType, TIntObjectHashMap[String]]()
         val numberOfWords = mutable.Map[AttributeType, Int]().withDefaultValue(0)
         val wordsToNumber = mutable.Map[(AttributeType, String), Int]()
-        val documents = textDocuments.toVector.map {
-            textDocument =>
-                numOfDocsDone += 1
-                if (numOfDocsDone % 1000 == 0) println("done " + numOfDocsDone) //TODO LOGGGING and sdelay DERG()
-                processDocument(textDocument, numberOfWords, alphabet, wordsToNumber)
+        val documents = textDocuments.toVector.zipWithIndex.map {case(textDocument, documentIndex) =>
+                if (documentIndex % 1000 == 0) info("done " + documentIndex)
+                processDocument(textDocument, numberOfWords, alphabet, wordsToNumber, documentIndex)
         }
-        (new Alphabet(alphabet.toMap), documents)
+        (documents, new Alphabet(alphabet.toMap))
 
     }
 
     private def processDocument(textualDocument: TextualDocument,
                                 numberOfWords: mutable.Map[AttributeType, Int],
-                                alphabet: mutable.Map[AttributeType, Map[Int, String]],
-                                wordsToNumber: mutable.Map[(AttributeType, String), Int]) = {
-        require(textualDocument.attributes.values.exists(_.nonEmpty), "empty document")
-        val document = textualDocument.attributes.foldLeft(Map[AttributeType, Array[(Int, Int)]]()) {
-            case (wordsInDocument, (attribute, words)) =>
-                wordsInDocument.updated(attribute, replaceWordsByIndexes(words, attribute, numberOfWords, alphabet, wordsToNumber))
+                                alphabet: mutable.Map[AttributeType, TIntObjectHashMap[String]],
+                                wordsToNumber: mutable.Map[(AttributeType, String), Int],
+                                documentIndex: Int) = {
+        val document = textualDocument.attributeSet().foldLeft(Map[AttributeType, Array[(Int, Int)]]()) {
+            case (wordsInDocument, attribute) =>
+                wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute), attribute, numberOfWords, alphabet, wordsToNumber))
         }
 
-        new Document(document)
+        new Document(document, documentIndex)
     }
 
     private def replaceWordsByIndexes(words: Seq[String],
                                       attribute: AttributeType,
                                       numberOfWords: mutable.Map[AttributeType, Int],
-                                      alphabet: mutable.Map[AttributeType, Map[Int, String]],
+                                      alphabet: mutable.Map[AttributeType, TIntObjectHashMap[String]],
                                       wordsToNumber: mutable.Map[(AttributeType, String), Int]) = {
         val map = mutable.Map[Int, Int]().withDefaultValue(0)
+        if (!alphabet.contains(attribute)) alphabet(attribute) = new TIntObjectHashMap[String]()
         for (word <- words) {
             if (!wordsToNumber.contains((attribute, word))) {
                 wordsToNumber((attribute, word)) = numberOfWords(attribute)
-                alphabet(attribute) = alphabet(attribute) + (numberOfWords(attribute) -> word)
+                alphabet(attribute).put(numberOfWords(attribute), word)
                 numberOfWords(attribute) += 1
             }
             map(wordsToNumber((attribute, word))) += 1
@@ -71,7 +68,7 @@ object Test extends App {
     val td3 = new TextualDocument(Map(Category -> List("boobs", "ducks", "boobs", "ducks")))
     val td4 = new TextualDocument(Map(Category -> List("boobs", "boobs", "boobs", "ducks")))
     val td5 = new TextualDocument(Map(Category -> List("boobs", "ducks", "ducks", "ducks")))
-    val (alphabet, docs) = Numerator.apply(List(td1, td2, td3, td4, td5))
+    val (docs, alphabet) = Numerator.apply(List(td1, td2, td3, td4, td5))
     val random = new Random
     val plsa = PLSAFactory(new RandomInitialApproximationGenerator(random),
         new ZeroRegularizer(),

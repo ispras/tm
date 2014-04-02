@@ -16,22 +16,20 @@ import math.log
  */
 class NonRobustBrick(regularizer: Regularizer, phiSparsifier: Sparsifier, attribute: AttributeType, modelParameters: ModelParameters) extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters) {
     def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
-        var documentNumber = 0
         var logLikelihood = 0d
 
-        for (doc <- documents if doc.attributes.contains(attribute)) {
-            logLikelihood += processSingleDocument(doc, documentNumber, theta, phi)
-            documentNumber += 1
+        for (doc <- documents if doc.contains(attribute)) {
+            logLikelihood += processSingleDocument(doc, theta, phi)
         }
         applyRegularizer(theta, phi)
         phi.dump()
         logLikelihood
     }
 
-    private def processSingleDocument(document: Document, documentIndex: Int, theta: Theta, phi: AttributedPhi) = {
+    private def processSingleDocument(document: Document, theta: Theta, phi: AttributedPhi) = {
         var logLikelihood = 0d
         for ((wordIndex, numberOfWords) <- document.getAttributes(attribute)) {
-            logLikelihood += processOneWord(wordIndex, numberOfWords, documentIndex, phi, theta)
+            logLikelihood += processOneWord(wordIndex, numberOfWords, document.serialNumber, phi, theta)
         }
         logLikelihood
     }

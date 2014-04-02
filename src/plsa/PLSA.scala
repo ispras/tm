@@ -7,6 +7,7 @@ import sparsifier.Sparsifier
 import matrix.{AttributedPhi, Theta}
 import documents.Document
 import regularizer.Regularizer
+import grizzled.slf4j.Logging
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,11 +20,11 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
            private val thetaSparsifier: Sparsifier,
            private val regularizer: Regularizer,
            private val phi: Map[AttributeType, AttributedPhi],
-           private val theta: Theta) {
+           private val theta: Theta) extends Logging {
 
     def train(documents: Seq[Document]): TrainedModel = {
         val collectionLength = documents.foldLeft(0) {
-            (sum, document) => sum + document.attributes.values.foldLeft(0)((sumOneDocument, words) => sumOneDocument + words.map(_._2).sum)
+            (sum, document) => sum + document.numberOfWords()
         }
         var numberOfIteration = 0
         var oldPpx = 0d
@@ -34,7 +35,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
                 case (sum, (attribute, brick)) =>
                     sum + brick.makeIteration(theta, phi(attribute), documents, numberOfIteration)
             }, collectionLength)
-            println(newPpx) //TODO logg
+            info(newPpx)
             applyRegularizer()
             theta.dump()
             numberOfIteration += 1

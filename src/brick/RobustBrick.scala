@@ -32,10 +32,8 @@ class RobustBrick private(regularizer: Regularizer,
     def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
 
         var logLikelihood = 0f
-        var documentNumber = 0
-        while (documentNumber < documents.size) {
-            logLikelihood += processOneDocument(documents(documentNumber), documentNumber, theta, phi)
-            documentNumber += 1
+        for (document <- documents) {
+            logLikelihood += processOneDocument(document, theta, phi)
         }
         if (noiseParameters.backgroundWeight > 0) background.dump()
         phi.dump()
@@ -43,14 +41,13 @@ class RobustBrick private(regularizer: Regularizer,
     }
 
     private def processOneDocument(document: Document,
-                                   documentNumber: Int,
                                    theta: Theta,
                                    phi: AttributedPhi): Float = {
         var logLikelihood = 0f
         for ((wordIndex, numberOfWords) <- document.getAttributes(attribute)) {
-            logLikelihood += processOneWord(wordIndex, numberOfWords, documentNumber, theta, phi, noise(documentNumber))
+            logLikelihood += processOneWord(wordIndex, numberOfWords, document.serialNumber, theta, phi, noise(document.serialNumber))
         }
-        updateNoise(noise(documentNumber))
+        updateNoise(noise(document.serialNumber))
         logLikelihood
     }
 

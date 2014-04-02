@@ -17,7 +17,6 @@ object Theta {
     def apply(expectationMatrix: Array[Array[Float]]) = {
         val stochasticMatrix = Ogre.stochasticMatrix(expectationMatrix)
         val theta = new Theta(expectationMatrix, stochasticMatrix)
-        theta.dump()
         theta
     }
 }
