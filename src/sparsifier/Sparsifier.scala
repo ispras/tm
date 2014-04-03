@@ -10,5 +10,5 @@ import matrix.MatrixForSparsifier
  * Time: 17:32
  */
 trait Sparsifier {
-    def apply(matrix: MatrixForSparsifier): Unit
+    def apply(matrix: MatrixForSparsifier, numberOfIteration: Int): Unit
 }

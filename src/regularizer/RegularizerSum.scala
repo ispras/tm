@@ -10,7 +10,7 @@ import attribute.AttributeType
  * Date: 24.03.14
  * Time: 16:02
  */
-class RegularizerSum(private val regularizers: Seq[Regularizer]) extends Regularizer(1f) {
+class RegularizerSum(private val regularizers: Seq[Regularizer]) extends Regularizer {
     def +(regularizer: Regularizer) = new RegularizerSum(regularizer +: regularizers)
 
     def derivativeByPhi(attribute: AttributeType)(d: Int, t: Int, theta: Theta, phi: AttributedPhi): Float = regularizers.foldLeft(0f) {

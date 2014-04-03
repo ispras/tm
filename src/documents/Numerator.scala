@@ -26,6 +26,7 @@ object Numerator extends Logging {
                 if (documentIndex % 1000 == 0) info("done " + documentIndex)
                 processDocument(textDocument, numberOfWords, alphabet, wordsToNumber, documentIndex)
         }
+        info("numerator done")
         (documents, new Alphabet(alphabet.toMap))
 
     }
@@ -60,28 +61,4 @@ object Numerator extends Logging {
         }
         map.toArray
     }
-}
-
-object Test extends App {
-    val td1 = new TextualDocument(Map(Category -> List("ducks", "ducks", "ducks", "ducks")))
-    val td2 = new TextualDocument(Map(Category -> List("boobs", "boobs", "boobs", "boobs")))
-    val td3 = new TextualDocument(Map(Category -> List("boobs", "ducks", "boobs", "ducks")))
-    val td4 = new TextualDocument(Map(Category -> List("boobs", "boobs", "boobs", "ducks")))
-    val td5 = new TextualDocument(Map(Category -> List("boobs", "ducks", "ducks", "ducks")))
-    val (docs, alphabet) = Numerator.apply(List(td1, td2, td3, td4, td5))
-    val random = new Random
-    val plsa = PLSAFactory(new RandomInitialApproximationGenerator(random),
-        new ZeroRegularizer(),
-        docs,
-        2,
-        new ZeroSparsifier(),
-        new ZeroSparsifier(),
-        new MaxNumberOfIterationStoppingCriteria(33),
-        alphabet)
-
-    println(alphabet.wordsMap)
-    val trainedModel = plsa.train(docs)
-    println(trainedModel.theta + "\n")
-    println(trainedModel.phi(Category))
-
 }

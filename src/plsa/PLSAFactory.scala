@@ -24,11 +24,8 @@ object PLSAFactory {
               phiSparsifier: Sparsifier,
               stoppingCriteria: StoppingCriteria,
               alphabet: Alphabet) = {
-        val numberOfWords = alphabet.wordsMap.map {
-            case (key, value) => (key, value.size)
-        }
-        val modelParameters = new ModelParameters(numberOfTopics, numberOfWords)
-        val bricks = alphabet.wordsMap.map {
+        val modelParameters = new ModelParameters(numberOfTopics, alphabet.numberOfWords())
+        val bricks = modelParameters.numberOfWords.map {
             case (key, value) => (key, new NonRobustBrick(regularizer, phiSparsifier, key, modelParameters))
         }
         val (theta, phi) = initialApproximationGenerator.apply(modelParameters, documents)

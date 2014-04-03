@@ -6,6 +6,10 @@ package stoppingcriteria
  * Date: 24.03.14
  * Time: 17:52
  */
+/**
+ *
+ * @param maxNumberOfIteration number of iteration to stop
+ */
 class MaxNumberOfIterationStoppingCriteria(private val maxNumberOfIteration: Int) extends StoppingCriteria {
     def apply(numberOfIteration: Int, oldPerplexity: Double, newPerplexity: Double): Boolean = numberOfIteration >= maxNumberOfIteration
 }

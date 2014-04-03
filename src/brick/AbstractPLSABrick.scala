@@ -34,7 +34,16 @@ abstract class AbstractPLSABrick(private val regularizer: Regularizer,
         }
     }
 
-    protected def countZ(phi: AttributedPhi, theta: Theta, wordIndex: Int, documentIndex: Int) = modelParameters.topics.foldLeft(0f) {
-        (sum, topic) => sum + phi.probability(topic, wordIndex) * theta.probability(documentIndex, topic)
+    protected def countZ(phi: AttributedPhi, theta: Theta, wordIndex: Int, documentIndex: Int) = {
+        var topicNumber = 0
+        var sum = 0f
+
+        while(topicNumber < modelParameters.numberOfTopics) {
+            sum += phi.probability(topicNumber, wordIndex) * theta.probability(documentIndex, topicNumber)
+            topicNumber += 1
+        }
+        sum
     }
+
+
 }

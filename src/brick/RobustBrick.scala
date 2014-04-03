@@ -29,7 +29,7 @@ class RobustBrick private(regularizer: Regularizer,
     if (noiseParameters.backgroundWeight + noiseParameters.noiseWeight == 0)
         warn("noise and background weight are equal to zero. You'd better use NonRobustPLSABrick")
 
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], numberOfIteration: Int): Double = {
 
         var logLikelihood = 0f
         for (document <- documents) {
@@ -37,6 +37,7 @@ class RobustBrick private(regularizer: Regularizer,
         }
         if (noiseParameters.backgroundWeight > 0) background.dump()
         phi.dump()
+        phi.sparsify(phiSparsifier, numberOfIteration)
         logLikelihood
     }
 
@@ -84,7 +85,7 @@ class RobustBrick private(regularizer: Regularizer,
 
 }
 
-object RobustBrick {
+object RobustBrick extends  Logging {
     def apply(regularizer: Regularizer,
               phiSparsifier: Sparsifier,
               attribute: AttributeType,
@@ -93,13 +94,14 @@ object RobustBrick {
               documents: Seq[Document]) = {
 
         val background = Background(attribute, modelParameters)
-        val noise = documents.map {
-            doc => val size = doc.getAttributes(attribute).size
-                doc.getAttributes(attribute).foldLeft(mutable.Map[Int, Float]()) {
-                    case (map, (wordIndex, numberOfWords)) => map + (wordIndex -> 1f / size)
-                }
-        }.toArray
-
+        val noise = generateNoise(documents: Seq[Document], attribute: AttributeType)
         new RobustBrick(regularizer, phiSparsifier, attribute, modelParameters, noiseParameters, background, noise)
+    }
+
+    private def generateNoise(documents: Seq[Document], attribute: AttributeType): Array[mutable.Map[Int, Float]] = {
+        documents.map {
+            doc => val size = doc.getAttributes(attribute).size
+            mutable.Map(doc.getAttributes(attribute).map {case (wordIndex, numberOfWords) => wordIndex -> 1f / size}:_*)
+        }.toArray
     }
 }

@@ -13,6 +13,10 @@ class MatrixForSparsifier(private val data: Array[Array[Float]]) {
 
     def apply(rowIndex: Int, columnIndex: Int) = data(rowIndex)(columnIndex)
 
+    def numberOfRows() = data.length
+
+    def numberOfColumns() = data.head.length
+
     def setZero(rowIndex: Int, columnIndex: Int) {
         unchanged = false
         data(rowIndex)(columnIndex) = 0f

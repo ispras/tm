@@ -10,5 +10,5 @@ import matrix.MatrixForSparsifier
  * Time: 17:42
  */
 class ZeroSparsifier extends Sparsifier {
-    def apply(matrix: MatrixForSparsifier) {}
+    def apply(matrix: MatrixForSparsifier, numberOfIteration: Int) {}
 }

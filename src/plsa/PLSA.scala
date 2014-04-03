@@ -38,6 +38,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
             info(newPpx)
             applyRegularizer()
             theta.dump()
+            theta.sparsify(thetaSparsifier, numberOfIteration)
             numberOfIteration += 1
         }
 
