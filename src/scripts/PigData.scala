@@ -1,17 +1,11 @@
 package scripts
 
 import documents.{TextualDocument, Numerator}
-import plsa.RobustPLSAFactory
-import initialapproximationgenerator.{GibbsInitialApproximationGenerator, RandomInitialApproximationGenerator}
-import regularizer.{Regularizer, SymmetricDirichlet, ZeroRegularizer}
-import sparsifier.{ThresholdLocalSparcifier, ZeroSparsifier}
-import stoppingcriteria.MaxNumberOfIterationStoppingCriteria
 import java.util.Random
-import brick.NoiseParameters
 import scala.io.Source
 import java.io.File
 import attribute.Category
-import regularizer.Regularizer.toRegularizerSum
+import builder.{PLSABuilder, RobustPLSABuilder}
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,21 +16,12 @@ import regularizer.Regularizer.toRegularizerSum
 object PigData extends App {
     def getDocs(path: String) = {
 
-        val regularizer = 0.until(1).foldLeft(new ZeroRegularizer: Regularizer)((regularizer, i) => regularizer + new SymmetricDirichlet(0.1f, 0.01f).addParameter(1f))
         val lines = Source.fromFile(new File(path)).getLines().take(100000).map(line => new TextualDocument(Map(Category -> line.split(" "))))
         val random = new Random
         random.setSeed(13)
         val (docs, alphabet) = Numerator(lines.toSeq)
-        val noiseParameter = new NoiseParameters(0.00f, 0.00f)
-        val plsa = RobustPLSAFactory(new RandomInitialApproximationGenerator(random),
-             regularizer,
-            docs,
-            10,
-            new ZeroSparsifier(),
-            new ZeroSparsifier(),
-            new MaxNumberOfIterationStoppingCriteria(100), //33
-            alphabet,
-            noiseParameter)
+
+        val plsa = new RobustPLSABuilder(10, alphabet, docs, random, 33, 0f, 0f).build()
         (plsa, docs)
     }
 

@@ -20,7 +20,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
            private val thetaSparsifier: Sparsifier,
            private val regularizer: Regularizer,
            private val phi: Map[AttributeType, AttributedPhi],
-           private val theta: Theta) extends Logging {
+           private val theta: Theta) extends TopicModel with Logging {
 
     def train(documents: Seq[Document]): TrainedModel = {
         val collectionLength = documents.foldLeft(0) {

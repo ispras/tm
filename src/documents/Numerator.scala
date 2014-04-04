@@ -27,7 +27,7 @@ object Numerator extends Logging {
                 processDocument(textDocument, numberOfWords, alphabet, wordsToNumber, documentIndex)
         }
         info("numerator done")
-        (documents, new Alphabet(alphabet.toMap))
+        (documents, Alphabet(alphabet.toMap))
 
     }
 
