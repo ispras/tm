@@ -8,8 +8,11 @@ import attribute.AttributeType
  * Date: 21.03.14
  * Time: 17:42
  */
-class Document(val attributes: Map[AttributeType, Array[(Int, Int)]]) {
+class Document(private val attributes: Map[AttributeType, Array[(Int, Int)]], val serialNumber: Int) {
     def getAttributes(attributeType: AttributeType): Array[(Int, Int)] = attributes.getOrElse(attributeType, Array[(Int, Int)]())
 
-    //TODO make the map private
+    def contains(attribute: AttributeType) = attributes.contains(attribute)
+
+    def numberOfWords() = attributes.values.foldLeft(0)((sumOneDocument, words) => sumOneDocument + words.map(_._2).sum)
+
 }

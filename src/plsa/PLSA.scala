@@ -7,6 +7,7 @@ import sparsifier.Sparsifier
 import matrix.{AttributedPhi, Theta}
 import documents.Document
 import regularizer.Regularizer
+import grizzled.slf4j.Logging
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,30 +20,46 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
            private val thetaSparsifier: Sparsifier,
            private val regularizer: Regularizer,
            private val phi: Map[AttributeType, AttributedPhi],
-           private val theta: Theta) {
+           private val theta: Theta) extends Logging {
 
     def train(documents: Seq[Document]): TrainedModel = {
         val collectionLength = documents.foldLeft(0) {
-            (sum, document) => sum + document.attributes.values.foldLeft(0)((sumOneDocument, words) => sumOneDocument + words.map(_._2).sum)
+            (sum, document) => sum + document.numberOfWords()
         }
         var numberOfIteration = 0
-        var oldPpx = 0f
-        var newPpx = 0f
+        var oldPpx = 0d
+        var newPpx = 0d
         while (!stoppingCriteria(numberOfIteration, oldPpx, newPpx)) {
             oldPpx = newPpx
-            newPpx = perplexity(bricks.foldLeft(0f) { case (sum, (attribute, brick)) =>
-                sum + brick.makeIteration(theta, phi(attribute), documents, numberOfIteration)
+            newPpx = perplexity(bricks.foldLeft(0d) {
+                case (sum, (attribute, brick)) =>
+                    sum + brick.makeIteration(theta, phi(attribute), documents, numberOfIteration)
             }, collectionLength)
-            println(newPpx)   //TODO logg
+            info(newPpx)
             applyRegularizer()
             theta.dump()
+            theta.sparsify(thetaSparsifier, numberOfIteration)
             numberOfIteration += 1
         }
 
         new TrainedModel(phi, theta)
     }
 
-    def perplexity(logLikelihood: Float, collectionLength: Int) = math.exp(-logLikelihood / collectionLength).toFloat
+    def perplexity(logLikelihood: Double, collectionLength: Int) = math.exp(-logLikelihood / collectionLength)
+
+    protected def makeIteration(iterationCnt: Int, ppx: Double, collectionLength: Int, documents: Seq[Document]) {
+
+        val logLikelihood = bricks.foldLeft(0d) {case (sum, (attribute, brick)) =>
+                sum + brick.makeIteration(theta, phi(attribute), documents, iterationCnt)
+        }
+        val newPpx = perplexity(logLikelihood, collectionLength)
+        info(newPpx)
+        applyRegularizer()
+        theta.dump()
+        theta.sparsify(thetaSparsifier, iterationCnt)
+
+        if (!stoppingCriteria(iterationCnt, ppx, newPpx)) makeIteration(iterationCnt + 1, newPpx, collectionLength, documents)
+    }
 
     private def applyRegularizer() {
         var t = 0

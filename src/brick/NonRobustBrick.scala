@@ -14,30 +14,60 @@ import math.log
  * Date: 26.03.14
  * Time: 16:44
  */
+/**
+ * 
+ * @param regularizer regularizer to apply
+ * @param phiSparsifier sparsifier for phi matrix
+ * @param attribute attribute of brick (process only phi matrix with corresponding attribute)
+ * @param modelParameters number of topics and number of words
+ */
 class NonRobustBrick(regularizer: Regularizer, phiSparsifier: Sparsifier, attribute: AttributeType, modelParameters: ModelParameters) extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters) {
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Float = {
-        var documentNumber = 0
-        var logLikelihood = 0f
+    /**
+     *
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
+     * @param documents seq of documents to process
+     * @param iterationCnt number of iteration
+     * @return log likelihood of observed collection. log(P(D\ theta, phi))
+     */
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
+        var logLikelihood = 0d
 
-        for (doc <- documents if doc.attributes.contains(attribute)) {
-             logLikelihood += processSingleDocument(doc, documentNumber, theta, phi)
-             documentNumber += 1
+        for (doc <- documents if doc.contains(attribute)) {
+            logLikelihood += processSingleDocument(doc, theta, phi)
         }
         applyRegularizer(theta, phi)
         phi.dump()
+        phi.sparsify(phiSparsifier, iterationCnt)
         logLikelihood
     }
 
-    private def processSingleDocument(document: Document, documentIndex: Int, theta: Theta, phi: AttributedPhi) = {
-            var logLikelihood = 0f
-            for ((wordIndex, numberOfWords) <- document.getAttributes(attribute)) {
-                logLikelihood += processOneWord(wordIndex, numberOfWords, documentIndex, phi, theta)
-            }
-            logLikelihood
+    /**
+     * calculate n_dwt for given document and update expectation matrix
+     * @param document document to process
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
+     * @return log likelihood of observed document. log(P(d\ theta, phi))
+     */
+    private def processSingleDocument(document: Document, theta: Theta, phi: AttributedPhi) = {
+        var logLikelihood = 0d
+        for ((wordIndex, numberOfWords) <- document.getAttributes(attribute)) {
+            logLikelihood += processOneWord(wordIndex, numberOfWords, document.serialNumber, phi, theta)
+        }
+        logLikelihood
     }
 
-    protected def processOneWord(wordIndex: Int, numberOfWords: Int, documentIndex: Int, phi: AttributedPhi, theta: Theta): Float = {
-        val Z = modelParameters.topics.foldLeft(0f)((sum, topic) => sum + theta.probability(documentIndex, topic) * phi.probability(topic, wordIndex))
+    /**
+     * calculate n_dwt for given word in given document and update expectation matrix
+     * @param wordIndex serial number of words in alphabet
+     * @param numberOfWords number of words wordIndex in document
+     * @param documentIndex serial number of document in collection
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
+     * @return log likelihood to observe word wordIndex in document documentIndex
+     */
+    protected def processOneWord(wordIndex: Int, numberOfWords: Int, documentIndex: Int, phi: AttributedPhi, theta: Theta): Double = {
+        val Z = countZ(phi, theta, wordIndex, documentIndex)
         var likelihood = 0f
         var topic = 0
         while (topic < modelParameters.numberOfTopics) {
@@ -47,7 +77,6 @@ class NonRobustBrick(regularizer: Regularizer, phiSparsifier: Sparsifier, attrib
             likelihood += phi.probability(topic, wordIndex) * theta.probability(documentIndex, topic)
             topic += 1
         }
-        //TODO remove toFloat
-        numberOfWords * log(likelihood).toFloat
+        numberOfWords * log(likelihood)
     }
 }
