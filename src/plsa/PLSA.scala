@@ -20,7 +20,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
            private val thetaSparsifier: Sparsifier,
            private val regularizer: Regularizer,
            private val phi: Map[AttributeType, AttributedPhi],
-           private val theta: Theta) extends TopicModel with Logging {
+           private val theta: Theta) extends Logging {
 
     def train(documents: Seq[Document]): TrainedModel = {
         val collectionLength = documents.foldLeft(0) {
@@ -46,6 +46,20 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
     }
 
     def perplexity(logLikelihood: Double, collectionLength: Int) = math.exp(-logLikelihood / collectionLength)
+
+    protected def makeIteration(iterationCnt: Int, ppx: Double, collectionLength: Int, documents: Seq[Document]) {
+
+        val logLikelihood = bricks.foldLeft(0d) {case (sum, (attribute, brick)) =>
+                sum + brick.makeIteration(theta, phi(attribute), documents, iterationCnt)
+        }
+        val newPpx = perplexity(logLikelihood, collectionLength)
+        info(newPpx)
+        applyRegularizer()
+        theta.dump()
+        theta.sparsify(thetaSparsifier, iterationCnt)
+
+        if (!stoppingCriteria(iterationCnt, ppx, newPpx)) makeIteration(iterationCnt + 1, newPpx, collectionLength, documents)
+    }
 
     private def applyRegularizer() {
         var t = 0

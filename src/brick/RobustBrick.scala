@@ -16,6 +16,16 @@ import grizzled.slf4j.Logging
  * Date: 28.03.14
  * Time: 15:46
  */
+/**
+ * 
+ * @param regularizer regularizer to apply
+ * @param phiSparsifier sparsifier for phi matrix
+ * @param attribute attribute of brick (process only phi matrix with corresponding attribute)
+ * @param modelParameters number of topics and number of words
+ * @param noiseParameters weight of noise and background
+ * @param background distribution of common words
+ * @param noise distribution of noise words in every document
+ */
 class RobustBrick private(regularizer: Regularizer,
                           phiSparsifier: Sparsifier,
                           attribute: AttributeType,
@@ -29,29 +39,54 @@ class RobustBrick private(regularizer: Regularizer,
     if (noiseParameters.backgroundWeight + noiseParameters.noiseWeight == 0)
         warn("noise and background weight are equal to zero. You'd better use NonRobustPLSABrick")
 
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], numberOfIteration: Int): Double = {
+    /**
+     * 
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
+     * @param documents seq of documents to process
+     * @param iterationCnt number of iteration
+     * @return log likelihood of observed collection. log(P(D\ theta, phi))
+     */
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
 
         var logLikelihood = 0f
         for (document <- documents) {
-            logLikelihood += processOneDocument(document, theta, phi)
+            logLikelihood += processSingleDocument(document, theta, phi)
         }
         if (noiseParameters.backgroundWeight > 0) background.dump()
         phi.dump()
-        phi.sparsify(phiSparsifier, numberOfIteration)
+        phi.sparsify(phiSparsifier, iterationCnt)
         logLikelihood
     }
 
-    private def processOneDocument(document: Document,
+    /**
+     * calculate n_dwt for given document and update expectation matrix
+     * @param document document to process
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
+     * @return log likelihood of observed document. log(P(d\ theta, phi))
+     */
+    private def processSingleDocument(document: Document,
                                    theta: Theta,
                                    phi: AttributedPhi): Float = {
         var logLikelihood = 0f
         for ((wordIndex, numberOfWords) <- document.getAttributes(attribute)) {
             logLikelihood += processOneWord(wordIndex, numberOfWords, document.serialNumber, theta, phi, noise(document.serialNumber))
         }
+
         updateNoise(noise(document.serialNumber))
         logLikelihood
     }
 
+    /**
+     * calculate n_dwt for given word in given document and update expectation matrix
+     * @param wordIndex serial number of words in alphabet
+     * @param numberOfWords number of words wordIndex in document
+     * @param documentIndex serial number of document in collection
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
+     * @return log likelihood to observe word wordIndex in document documentIndex
+     */
     private def processOneWord(wordIndex: Int,
                                numberOfWords: Int,
                                documentIndex: Int,
@@ -61,7 +96,7 @@ class RobustBrick private(regularizer: Regularizer,
         val Z = (countZ(phi, theta, wordIndex, documentIndex) + noiseParameters.backgroundWeight * background.probability(wordIndex)
             + noiseParameters.noiseWeight * noise(wordIndex)) / (1 + noiseParameters.noiseWeight + noiseParameters.backgroundWeight)
 
-        require(Z > 0, Z + " " + noise)
+        require(Z > 0, Z + " " + noise(wordIndex))
         var topic = 0
         while (topic < modelParameters.numberOfTopics) {
             val ndwt = numberOfWords * theta.probability(documentIndex, topic) * phi.probability(topic, wordIndex) / Z
@@ -75,6 +110,10 @@ class RobustBrick private(regularizer: Regularizer,
         numberOfWords * math.log(Z).toFloat
     }
 
+    /**
+     * update distribution of noise words
+     * @param noise distribution of noise words in document
+     */
     private def updateNoise(noise: mutable.Map[Int, Float]) {
         val sum = noise.values.sum
         require(sum > 0 || noiseParameters.noiseWeight == 0, noise)

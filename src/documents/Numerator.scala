@@ -1,13 +1,7 @@
 package documents
 
 import scala.collection.mutable
-import attribute.{Category, AttributeType}
-import plsa.PLSAFactory
-import initialapproximationgenerator.RandomInitialApproximationGenerator
-import java.util.Random
-import regularizer.ZeroRegularizer
-import sparsifier.ZeroSparsifier
-import stoppingcriteria.MaxNumberOfIterationStoppingCriteria
+import attribute.{AttributeType}
 import grizzled.slf4j.Logging
 import gnu.trove.map.hash.TIntObjectHashMap
 

@@ -9,4 +9,9 @@ import attribute.AttributeType
  * Date: 27.03.14
  * Time: 16:51
  */
+/**
+ * store distribution of words by topic and documents by topics
+ * @param phi distribution of words by topic for every attribute
+ * @param theta distribution of document by topic
+ */
 class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta)

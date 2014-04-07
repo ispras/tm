@@ -3,11 +3,7 @@ package scripts
 import documents.{Numerator, TextualDocument}
 import attribute.Category
 import java.util.Random
-import plsa.PLSAFactory
-import initialapproximationgenerator.RandomInitialApproximationGenerator
-import regularizer.ZeroRegularizer
-import sparsifier.ZeroSparsifier
-import stoppingcriteria.MaxNumberOfIterationStoppingCriteria
+import builder.PLSABuilder
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,14 +19,7 @@ object SimpleTest extends App{
     val td5 = new TextualDocument(Map(Category -> List("boobs", "ducks", "ducks", "ducks")))
     val (docs, alphabet) = Numerator.apply(List(td1, td2, td3, td4, td5))
     val random = new Random
-    val plsa = PLSAFactory(new RandomInitialApproximationGenerator(random),
-        new ZeroRegularizer(),
-        docs,
-        2,
-        new ZeroSparsifier(),
-        new ZeroSparsifier(),
-        new MaxNumberOfIterationStoppingCriteria(33),
-        alphabet)
+    val plsa =  new PLSABuilder(20, alphabet, docs, random, 100).build()
 
     val trainedModel = plsa.train(docs)
     println(trainedModel.theta + "\n")

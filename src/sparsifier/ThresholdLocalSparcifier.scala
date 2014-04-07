@@ -7,7 +7,12 @@ import matrix.MatrixForSparsifier
  * User: padre
  * Date: 03.04.14
  * Time: 15:55
- * To change this template use File | Settings | File Templates.
+ */
+/**
+ *
+ * @param threshold if matrix element less than this threshold it may be replaced by zero
+ * @param startIteration do not do sparsification before this iteration
+ * @param maxNumberOfZeroised maximum number of elements, that may be replaced by zero in one row.
  */
 class ThresholdLocalSparcifier(private val threshold : Float, private val startIteration : Int, private val maxNumberOfZeroised : Int) extends AbstractLocalSpacifier{
 

@@ -25,6 +25,5 @@ class RobustPLSABuilder(numberOfTopics: Int,
         modelParameters.numberOfWords.map {
             case (key, value) => (key, RobustBrick(regularizer, phiSparsifier, key, modelParameters, noiseParameter, documents))
         }
-
     }
 }
