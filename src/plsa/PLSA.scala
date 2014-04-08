@@ -31,34 +31,25 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
         var newPpx = 0d
         while (!stoppingCriteria(numberOfIteration, oldPpx, newPpx)) {
             oldPpx = newPpx
-            newPpx = perplexity(bricks.foldLeft(0d) {
-                case (sum, (attribute, brick)) =>
-                    sum + brick.makeIteration(theta, phi(attribute), documents, numberOfIteration)
-            }, collectionLength)
-            info(newPpx)
-            applyRegularizer()
-            theta.dump()
-            theta.sparsify(thetaSparsifier, numberOfIteration)
+            newPpx = makeIteration(numberOfIteration: Int, collectionLength: Int, documents: Seq[Document])
             numberOfIteration += 1
         }
 
         new TrainedModel(phi, theta)
     }
 
-    def perplexity(logLikelihood: Double, collectionLength: Int) = math.exp(-logLikelihood / collectionLength)
+    protected def perplexity(logLikelihood: Double, collectionLength: Int) = math.exp(-logLikelihood / collectionLength)
 
-    protected def makeIteration(iterationCnt: Int, ppx: Double, collectionLength: Int, documents: Seq[Document]) {
-
+    protected def makeIteration(iterationCnt: Int, collectionLength: Int, documents: Seq[Document]) = {
         val logLikelihood = bricks.foldLeft(0d) {case (sum, (attribute, brick)) =>
                 sum + brick.makeIteration(theta, phi(attribute), documents, iterationCnt)
         }
         val newPpx = perplexity(logLikelihood, collectionLength)
-        info(newPpx)
+        info(iterationCnt + " " + newPpx)
         applyRegularizer()
         theta.dump()
         theta.sparsify(thetaSparsifier, iterationCnt)
-
-        if (!stoppingCriteria(iterationCnt, ppx, newPpx)) makeIteration(iterationCnt + 1, newPpx, collectionLength, documents)
+        newPpx
     }
 
     private def applyRegularizer() {

@@ -13,7 +13,7 @@ package brick
  * @param eps background weight
  */
 class NoiseParameters(private val gamma: Float, private val eps: Float) {
-    require(gamma >= 0 && eps >= 0, "noise and background weights must be positive")
+    require(gamma >= 0 && eps >= 0, "noise and background weights must be non negative")
 
     /**
      *

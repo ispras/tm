@@ -30,6 +30,12 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
      */
     def numberOfWords() = indexWordsMap.map{case (key, value) => (key, value.size)}
 
+    /**
+     * check if alphabet contain given word
+     * @param attribute attribute of word
+     * @param word input word
+     * @return true if word in alphabet, false otherwise
+     */
     def contain(attribute: AttributeType, word: String) = wordsIndexMap(attribute).contains(word)
 
     def getIndex(attribute: AttributeType, word: String) = {
