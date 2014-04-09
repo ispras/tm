@@ -53,15 +53,6 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
     }
 
     private def applyRegularizer() {
-        var t = 0
-        var d = 0
-        while (d < theta.numberOfRows) {
-            while (t < theta.numberOfColumns) {
-                theta.addToExpectation(d, t, regularizer.derivativeByTheta(d, t, theta, phi))
-                t += 1
-            }
-            t = 0
-            d += 1
-        }
+        regularizer.regularizeTheta(phi, theta)
     }
 }

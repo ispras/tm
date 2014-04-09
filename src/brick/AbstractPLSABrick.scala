@@ -42,16 +42,7 @@ abstract class AbstractPLSABrick(private val regularizer: Regularizer,
      */
     protected def applyRegularizer(theta: Theta, phi: AttributedPhi) {
         require(phi.attribute == attribute, "matrix and brick attribute does not correspond")
-        var w = 0
-        var t = 0
-        while (t < phi.numberOfRows) {
-            while (w < phi.numberOfColumns) {
-                phi.addToExpectation(t, w, regularizer.derivativeByPhi(attribute)(t: Int, w: Int, theta: Theta, phi: AttributedPhi))
-                w += 1
-            }
-            w = 0
-            t += 1
-        }
+        regularizer.regularizePhi(phi, theta)
     }
 
     /**

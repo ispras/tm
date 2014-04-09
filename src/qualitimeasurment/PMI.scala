@@ -85,7 +85,7 @@ class PMI(private val unigrams: TIntFloatHashMap,
     }
 
     /**
-     * calculate averege pmi for given words. average may be mean or median
+     * calculate average pmi for given words. average may be mean or median
      * @param phi matrix of distribution of words by topic
      * @param average function to calculate a
      * @return average pmi for pairs of given words
@@ -151,7 +151,7 @@ object PMI {
      * @param sep separator in bigrams file
      * @return trove map with unigrams weight
      */
-    private def loadUnigrams(pathToUnigrams: String, alphabet: Alphabet, attribute: AttributeType, sep: String) = {
+     def loadUnigrams(pathToUnigrams: String, alphabet: Alphabet, attribute: AttributeType, sep: String) = {
         val map = new TIntFloatHashMap()
         Source.fromFile(new File(pathToUnigrams)).getLines().map(_.split(sep)).filterNot(_.isEmpty).foreach{ wordAndWeight =>
             val wordIndex = alphabet.getIndex(attribute, wordAndWeight(0))
@@ -169,7 +169,7 @@ object PMI {
      * @param sep separator in bigrams  file
      * @return trove map from bigram (two words, replaced by serial number and placed in set) to the number of occurrence in collection
      */
-    private def loadBigrams(pathToBigrams: String, alphabet: Alphabet, attribute: AttributeType, sep: String) = {
+     def loadBigrams(pathToBigrams: String, alphabet: Alphabet, attribute: AttributeType, sep: String) = {
         val map = new TObjectFloatHashMap[Bigram]()
         Source.fromFile(new File(pathToBigrams)).getLines().map(_.split(sep)).filterNot(_.isEmpty).foreach{ wordsAndWeight =>
             val wordIndex = alphabet.getIndex(attribute, wordsAndWeight(0))

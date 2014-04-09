@@ -1,6 +1,6 @@
 package regularizer
 
-import matrix.{AttributedPhi, Theta}
+import matrix.{ImmutableTheta, AttributedPhi, Theta}
 import attribute.AttributeType
 
 
@@ -11,9 +11,9 @@ import attribute.AttributeType
  * Time: 16:25
  */
 class ZeroRegularizer extends Regularizer {
-    def derivativeByPhi(attribute: AttributeType)(t: Int, w: Int, theta: Theta, phi: AttributedPhi): Float = 0f
+    def apply(phi: Map[AttributeType, AttributedPhi], theta: Theta): Float = 0f
 
-    def derivativeByTheta(d: Int, t: Int, theta: Theta, phi: Map[AttributeType, AttributedPhi]): Float = 0f
+    def regularizePhi(phi: AttributedPhi, theta: ImmutableTheta) {}
 
-    def apply(theta: Theta, phi: Map[AttributeType, AttributedPhi]): Float = 0f
+    def regularizeTheta(phi: Map[AttributeType, AttributedPhi], theta: Theta) {}
 }
