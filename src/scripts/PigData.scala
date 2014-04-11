@@ -5,7 +5,7 @@ import java.util.Random
 import scala.io.Source
 import java.io.File
 import attribute.Category
-import builder.{LDABuilder, PLSABuilder, RobustPLSABuilder}
+import builder.{PLSAWithPMI, LDABuilder, PLSABuilder, RobustPLSABuilder}
 import qualitimeasurment.{PMI, PrintTopics}
 
 /**
@@ -17,18 +17,22 @@ import qualitimeasurment.{PMI, PrintTopics}
 object PigData extends App {
     def getDocs(path: String) = {
 
-        val lines = Source.fromFile(new File(path)).getLines().take(1000).map(line => new TextualDocument(Map(Category -> line.split(" "))))
+        val lines = Source.fromFile(new File(path)).getLines().take(500000).map(line => new TextualDocument(Map(Category -> line.split(" "))))
         val random = new Random
         random.setSeed(13)
-        val (docs, alphabet) = Numerator(lines.toSeq)
+        val (docs, alphabet) = Numerator(lines)
 
-        val plsa = new RobustPLSABuilder(25, alphabet, docs, random, 33, 1.5f, 0.2f).build()
+        val plsa = new PLSABuilder(25,
+            alphabet,
+            docs,
+            random,
+            33).build()
         (plsa, docs, alphabet)
     }
 
 
     val readDataTime = System.currentTimeMillis()
-    val (plsa, docs, alphabet) = getDocs("/media/3d6a5a46-cbd3-49cd-abd4-2907eed0831a/home/padre/data/PigData/dde1000")
+    val (plsa, docs, alphabet) = getDocs("/home/padre/arxiv/arxiv.prepr")
 
     println("number of words " + alphabet.numberOfWords()(Category))
     println(" readDataTime " + (System.currentTimeMillis() * 0.001 - readDataTime / 1000))
@@ -46,7 +50,7 @@ object PigData extends App {
     println(" loadNGrams " + (System.currentTimeMillis() * 0.001 - loadNGrams / 1000))
 
     val calculatePMI = System.currentTimeMillis()
-    println(pmi.meanPMI(trainedModel.phi(Category)).map{case(topicId, value) => topicId + " -> " + value}.mkString("\n"))
+    println("pmi " +  pmi.meanPMI(trainedModel.phi(Category)).map(_._2).sum)
     println(" calculatePMI " + (System.currentTimeMillis() * 0.001 - calculatePMI / 1000))
 
 }

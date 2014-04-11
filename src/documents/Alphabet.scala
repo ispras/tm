@@ -28,7 +28,14 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
      * @return map attributeType -> number of unique words, corresponding to this attribute.
      *         Guarantee that words index < number of unique words
      */
-    def numberOfWords() = indexWordsMap.map{case (key, value) => (key, value.size)}
+    def numberOfWords(): Map[AttributeType, Int] = indexWordsMap.map{case (key, value) => (key, value.size)}
+
+    /**
+     *
+     * @param attribute attribute type
+     * @return number of words, corresponding to given attribute
+     */
+    def numberOfWords(attribute: AttributeType):  Int = numberOfWords()(attribute)
 
     /**
      * check if alphabet contain given word
@@ -44,12 +51,12 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
 }
 
 object Alphabet {
-    def apply(indexWordsMap: Map[AttributeType, TIntObjectHashMap[String]]) = {
-        val wordsIndexMap = indexWordsMap.map{case(attribute, map) =>
-            val reverseMap = new TObjectIntHashMap[String]()
-            map.keys().foreach(key => reverseMap.put(map.get(key), key))
+    def apply(wordIndexMap: Map[AttributeType, TObjectIntHashMap[String]]) = {
+        val indexWordMap = wordIndexMap.map{case(attribute, map) =>
+            val reverseMap = new TIntObjectHashMap[String]()
+            map.keys().foreach(key => reverseMap.put(map.get(key), key.toString))
             (attribute, reverseMap)
         }
-        new Alphabet(indexWordsMap, wordsIndexMap)
+        new Alphabet(indexWordMap, wordIndexMap)
     }
 }

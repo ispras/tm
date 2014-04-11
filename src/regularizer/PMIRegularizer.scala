@@ -16,7 +16,7 @@ import documents.Alphabet
  */
 class PMIRegularizer(private val parameter: Float,
                      private val n: Int,
-                     private val unigrams: TIntFloatHashMap,
+                     private val unigrams:  Array[Float],
                      private val bigrams: TObjectFloatMap[Bigram],
                      private val attribute: AttributeType) extends Regularizer {
     // extremely slow
@@ -47,7 +47,7 @@ class PMIRegularizer(private val parameter: Float,
     }
 
     private def pmi(word: Int, otherWord: Int) = {
-        math.log((unigrams.get(word) + 1f) * (unigrams.get(otherWord) + 1f) / (bigrams.get(new Bigram(word, otherWord)) + 1f))
+        math.log(unigrams(word) * unigrams(otherWord) / (bigrams.get(new Bigram(word, otherWord)) + 1f))
     }
 
     def regularizeTheta(phi: Map[AttributeType, AttributedPhi], theta: Theta) { }
@@ -55,8 +55,9 @@ class PMIRegularizer(private val parameter: Float,
 
 object PMIRegularizer {
     def apply(pathToUnigrams: String, pathToBigrams: String, alphabet: Alphabet, parameter: Float, n: Int,  attribute: AttributeType, sep: String = ",") = {
-        val unigrams = PMI.loadUnigrams(pathToUnigrams: String, alphabet: Alphabet, attribute: AttributeType, sep)
+        val unigramsMap = PMI.loadUnigrams(pathToUnigrams: String, alphabet: Alphabet, attribute: AttributeType, sep)
         val bigrams  = PMI.loadBigrams(pathToBigrams: String, alphabet: Alphabet, attribute: AttributeType, sep)
+        val unigrams = (0 until alphabet.numberOfWords(attribute)).map{wordIndex => unigramsMap.get(wordIndex) + 1f}.toArray
         new PMIRegularizer(parameter, n, unigrams, bigrams, attribute)
     }
 }

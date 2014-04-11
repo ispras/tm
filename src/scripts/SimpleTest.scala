@@ -17,7 +17,7 @@ object SimpleTest extends App{
     val td3 = new TextualDocument(Map(Category -> List("boobs", "ducks", "boobs", "ducks")))
     val td4 = new TextualDocument(Map(Category -> List("boobs", "boobs", "boobs", "ducks")))
     val td5 = new TextualDocument(Map(Category -> List("boobs", "ducks", "ducks", "ducks")))
-    val (docs, alphabet) = Numerator.apply(List(td1, td2, td3, td4, td5))
+    val (docs, alphabet) = Numerator.apply(List(td1, td2, td3, td4, td5).toIterator)
     val random = new Random
     val plsa =  new PLSABuilder(20, alphabet, docs, random, 100).build()
 
