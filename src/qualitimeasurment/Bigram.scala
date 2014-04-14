@@ -13,6 +13,6 @@ class Bigram(val word: Int, val otherWord: Int)  {
         case _ => false
     }
 
-    override def hashCode(): Int = super.hashCode() + word.hashCode() * 17 + otherWord.hashCode() * 17
+    override def hashCode(): Int = word.hashCode() * 17 + otherWord.hashCode() * 17
 }
 

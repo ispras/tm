@@ -1,6 +1,5 @@
 package regularizer
 
-import gnu.trove.map.hash.TIntFloatHashMap
 import gnu.trove.map.TObjectFloatMap
 import qualitimeasurment.{PMI, Bigram}
 import attribute.AttributeType
@@ -42,12 +41,13 @@ class PMIRegularizer(private val parameter: Float,
     }
 
     private def processOneWord(wordId: Int, topicId: Int, phi: AttributedPhi, topWords: Array[Int]) {
-        val weight = parameter * topWords.foldLeft(0d)((sum, otherWordId) => sum + phi.probability(topicId, otherWordId) * pmi(wordId, otherWordId)).toFloat
+        val weight = math.max(0, parameter * topWords.foldLeft(0d)((sum, otherWordId) => sum + phi.probability(topicId, otherWordId) * pmi(wordId, otherWordId)).toFloat)
         phi.addToExpectation(topicId, wordId, weight)
     }
 
     private def pmi(word: Int, otherWord: Int) = {
-        math.log(unigrams(word) * unigrams(otherWord) / (bigrams.get(new Bigram(word, otherWord)) + 1f))
+        val result = math.log((bigrams.get(new Bigram(word, otherWord)) + 1e-15f) / unigrams(word) / unigrams(otherWord))
+        result
     }
 
     def regularizeTheta(phi: Map[AttributeType, AttributedPhi], theta: Theta) { }
@@ -57,7 +57,7 @@ object PMIRegularizer {
     def apply(pathToUnigrams: String, pathToBigrams: String, alphabet: Alphabet, parameter: Float, n: Int,  attribute: AttributeType, sep: String = ",") = {
         val unigramsMap = PMI.loadUnigrams(pathToUnigrams: String, alphabet: Alphabet, attribute: AttributeType, sep)
         val bigrams  = PMI.loadBigrams(pathToBigrams: String, alphabet: Alphabet, attribute: AttributeType, sep)
-        val unigrams = (0 until alphabet.numberOfWords(attribute)).map{wordIndex => unigramsMap.get(wordIndex) + 1f}.toArray
+        val unigrams = (0 until alphabet.numberOfWords(attribute)).map{wordIndex => unigramsMap.get(wordIndex) + 1e-15f}.toArray
         new PMIRegularizer(parameter, n, unigrams, bigrams, attribute)
     }
 }

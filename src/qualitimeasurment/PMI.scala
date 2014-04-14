@@ -21,18 +21,21 @@ import attribute.AttributeType
  * @param bigrams map from pair of word index to number of occurrence of pair in train collection.
  * @param n number of top n words to calculate pmi
  * @param attribute attribute type
+ * @param epsilon add to every unigram and bigram weight to prevent division by zero
  */
 class PMI(private val unigrams: TIntFloatHashMap,
           private val bigrams: TObjectFloatMap[Bigram],
           private val n: Int,
-          private val attribute: AttributeType) {
+          private val attribute: AttributeType,
+          private val epsilon: Float = 1e-15f) {
+
 
     /**
      *
      * @param word index of word
      * @return number of occurrence of words in trained collection + 1
      */
-    private def getWordWeight(word: Int) = unigrams.get(word) + 1f
+    private def getWordWeight(word: Int) = unigrams.get(word) + epsilon
 
     /**
      *
@@ -40,7 +43,9 @@ class PMI(private val unigrams: TIntFloatHashMap,
      * @param otherWord index of the second word in bigram
      * @return  number of occurrence of bigram in trained collection + 1
      */
-    private def getBigramWeight(word: Int, otherWord: Int) = bigrams.get(Set(word, otherWord)) + 1f
+    private def getBigramWeight(word: Int, otherWord: Int) = bigrams.get(new Bigram(word, otherWord)) + epsilon
+
+
 
     /**
      * calculate pmi for two words
@@ -48,7 +53,7 @@ class PMI(private val unigrams: TIntFloatHashMap,
      * @param otherWord the second word
      * @return pmi for pair of words
      */
-    private def pairPMI(word: Int, otherWord: Int) = math.log(getWordWeight(word) * getWordWeight(otherWord) / getBigramWeight(word, otherWord))
+    private def pairPMI(word: Int, otherWord: Int) = math.log(getBigramWeight(word, otherWord) / getWordWeight(word) / getWordWeight(otherWord))
 
     /**
      * return top most frequent word for given topic

@@ -15,42 +15,51 @@ import qualitimeasurment.{PMI, PrintTopics}
  * Time: 13:49
  */
 object PigData extends App {
-    def getDocs(path: String) = {
 
-        val lines = Source.fromFile(new File(path)).getLines().take(500000).map(line => new TextualDocument(Map(Category -> line.split(" "))))
+    def getDocs(path: String, param: Float) = {
+
+        val lines = Source.fromFile(new File(path)).getLines().take(1000).map(line => new TextualDocument(Map(Category -> line.split(" "))))
         val random = new Random
         random.setSeed(13)
         val (docs, alphabet) = Numerator(lines)
 
-        val plsa = new PLSABuilder(25,
+        val plsa = new PLSAWithPMI(25,
             alphabet,
             docs,
             random,
-            33).build()
+            33,
+            "/home/padre/arxiv/unigram.part",
+            "/home/padre/arxiv/bigram.part.fltr",
+            param,
+            10,
+            Category,
+            " ").build()
         (plsa, docs, alphabet)
     }
 
+    def doIt(param: Float) {
+        val readDataTime = System.currentTimeMillis()
+        val (plsa, docs, alphabet) = getDocs("/home/padre/arxiv/arxiv.part", param)
 
-    val readDataTime = System.currentTimeMillis()
-    val (plsa, docs, alphabet) = getDocs("/home/padre/arxiv/arxiv.prepr")
+        println("number of words " + alphabet.numberOfWords()(Category))
+        println(" readDataTime " + (System.currentTimeMillis() * 0.001 - readDataTime / 1000))
+        val start = System.currentTimeMillis()
+        val trainedModel = plsa.train(docs)
 
-    println("number of words " + alphabet.numberOfWords()(Category))
-    println(" readDataTime " + (System.currentTimeMillis() * 0.001 - readDataTime / 1000))
-    val start = System.currentTimeMillis()
-    val trainedModel = plsa.train(docs)
+        println(trainedModel)
 
-    println(trainedModel)
-
-    PrintTopics.printAllTopics(10, trainedModel.phi(Category), alphabet)
-    println(" time " + (System.currentTimeMillis() * 0.001 - start / 1000))
+        //PrintTopics.printAllTopics(10, trainedModel.phi(Category), alphabet)
+        println("train time " + (System.currentTimeMillis() * 0.001 - start / 1000))
 
 
-    val loadNGrams = System.currentTimeMillis()
-    val pmi = PMI("/media/3d6a5a46-cbd3-49cd-abd4-2907eed0831a/home/padre/data/IM/PMI/unigram.short", "/media/3d6a5a46-cbd3-49cd-abd4-2907eed0831a/home/padre/data/IM/PMI/bigram.short", alphabet, 10, Category, " ")
-    println(" loadNGrams " + (System.currentTimeMillis() * 0.001 - loadNGrams / 1000))
+        val loadNGrams = System.currentTimeMillis()
+        val pmi = PMI("/home/padre/arxiv/unigram.part", "/home/padre/arxiv/bigram.part.fltr", alphabet, 10, Category, " ")
+        println(" loadNGrams " + (System.currentTimeMillis() * 0.001 - loadNGrams / 1000))
 
-    val calculatePMI = System.currentTimeMillis()
-    println("pmi " +  pmi.meanPMI(trainedModel.phi(Category)).map(_._2).sum)
-    println(" calculatePMI " + (System.currentTimeMillis() * 0.001 - calculatePMI / 1000))
+        val calculatePMI = System.currentTimeMillis()
+        println("pmi " +  pmi.meanPMI(trainedModel.phi(Category)).map(_._2).sum)
+        println(" calculatePMI time " + (System.currentTimeMillis() * 0.001 - calculatePMI / 1000))
+    }
 
+    Array(1f, 0f, 10f, 100f).foreach(doIt)
 }
