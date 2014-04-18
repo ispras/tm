@@ -18,7 +18,7 @@ object PigData extends App {
 
     def getDocs(path: String, param: Float) = {
 
-        val lines = Source.fromFile(new File(path)).getLines().take(1000).map(line => new TextualDocument(Map(Category -> line.split(" "))))
+        val lines = Source.fromFile(new File(path)).getLines().take(25).map(line => new TextualDocument(Map(Category -> line.split(" "))))
         val random = new Random
         random.setSeed(13)
         val (docs, alphabet) = Numerator(lines)
@@ -28,8 +28,8 @@ object PigData extends App {
             docs,
             random,
             33,
-            "/home/padre/arxiv/unigram.part",
-            "/home/padre/arxiv/bigram.part.fltr",
+            "/home/padre/arxiv/arxiv.unigram",
+            "/home/padre/arxiv/arxiv.bigram.fltr10000.gz",
             param,
             10,
             Category,
@@ -39,7 +39,7 @@ object PigData extends App {
 
     def doIt(param: Float) {
         val readDataTime = System.currentTimeMillis()
-        val (plsa, docs, alphabet) = getDocs("/home/padre/arxiv/arxiv.part", param)
+        val (plsa, docs, alphabet) = getDocs("/home/padre/arxiv/arxiv.prepr", param)
 
         println("number of words " + alphabet.numberOfWords()(Category))
         println(" readDataTime " + (System.currentTimeMillis() * 0.001 - readDataTime / 1000))
@@ -48,12 +48,12 @@ object PigData extends App {
 
         println(trainedModel)
 
-        //PrintTopics.printAllTopics(10, trainedModel.phi(Category), alphabet)
+        PrintTopics.printAllTopics(10, trainedModel.phi(Category), alphabet)
         println("train time " + (System.currentTimeMillis() * 0.001 - start / 1000))
 
 
         val loadNGrams = System.currentTimeMillis()
-        val pmi = PMI("/home/padre/arxiv/unigram.part", "/home/padre/arxiv/bigram.part.fltr", alphabet, 10, Category, " ")
+        val pmi = PMI("/home/padre/arxiv/arxiv.unigram", "/home/padre/arxiv/arxiv.bigram.fltr10000.gz", alphabet, 10, Category, " ")
         println(" loadNGrams " + (System.currentTimeMillis() * 0.001 - loadNGrams / 1000))
 
         val calculatePMI = System.currentTimeMillis()
@@ -61,5 +61,6 @@ object PigData extends App {
         println(" calculatePMI time " + (System.currentTimeMillis() * 0.001 - calculatePMI / 1000))
     }
 
-    Array(1f, 0f, 10f, 100f).foreach(doIt)
+    Array(0f, 0.1f, 0.5f, 1f, 2f, 4f, 8f, 16f, 32f, 64f).foreach(doIt)
+
 }

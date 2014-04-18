@@ -46,8 +46,7 @@ class PMIRegularizer(private val parameter: Float,
     }
 
     private def pmi(word: Int, otherWord: Int) = {
-        val result = math.log((bigrams.get(new Bigram(word, otherWord)) + 1e-15f) / unigrams(word) / unigrams(otherWord))
-        result
+        math.log((bigrams.get(new Bigram(word, otherWord)) + 1e-15f) / unigrams(word) / unigrams(otherWord))
     }
 
     def regularizeTheta(phi: Map[AttributeType, AttributedPhi], theta: Theta) { }

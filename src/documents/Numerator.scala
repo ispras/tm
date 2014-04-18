@@ -11,9 +11,9 @@ import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
  * Date: 21.03.14
  * Time: 18:07
  */
+
 object Numerator extends Logging {
     def apply(textDocuments: Iterator[TextualDocument]): (Seq[Document], Alphabet) = {
-        //val alphabet = mutable.Map[AttributeType, TIntObjectHashMap[String]]()
         val numberOfWords = mutable.Map[AttributeType, Int]().withDefaultValue(0)
         val wordsToNumber = mutable.Map[AttributeType, TObjectIntHashMap[String]]()
         var documentIndex = -1

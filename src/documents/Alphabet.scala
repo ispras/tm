@@ -10,7 +10,7 @@ import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
  * Time: 17:57
  */
 /**
- * hold mapping form words index to words (string)
+ * hold mapping form words index to words (string) and word to it serial number
  * @param indexWordsMap attribute -> (index of word from it attribute -> word from it attribute)
  */
 class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[String]],
@@ -50,7 +50,15 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
     }
 }
 
+/**
+ * companion object to construct Alphabet from wordIndexMap
+ */
 object Alphabet {
+    /**
+     *
+     * @param wordIndexMap map from attribute to map from word to serial number of word
+     * @return instance of class Alphabet
+     */
     def apply(wordIndexMap: Map[AttributeType, TObjectIntHashMap[String]]) = {
         val indexWordMap = wordIndexMap.map{case(attribute, map) =>
             val reverseMap = new TIntObjectHashMap[String]()

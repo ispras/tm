@@ -5,8 +5,10 @@ import gnu.trove.map.hash.{TObjectFloatHashMap, TIntFloatHashMap}
 import matrix.AttributedPhi
 import documents.{Alphabet}
 import scala.io.Source
-import java.io.File
+import java.io.{FileInputStream, BufferedInputStream, File}
 import attribute.AttributeType
+import grizzled.slf4j.Logging
+import java.util.zip.GZIPInputStream
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,8 +19,8 @@ import attribute.AttributeType
 /**
  * calculate pmi for given topics. pmi is correlated with topic coherence. See for example:
  * "Automatic Evaluation of Topic Coherence by David Newman et al."
- * @param unigrams map from word index to number of occurrence of word in train collection.
- * @param bigrams map from pair of word index to number of occurrence of pair in train collection.
+ * @param unigrams map from word index to probability of word in train collection.
+ * @param bigrams map from pair of word index to probability of pair to occur in slice window in train collection.
  * @param n number of top n words to calculate pmi
  * @param attribute attribute type
  * @param epsilon add to every unigram and bigram weight to prevent division by zero
@@ -121,19 +123,19 @@ class PMI(private val unigrams: TIntFloatHashMap,
 /**
  * companion object construct PMI from files with weight of bigrams and unigrams
  */
-object PMI {
+object PMI extends Logging{
     /**
      * build pmi from files with bigram and file with unigram. Order of words in bigram is not important, every unigram
      * and bigram should occure only once.
-     * every string of file with unigram contain word and number of occurrence of word in train collection, separated  by sep
+     * every string of file with unigram contain word and probability of word in train collection, separated  by sep
      * for example, if sep = ",":
-     * my,100
-     * shiny,200
-     * ass,3000
+     * my,0.1
+     * shiny,0.2
+     * ass,0.7
      * analogously for file with bigrams (sep = ","):
-     * bite,my,100
-     * my,ass,200
-     * shiny,ass,300
+     * bite,my,0.1
+     * my,ass,0.2
+     * shiny,ass,0.7
      * @param pathToUnigrams path to file with unigrams
      * @param pathToBigrams path to file with bigrams
      * @param alphabet alphabet to map word to index
@@ -158,12 +160,23 @@ object PMI {
      */
      def loadUnigrams(pathToUnigrams: String, alphabet: Alphabet, attribute: AttributeType, sep: String) = {
         val map = new TIntFloatHashMap()
-        Source.fromFile(new File(pathToUnigrams)).getLines().map(_.split(sep)).filterNot(_.isEmpty).foreach{ wordAndWeight =>
+        val lines = getLines(pathToUnigrams)
+        lines.map(_.split(sep)).filterNot(_.isEmpty).foreach{ wordAndWeight =>
             val wordIndex = alphabet.getIndex(attribute, wordAndWeight(0))
             val weight = wordAndWeight(1).toFloat
             if(wordIndex.nonEmpty) map.put(wordIndex.get, weight)
         }
         map
+    }
+
+    private def getLines(path: String) = {
+        if (path.endsWith(".gz")) {
+            Source.fromInputStream(new GZIPInputStream(new BufferedInputStream(
+                new FileInputStream(path)))).getLines()
+            }
+        else {
+            Source.fromFile(path).getLines()
+        }
     }
 
     /**
@@ -176,11 +189,16 @@ object PMI {
      */
      def loadBigrams(pathToBigrams: String, alphabet: Alphabet, attribute: AttributeType, sep: String) = {
         val map = new TObjectFloatHashMap[Bigram]()
-        Source.fromFile(new File(pathToBigrams)).getLines().map(_.split(sep)).filterNot(_.isEmpty).foreach{ wordsAndWeight =>
+        var done = 0
+        val lines = getLines(pathToBigrams)
+
+        lines.map(_.split(sep)).filterNot(_.isEmpty).foreach{ wordsAndWeight =>
             val wordIndex = alphabet.getIndex(attribute, wordsAndWeight(0))
             val otherWordIndex = alphabet.getIndex(attribute, wordsAndWeight(1))
             val weight = wordsAndWeight(2).toFloat
             if(wordIndex.nonEmpty && otherWordIndex.nonEmpty) map.put(new Bigram(wordIndex.get, otherWordIndex.get), weight)
+            done += 1
+            if(done % 100000 == 0) info(done)
         }
         map
     }

@@ -19,7 +19,7 @@ object SimpleTest extends App{
     val td5 = new TextualDocument(Map(Category -> List("boobs", "ducks", "ducks", "ducks")))
     val (docs, alphabet) = Numerator.apply(List(td1, td2, td3, td4, td5).toIterator)
     val random = new Random
-    val plsa =  new PLSABuilder(20, alphabet, docs, random, 100).build()
+    val plsa =  new PLSABuilder(2, alphabet, docs, random, 100).build()
 
     val trainedModel = plsa.train(docs)
     println(trainedModel.theta + "\n")
