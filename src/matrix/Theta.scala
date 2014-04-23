@@ -30,7 +30,15 @@ class Theta private(expectationMatrix: Array[Array[Float]], stochasticMatrix: Ar
     override def addToExpectation(documentNumber: Int, topic: Int, value: Float): Unit = super.addToExpectation(documentNumber, topic, value)
 }
 
+/**
+ * construct theta by given expectation matrix
+ */
 object Theta {
+    /**
+     * construct theta by given expectation matrix
+     * @param expectationMatrix expectation matrix
+     * @return matrix Theta
+     */
     def apply(expectationMatrix: Array[Array[Float]]) = {
         val stochasticMatrix = Ogre.stochasticMatrix(expectationMatrix)
         val theta = new Theta(expectationMatrix, stochasticMatrix)

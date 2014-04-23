@@ -6,7 +6,8 @@ import scala.io.Source
 import java.io.File
 import attribute.Category
 import builder.{PLSAWithPMI, LDABuilder, PLSABuilder, RobustPLSABuilder}
-import qualitimeasurment.{PMI, PrintTopics}
+import qualitimeasurment.{PMI}
+import utils.TopicProcessing
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,11 +19,19 @@ object PigData extends App {
 
     def getDocs(path: String, param: Float) = {
 
-        val lines = Source.fromFile(new File(path)).getLines().take(25).map(line => new TextualDocument(Map(Category -> line.split(" "))))
+        val lines = Source.fromFile(new File(path)).getLines().take(10).map(line => new TextualDocument(Map(Category -> line.split(" "))))
         val random = new Random
         random.setSeed(13)
         val (docs, alphabet) = Numerator(lines)
 
+        /*val plsa = new RobustPLSABuilder(25,
+            alphabet,
+            docs,
+            random,
+            33,
+            0.5f,
+            0.5f).build()
+            */
         val plsa = new PLSAWithPMI(25,
             alphabet,
             docs,
@@ -30,7 +39,7 @@ object PigData extends App {
             33,
             "/home/padre/arxiv/arxiv.unigram",
             "/home/padre/arxiv/arxiv.bigram.fltr10000.gz",
-            param,
+            0.1f,
             10,
             Category,
             " ").build()
@@ -48,7 +57,7 @@ object PigData extends App {
 
         println(trainedModel)
 
-        PrintTopics.printAllTopics(10, trainedModel.phi(Category), alphabet)
+        TopicProcessing.printAllTopics(10, trainedModel.phi(Category), alphabet)
         println("train time " + (System.currentTimeMillis() * 0.001 - start / 1000))
 
 
@@ -61,6 +70,6 @@ object PigData extends App {
         println(" calculatePMI time " + (System.currentTimeMillis() * 0.001 - calculatePMI / 1000))
     }
 
-    Array(0f, 0.1f, 0.5f, 1f, 2f, 4f, 8f, 16f, 32f, 64f).foreach(doIt)
+    doIt(0f)
 
 }

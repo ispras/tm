@@ -12,9 +12,19 @@ import java.util.Random
  * Date: 26.03.14
  * Time: 15:27
  */
+/**
+ * generate random initial approximation. Full Phi and Theta by uniform distributed random value
+ * @param random random number generator
+ */
 class RandomInitialApproximationGenerator(private val random: Random) extends InitialApproximationGenerator {
 
-
+    /**
+     * full expectation matrix by the random numbers from uniform distribution
+     * @param parameters model parameters
+     * @param documents sequence of documents
+     * @param theta matrix with zero values in expectation and stochastic matrix
+     * @param phi matrix with zero values in expectation and stochastic matrix
+     */
     protected def fullMatrix(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: Map[AttributeType, AttributedPhi]){
         fullSingleMatrix(theta)
         phi.foreach{case(attribute, matrix) => fullSingleMatrix(matrix)}

@@ -16,7 +16,9 @@ import attribute.AttributeType
  * @param stochasticMatrix hold probabilities to generate words w from topic t.
  * @param attribute attribute type e.g. language
  */
-class AttributedPhi private(expectationMatrix: Array[Array[Float]], stochasticMatrix: Array[Array[Float]], val attribute: AttributeType) extends Ogre(expectationMatrix, stochasticMatrix) {
+class AttributedPhi private(expectationMatrix: Array[Array[Float]],
+                            stochasticMatrix: Array[Array[Float]],
+                            val attribute: AttributeType) extends Ogre(expectationMatrix, stochasticMatrix) {
     /**
      * probability to generate word with serial number wordIndex from topic topicIndex
      * @param topicIndex index of topic

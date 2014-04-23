@@ -164,6 +164,7 @@ object PMI extends Logging{
         lines.map(_.split(sep)).filterNot(_.isEmpty).foreach{ wordAndWeight =>
             val wordIndex = alphabet.getIndex(attribute, wordAndWeight(0))
             val weight = wordAndWeight(1).toFloat
+            require(weight >= 0  && weight <= 1, "probability may not be greater than 1 and less than 0 ")
             if(wordIndex.nonEmpty) map.put(wordIndex.get, weight)
         }
         map
@@ -196,6 +197,7 @@ object PMI extends Logging{
             val wordIndex = alphabet.getIndex(attribute, wordsAndWeight(0))
             val otherWordIndex = alphabet.getIndex(attribute, wordsAndWeight(1))
             val weight = wordsAndWeight(2).toFloat
+            require(weight >= 0  && weight <= 1, "probability may not be greater than 1 and less than 0 ")
             if(wordIndex.nonEmpty && otherWordIndex.nonEmpty) map.put(new Bigram(wordIndex.get, otherWordIndex.get), weight)
             done += 1
             if(done % 100000 == 0) info(done)

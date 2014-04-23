@@ -124,7 +124,20 @@ class RobustBrick private(regularizer: Regularizer,
 
 }
 
+/**
+ * companion object construct RobustBrick
+ */
 object RobustBrick extends  Logging {
+    /**
+     * generate noise and background and put it all together in class RobustBrick
+     * @param regularizer regularizer for phi
+     * @param phiSparsifier sparsifier for phi
+     * @param attribute type of attribute
+     * @param modelParameters number of words and number of topics
+     * @param noiseParameters weight of noise and background
+     * @param documents sequence of documents
+     * @return RobustBrick
+     */
     def apply(regularizer: Regularizer,
               phiSparsifier: Sparsifier,
               attribute: AttributeType,
@@ -137,6 +150,12 @@ object RobustBrick extends  Logging {
         new RobustBrick(regularizer, phiSparsifier, attribute, modelParameters, noiseParameters, background, noise)
     }
 
+    /**
+     * generate initial noise for every document
+     * @param documents sequence of documents
+     * @param attribute type of attribute
+     * @return Array of noise
+     */
     private def generateNoise(documents: Seq[Document], attribute: AttributeType): Array[mutable.Map[Int, Float]] = {
         documents.map {
             doc => val size = doc.getAttributes(attribute).size

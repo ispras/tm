@@ -78,6 +78,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         var rowIndex = 0
         while(rowIndex < numberOfRows) {
             val sum = stochasticMatrix(rowIndex).sum
+            require(sum > 0, "sum should be > 0. May be you dump twice in a row?")
             while(columnIndex < numberOfColumns) {
                 stochasticMatrix(rowIndex)(columnIndex) /= sum
                 columnIndex += 1
@@ -123,7 +124,15 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
     }
 }
 
+/**
+ * companion object help to build appropriate stochastic matrix for given expectation matrix
+ */
 object Ogre {
+    /**
+     * matrix with size, corresponds to given matrix
+     * @param expectationMatrix given expectation matrix
+     * @return Array[Array[Float] ] fill by zeros
+     */
     def stochasticMatrix(expectationMatrix: Array[Array[Float]]) = {
         Array.fill[Array[Float]](expectationMatrix.length)(new Array[Float](expectationMatrix.head.length))
     }
