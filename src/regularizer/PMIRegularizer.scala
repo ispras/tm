@@ -18,7 +18,8 @@ class PMIRegularizer(private val parameter: Float,
                      private val unigrams:  Array[Float],
                      private val bigrams: TObjectFloatMap[Bigram],
                      private val attribute: AttributeType) extends Regularizer {
-    // extremely slow
+
+    // TODO implement apply
     def apply(phi: Map[AttributeType, AttributedPhi], theta: Theta): Float = 0f
 
     def regularizePhi(phi: AttributedPhi, theta: ImmutableTheta) {

@@ -51,7 +51,7 @@ object Numerator extends Logging {
                 wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute), attribute, numberOfWords, wordsToNumber))
         }
 
-        new Document(document, documentIndex)
+        new Document(document.map{case(key, value) => (key, value.toSeq)}, documentIndex)
     }
 
     /**

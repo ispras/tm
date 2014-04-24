@@ -61,7 +61,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
     protected def perplexity(logLikelihood: Double, collectionLength: Int) = math.exp(-logLikelihood / collectionLength)
 
     /**
-     * performe iteration
+     * perform iteration
      * @param iterationCnt serial number of iteration
      * @param collectionLength number of words in collection
      * @param documents sequence of input documents

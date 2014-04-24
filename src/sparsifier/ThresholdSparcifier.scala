@@ -15,7 +15,7 @@ import matrix.MatrixForSparsifier
  * @param startIteration do not do sparsification before this iteration
  * @param maxNumberOfZeroised maximum number of elements, that may be replaced by zero in one row.
  */
-class ThresholdLocalSparcifier(private val threshold : Float, private val startIteration : Int, private val maxNumberOfZeroised : Int) extends Sparsifier{
+class ThresholdSparcifier(private val threshold : Float, private val startIteration : Int, private val maxNumberOfZeroised : Int) extends Sparsifier{
 
     /**
      * decide is given nest should be set to zero
