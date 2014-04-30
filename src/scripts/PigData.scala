@@ -3,9 +3,9 @@ package scripts
 import documents.{TextualDocument, Numerator}
 import java.util.Random
 import scala.io.Source
-import java.io.File
+import java.io.{FileWriter, File}
 import attribute.Category
-import builder.{PLSAWithPMI, LDABuilder, PLSABuilder, RobustPLSABuilder}
+import builder.{LDABuilder, PLSABuilder, RobustPLSABuilder}
 import qualitimeasurment.{PMI}
 import utils.TopicProcessing
 
@@ -19,30 +19,21 @@ object PigData extends App {
 
     def getDocs(path: String, param: Float) = {
 
-        val lines = Source.fromFile(new File(path)).getLines().take(10).map(line => new TextualDocument(Map(Category -> line.split(" "))))
+        val lines = Source.fromFile(new File(path)).getLines().take(3000).map(line => new TextualDocument(Map(Category -> line.split(" "))))
         val random = new Random
         random.setSeed(13)
         val (docs, alphabet) = Numerator(lines)
 
-        /*val plsa = new RobustPLSABuilder(25,
+        val plsa = new LDABuilder(25,
             alphabet,
             docs,
+            1e-8f,
+            0.1e-5f,
             random,
-            33,
-            0.5f,
-            0.5f).build()
-            */
-        val plsa = new PLSAWithPMI(25,
-            alphabet,
-            docs,
-            random,
-            33,
-            "/home/padre/arxiv/arxiv.unigram",
-            "/home/padre/arxiv/arxiv.bigram.fltr10000.gz",
-            0.1f,
-            10,
-            Category,
-            " ").build()
+            100).build()
+
+
+
         (plsa, docs, alphabet)
     }
 
@@ -56,6 +47,12 @@ object PigData extends App {
         val trainedModel = plsa.train(docs)
 
         println(trainedModel)
+        val out = new FileWriter("/home/padre/tmp/Phi")
+        val phi = 0.until(trainedModel.phi(Category).numberOfRows).map{topicId =>
+            0.until(trainedModel.phi(Category).numberOfColumns).map(wordId => trainedModel.phi(Category).probability(topicId, wordId)).mkString(", ")
+        }.mkString("\n")
+        out.write(phi)
+        out.close()
 
         TopicProcessing.printAllTopics(10, trainedModel.phi(Category), alphabet)
         println("train time " + (System.currentTimeMillis() * 0.001 - start / 1000))
@@ -71,5 +68,6 @@ object PigData extends App {
     }
 
     doIt(0f)
+
 
 }

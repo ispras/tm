@@ -1,6 +1,6 @@
 package documents
 
-import attribute.AttributeType
+import attribute.{Category, AttributeType}
 
 /**
  * Created with IntelliJ IDEA.

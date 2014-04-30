@@ -4,6 +4,11 @@ import documents.Document
 import documents.Alphabet
 import java.util.Random
 import regularizer.{Regularizer, SymmetricDirichlet}
+import attribute.AttributeType
+import brick.{NonRobustBrick, AbstractPLSABrick}
+import sparsifier.{ZeroSparsifier, Sparsifier}
+import stoppingcriteria.{MaxNumberOfIterationStoppingCriteria, StoppingCriteria}
+import initialapproximationgenerator.{RandomInitialApproximationGenerator, InitialApproximationGenerator}
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,11 +19,14 @@ import regularizer.{Regularizer, SymmetricDirichlet}
 class LDABuilder(numberOfTopics: Int,
                  alphabet: Alphabet,
                  documents: Seq[Document],
-                 random: Random,
-                 numberOfIteration: Int,
                  private val alpha: Float,
-                 private val beta: Float)
-    extends PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
+                 private val beta: Float,
+                 private val random: Random = new Random(),
+                 private val maxNumberOfIteration: Int = 100)
+    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents)
 {
-    override protected def regularizer: Regularizer = new SymmetricDirichlet(alpha, beta)
+    initialApproximationGenerator = new RandomInitialApproximationGenerator(random)
+
+    stoppingCriteria = new MaxNumberOfIterationStoppingCriteria(maxNumberOfIteration)
+    regularizer = new SymmetricDirichlet(alpha: Float, beta: Float)
 }

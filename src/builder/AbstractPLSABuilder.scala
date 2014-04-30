@@ -2,14 +2,15 @@ package builder
 
 import plsa.PLSA
 import attribute.AttributeType
-import brick.AbstractPLSABrick
-import stoppingcriteria.StoppingCriteria
-import sparsifier.Sparsifier
-import regularizer.Regularizer
-import matrix.{Theta, AttributedPhi}
-import initialapproximationgenerator.InitialApproximationGenerator
+import brick.{NonRobustBrick, AbstractPLSABrick}
+import stoppingcriteria.{MaxNumberOfIterationStoppingCriteria, StoppingCriteria}
+import sparsifier.{ZeroSparsifier, Sparsifier}
+import regularizer.{ZeroRegularizer, Regularizer}
+import regularizer.Regularizer.toRegularizerSum
+import initialapproximationgenerator.{RandomInitialApproximationGenerator, InitialApproximationGenerator}
 import documents.{Document, Alphabet}
 import utils.ModelParameters
+import java.util.Random
 
 
 /**
@@ -23,28 +24,59 @@ import utils.ModelParameters
  */
 abstract class AbstractPLSABuilder(protected val numberOfTopics: Int,
                                    protected val alphabet: Alphabet,
-                                   protected val documents: Seq[Document]) {
+                                   protected val documents: Seq[Document]){
 
-    protected def initialApproximationGenerator: InitialApproximationGenerator
+    protected val modelParameters = new ModelParameters(numberOfTopics, alphabet.numberOfWords())
 
-    protected def brickBuilder(modelParameters: ModelParameters): Map[AttributeType, AbstractPLSABrick]
+    protected var initialApproximationGenerator: InitialApproximationGenerator = new RandomInitialApproximationGenerator(new Random)
+    def setInitialApproximationGenerator(newValue: InitialApproximationGenerator) {
+        initialApproximationGenerator = newValue
+        this
+    }
 
-    protected def stoppingCriteria: StoppingCriteria
 
-    protected def thetaSparsifier: Sparsifier
+    protected var stoppingCriteria: StoppingCriteria = new MaxNumberOfIterationStoppingCriteria(100)
+    def setStoppingCriteria (newValue: StoppingCriteria) {
+        stoppingCriteria = newValue
+        this
+    }
+    
+    protected var thetaSparsifier: Sparsifier = new ZeroSparsifier()
+    def setThetaSparsifier (newValue: Sparsifier) {
+        thetaSparsifier = newValue
+        this
+    }
+    
+    protected var phiSparsifier: Sparsifier = new ZeroSparsifier()
+    def setPhiSparsifier (newValue: Sparsifier) {
+        phiSparsifier = newValue
+        this
+    }
+    
+    protected var regularizer: Regularizer = new ZeroRegularizer()
+    def setRegularizer(newValue: Regularizer) {
+        regularizer = newValue
+        this
+    }
 
-    protected def phiSparsifier: Sparsifier
+    def addRegularizer(newValue: Regularizer) = {
+        regularizer += newValue
+        this
+    }
 
-    protected def regularizer: Regularizer
 
+    protected def buildBricks(modelParameters: ModelParameters): Map[AttributeType, AbstractPLSABrick] = {
+        modelParameters.numberOfWords.map{
+            case(attribute, numberOfWords) => (attribute, new NonRobustBrick(regularizer, phiSparsifier, attribute, modelParameters))
+        }
+    }
+    
     def build(): PLSA = {
-        val modelParameters = new ModelParameters(numberOfTopics, alphabet.numberOfWords())
         val (theta, phi) = initialApproximationGenerator.apply(modelParameters, documents)
-        new PLSA(brickBuilder(modelParameters: ModelParameters),
-            stoppingCriteria: StoppingCriteria,
-            thetaSparsifier: Sparsifier,
-            regularizer: Regularizer,
-            phi: Map[AttributeType, AttributedPhi],
-            theta: Theta)
+        val bricks = buildBricks(modelParameters: ModelParameters)
+        new PLSA(bricks, stoppingCriteria, thetaSparsifier, regularizer,phi, theta)
     }
 }
+
+
+

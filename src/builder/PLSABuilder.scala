@@ -19,19 +19,19 @@ import regularizer.{ZeroRegularizer, Regularizer}
 class PLSABuilder(numberOfTopics: Int,
                   alphabet: Alphabet,
                   documents: Seq[Document],
-                  protected val random: Random,
-                  protected val numberOfIteration: Int)
+                  protected val random: Random = new Random,
+                  protected val numberOfIteration: Int = 100)
     extends AbstractPLSABuilder(numberOfTopics, alphabet, documents) {
 
-    protected def initialApproximationGenerator: InitialApproximationGenerator = new RandomInitialApproximationGenerator(random)
+    initialApproximationGenerator = new RandomInitialApproximationGenerator(random)
 
-    protected def thetaSparsifier: Sparsifier = new ZeroSparsifier()
+    thetaSparsifier = new ZeroSparsifier()
 
-    protected def phiSparsifier: Sparsifier = new ZeroSparsifier()
+    phiSparsifier = new ZeroSparsifier()
 
-    protected def stoppingCriteria: StoppingCriteria = new MaxNumberOfIterationStoppingCriteria(numberOfIteration)
+    stoppingCriteria = new MaxNumberOfIterationStoppingCriteria(numberOfIteration)
 
-    protected def regularizer: Regularizer = new ZeroRegularizer()
+    regularizer = new ZeroRegularizer()
 
     protected def brickBuilder(modelParameters: ModelParameters): Map[AttributeType, AbstractPLSABrick] = modelParameters.numberOfWords.map {
         case (key, value) => (key, new NonRobustBrick(regularizer, phiSparsifier, key, modelParameters))
