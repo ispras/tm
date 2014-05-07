@@ -20,7 +20,7 @@ class NonRobustPhiFixedBrick(attribute: AttributeType, modelParameters: ModelPar
      * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
      * @param documents seq of documents to process
      * @param iterationCnt number of iteration
-     * @return log likelihood of observed collection. log(P(D\ theta, phi))
+     * @return log likelihood of observed collection. log(P(D | theta, phi))
      */
     def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
          documents.foldLeft(0d)((logLikelihood, document) => logLikelihood + processSingleDocument(theta, phi, document))

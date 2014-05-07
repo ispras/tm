@@ -25,7 +25,7 @@ class RandomInitialApproximationGenerator(private val random: Random) extends Ph
      * @param theta matrix with zero values in expectation and stochastic matrix
      * @param phi matrix with zero values in expectation and stochastic matrix
      */
-    protected def fullMatrix(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: Map[AttributeType, AttributedPhi]){
+    protected def fillMatrix(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: Map[AttributeType, AttributedPhi]){
         fullSingleMatrix(theta)
         phi.foreach{case(attribute, matrix) => fullSingleMatrix(matrix)}
     }

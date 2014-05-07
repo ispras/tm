@@ -9,7 +9,7 @@ import attribute.{Category, AttributeType}
  * Time: 16:43
  */
 /**
- * hold words, corresponding to given attribute
+ * holds words, related to the given attribute
  * @param attributes map from attribute to sequence of words
  */
 class TextualDocument(private val attributes: Map[AttributeType, Seq[String]]) {

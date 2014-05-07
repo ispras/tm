@@ -23,7 +23,7 @@ class PLSABuilder(numberOfTopics: Int,
                   protected val numberOfIteration: Int = 100)
     extends AbstractPLSABuilder(numberOfTopics, alphabet, documents) {
 
-    initialApproximationGenerator = new RandomInitialApproximationGenerator(random)
+    initialApproximationGenerator = new RandomInitialApproximationGenerator(random) //TODO user setters
 
     thetaSparsifier = new ZeroSparsifier()
 
