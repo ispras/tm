@@ -12,7 +12,7 @@ import java.util.Random
  * Date: 02.04.14
  * Time: 17:03
  */
-class GibbsInitialApproximationGenerator(private val random: Random) extends InitialApproximationGenerator {
+class GibbsInitialApproximationGenerator(private val random: Random) extends PhiThetaApproximationGenerator {
     protected def fullMatrix(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: Map[AttributeType, AttributedPhi]){
         phi.values.foreach(matrix => processAttribute(parameters, documents, theta, matrix))
         smooth(theta)

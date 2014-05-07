@@ -16,7 +16,7 @@ import java.util.Random
  * generate random initial approximation. Full Phi and Theta by uniform distributed random value
  * @param random random number generator
  */
-class RandomInitialApproximationGenerator(private val random: Random) extends InitialApproximationGenerator {
+class RandomInitialApproximationGenerator(private val random: Random) extends PhiThetaApproximationGenerator {
 
     /**
      * full expectation matrix by the random numbers from uniform distribution

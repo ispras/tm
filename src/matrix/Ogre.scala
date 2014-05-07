@@ -1,6 +1,7 @@
 package matrix
 
 import sparsifier.Sparsifier
+import math.max
 
 /**
  * Created with IntelliJ IDEA.
@@ -98,7 +99,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         var rowIndex = 0
         while (rowIndex < numberOfRows) {
             while (columnIndex < numberOfColumns) {
-                stochasticMatrix(rowIndex)(columnIndex) = expectationMatrix(rowIndex)(columnIndex)
+                stochasticMatrix(rowIndex)(columnIndex) = max(0f, expectationMatrix(rowIndex)(columnIndex))
                 columnIndex += 1
             }
             columnIndex = 0

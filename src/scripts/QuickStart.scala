@@ -30,11 +30,14 @@ object QuickStart extends App{
         // split each line by space
         val wordsSequence = lines.map(line => line.split(" "))
 
-        //construct textual documents. Textual document may contain a few texts, corresponding to different  attributes,
-        // for example text in english, translation of this text to russian etc. If you document contain only one text
-        // you may use attribute Category
+        /**
+         * now we obtain a sequence of sequence of words and should to construct textual documents.
+         * Textual document may contain a few texts, corresponding to different  attributes,
+         * for example text in english, translation of this text to russian etc. If you document contain only one text
+         * you may use attribute Category
+         */
         val textualDocuments = wordsSequence.map(words => new TextualDocument(Map(Category -> words)))
-        // and return textual documents
+        // and now we return sequence of textual documents
         textualDocuments
     }
 
@@ -42,7 +45,7 @@ object QuickStart extends App{
     // read textual documents from file (see functions getTextualDocuments for details)
     val textualDocuments = getTextualDocuments()
 
-    /*
+    /**
      * now we have to replace words by it serial number. For this purposes we would use object Numerator
      * Numerator take into input iterator of TextualDocuments, replace words by it serial numbers and return
      * sequence of documents and instance of class alphabet (alphabet hold map from wordsNumber to word and vice versa)
@@ -50,9 +53,9 @@ object QuickStart extends App{
     val (documents, alphabet) = Numerator(textualDocuments)
 
 
-    /*
+    /**
      * now we have to build model. In this example we would use a plsa
-     * we use builder to build instance class PLSA
+     * we use builder to build instance of class PLSA
      * it require define number of topics, number of iterations, alphabet, sequence of documents and random number generator
      * to generate initial approximation
      */
@@ -63,19 +66,19 @@ object QuickStart extends App{
     // and now we build plsa
     val plsa  = builder.build()
 
-    /*
+    /**
      * now we have documents and model and we may train model
      */
     val trainedModel = plsa.train(documents)
 
-    /*
+    /**
      * now we obtain matrix of distribution of words by topics and we may see most popular words from each topic
      */
     // number of top words to see
     val n = 10
     TopicProcessing.printAllTopics(n, trainedModel.phi(Category), alphabet)
 
-    /*
+    /**
      * now we save matrix Phi (words by topic ) into file examples/Phi
      * and matrix Theta (topic by document) in file examples/Theta
      */

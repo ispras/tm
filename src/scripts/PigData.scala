@@ -5,9 +5,10 @@ import java.util.Random
 import scala.io.Source
 import java.io.{FileWriter, File}
 import attribute.Category
-import builder.{LDABuilder, PLSABuilder, RobustPLSABuilder}
+import builder.{FixedPhiBuilder, LDABuilder, PLSABuilder, RobustPLSABuilder}
 import qualitimeasurment.{PMI}
-import utils.TopicProcessing
+import utils.{ModelParameters, TopicProcessing}
+import brick.fixedphi.NonRobustPhiFixedBrick
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,11 +28,10 @@ object PigData extends App {
         val plsa = new LDABuilder(25,
             alphabet,
             docs,
-            1e-8f,
-            0.1e-5f,
+            0.05f,
+            param,
             random,
             100).build()
-
 
 
         (plsa, docs, alphabet)
@@ -47,16 +47,13 @@ object PigData extends App {
         val trainedModel = plsa.train(docs)
 
         println(trainedModel)
-        val out = new FileWriter("/home/padre/tmp/Phi")
-        val phi = 0.until(trainedModel.phi(Category).numberOfRows).map{topicId =>
-            0.until(trainedModel.phi(Category).numberOfColumns).map(wordId => trainedModel.phi(Category).probability(topicId, wordId)).mkString(", ")
-        }.mkString("\n")
-        out.write(phi)
-        out.close()
-
+        TopicProcessing.saveMatrix("/home/padre/tmp/Theta" + param, trainedModel.theta)
         TopicProcessing.printAllTopics(10, trainedModel.phi(Category), alphabet)
         println("train time " + (System.currentTimeMillis() * 0.001 - start / 1000))
 
+        val fixedPhi = new FixedPhiBuilder(alphabet, docs, 100, trainedModel.phi).build()
+        val fixedTheta = fixedPhi.train(docs).theta
+        TopicProcessing.saveMatrix("/home/padre/tmp/Theta_fixed" + param, fixedTheta)
 
         val loadNGrams = System.currentTimeMillis()
         val pmi = PMI("/home/padre/arxiv/arxiv.unigram", "/home/padre/arxiv/arxiv.bigram.fltr10000.gz", alphabet, 10, Category, " ")
@@ -68,6 +65,7 @@ object PigData extends App {
     }
 
     doIt(0f)
+
 
 
 }

@@ -22,8 +22,8 @@ import utils.ModelParameters
  */
 abstract class AbstractPLSABrick(private val regularizer: Regularizer,
                                  private val phiSparsifier: Sparsifier,
-                                 private val attribute: AttributeType,
-                                 private val modelParameters: ModelParameters) {
+                                 protected val attribute: AttributeType,
+                                 protected val modelParameters: ModelParameters) {
 
     /**
      * execute one iteration
