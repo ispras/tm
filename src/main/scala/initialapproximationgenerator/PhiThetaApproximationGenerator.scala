@@ -29,7 +29,7 @@ trait PhiThetaApproximationGenerator extends InitialApproximationGenerator {
             case (attribute, numberOfWords) => (attribute, AttributedPhi(createMatrix(parameters.numberOfTopics, numberOfWords), attribute))
         }
 
-        fullMatrix(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: Map[AttributeType, AttributedPhi])
+        fillMatrix(parameters , documents , theta , phi )
         theta.dump()
         phi.foreach{case(attribute, matrix) => matrix.dump()}
         (theta, phi)
@@ -43,6 +43,6 @@ trait PhiThetaApproximationGenerator extends InitialApproximationGenerator {
      * @param theta main.scala.matrix with zero values in expectation and stochastic main.scala.matrix
      * @param phi main.scala.matrix with zero values in expectation and stochastic main.scala.matrix
      */
-    protected def fullMatrix(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: Map[AttributeType, AttributedPhi]): Unit
+    protected def fillMatrix(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: Map[AttributeType, AttributedPhi]): Unit
 
 }

@@ -1,6 +1,6 @@
 package documents
 
-import main.scala.AttributeType
+import attribute.{Category, AttributeType}
 
 /**
  * Created with IntelliJ IDEA.
@@ -9,15 +9,15 @@ import main.scala.AttributeType
  * Time: 16:43
  */
 /**
- * hold words, corresponding to given main.scala.attribute
- * @param attributes map from main.scala.attribute to sequence of words
+ * holds words, related to the given attribute
+ * @param attributes map from attribute to sequence of words
  */
 class TextualDocument(private val attributes: Map[AttributeType, Seq[String]]) {
     require(attributes.values.forall(_.nonEmpty), "empty document")
 
     /**
-     * return words, corresponding to given main.scala.attribute
-     * @param attributeType type of main.scala.attribute
+     * return words, corresponding to given attribute
+     * @param attributeType type of attribute
      * @return Array(word index, number of occurrence)
      */
     def words(attributeType: AttributeType): Seq[String] = attributes(attributeType)

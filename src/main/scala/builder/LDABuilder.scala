@@ -22,10 +22,8 @@ class LDABuilder(numberOfTopics: Int,
                  private val alpha: Float,
                  private val beta: Float,
                  private val random: Random = new Random(),
-                 private val maxNumberOfIteration: Int = 100)
-    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents)
-{
-    initialApproximationGenerator = new RandomInitialApproximationGenerator(random)
+                 private val maxNumberOfIteration: Int = 100) extends AbstractPLSABuilder(numberOfTopics, alphabet, documents) {
+    initialApproximationGenerator = new RandomInitialApproximationGenerator(random) //TODO use setters
 
     stoppingCriteria = new MaxNumberOfIterationStoppingCriteria(maxNumberOfIteration)
     regularizer = new SymmetricDirichlet(alpha: Float, beta: Float)

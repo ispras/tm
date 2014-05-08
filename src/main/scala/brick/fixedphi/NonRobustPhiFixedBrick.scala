@@ -20,7 +20,7 @@ class NonRobustPhiFixedBrick(attribute: AttributeType, modelParameters: ModelPar
      * @param phi distribution of words by topics. Attribute of phi main.scala.matrix should corresponds with main.scala.attribute of main.scala.brick
      * @param documents seq of main.scala.documents to process
      * @param iterationCnt number of iteration
-     * @return log likelihood of observed collection. log(P(D\ theta, phi))
+     * @return log likelihood of observed collection. log(P(D | theta, phi))
      */
     def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
          documents.foldLeft(0d)((logLikelihood, document) => logLikelihood + processSingleDocument(theta, phi, document))
