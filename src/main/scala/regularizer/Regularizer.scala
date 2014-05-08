@@ -1,7 +1,7 @@
 package regularizer
 
 import matrix.{ImmutablePhi, ImmutableTheta, AttributedPhi, Theta}
-import main.scala.AttributeType
+import attribute.AttributeType
 
 
 /**

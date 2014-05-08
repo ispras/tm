@@ -8,7 +8,7 @@ import brick.{NonRobustBrick, AbstractPLSABrick}
 import sparsifier.{ZeroSparsifier, Sparsifier}
 import stoppingcriteria.{MaxNumberOfIterationStoppingCriteria, StoppingCriteria}
 import initialapproximationgenerator.{RandomInitialApproximationGenerator, InitialApproximationGenerator}
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

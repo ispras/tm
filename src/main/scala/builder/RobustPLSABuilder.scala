@@ -6,7 +6,7 @@ import utils.ModelParameters
 import brick.{NoiseParameters, RobustBrick, NonRobustBrick, AbstractPLSABrick}
 import initialapproximationgenerator.{RandomInitialApproximationGenerator, InitialApproximationGenerator}
 import stoppingcriteria.{MaxNumberOfIterationStoppingCriteria, StoppingCriteria}
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

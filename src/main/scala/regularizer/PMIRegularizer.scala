@@ -5,7 +5,7 @@ import qualitimeasurment.{PMI, Bigram}
 import matrix.{ImmutableTheta, Theta, AttributedPhi}
 import utils.TopicProcessing
 import documents.Alphabet
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

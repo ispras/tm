@@ -7,7 +7,7 @@ import matrix.{AttributedPhi, Theta}
 import documents.Document
 import regularizer.Regularizer
 import grizzled.slf4j.Logging
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

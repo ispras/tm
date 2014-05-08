@@ -2,7 +2,7 @@ package matrix
 
 import utils.ModelParameters
 import scala.Array
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

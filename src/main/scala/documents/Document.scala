@@ -1,6 +1,6 @@
 package documents
 
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

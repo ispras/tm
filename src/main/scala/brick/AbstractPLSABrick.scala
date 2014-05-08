@@ -5,7 +5,7 @@ import sparsifier.Sparsifier
 import documents.Document
 import matrix.{AttributedPhi, Theta}
 import utils.ModelParameters
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

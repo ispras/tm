@@ -10,7 +10,7 @@ import initialapproximationgenerator.{RandomInitialApproximationGenerator, Initi
 import documents.{Document, Alphabet}
 import utils.ModelParameters
 import java.util.Random
-import main.scala.AttributeType
+import attribute.AttributeType
 
 
 /**

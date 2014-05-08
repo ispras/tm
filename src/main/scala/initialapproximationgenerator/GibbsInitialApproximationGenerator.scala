@@ -4,7 +4,7 @@ import utils.ModelParameters
 import documents.Document
 import matrix.{Ogre, AttributedPhi, Theta}
 import java.util.Random
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

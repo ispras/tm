@@ -4,7 +4,7 @@ import matrix.{Theta, AttributedPhi}
 import utils.ModelParameters
 import documents.Document
 import initialapproximationgenerator.InitialApproximationGenerator
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

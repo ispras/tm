@@ -7,7 +7,7 @@ import brick.fixedphi.NonRobustPhiFixedBrick
 import matrix.AttributedPhi
 import initialapproximationgenerator.fixedphi.UniformThetaApproximationGenerator
 import stoppingcriteria.MaxNumberOfIterationStoppingCriteria
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

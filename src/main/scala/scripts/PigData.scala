@@ -8,7 +8,7 @@ import builder.{FixedPhiBuilder, LDABuilder, PLSABuilder, RobustPLSABuilder}
 import qualitimeasurment.{PMI}
 import utils.{ModelParameters, TopicProcessing}
 import brick.fixedphi.NonRobustPhiFixedBrick
-import main.scala.Category
+import attribute.Category
 
 /**
  * Created with IntelliJ IDEA.

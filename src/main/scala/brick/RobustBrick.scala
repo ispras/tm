@@ -7,7 +7,7 @@ import matrix.{Background, AttributedPhi, Theta}
 import documents.Document
 import scala.collection.mutable
 import grizzled.slf4j.Logging
-import main.scala.AttributeType
+import attribute.AttributeType
 
 
 /**

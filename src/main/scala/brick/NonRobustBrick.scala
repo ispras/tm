@@ -6,7 +6,7 @@ import matrix.{AttributedPhi, Theta}
 import documents.Document
 import utils.ModelParameters
 import math.log
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

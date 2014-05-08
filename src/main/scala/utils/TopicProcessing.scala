@@ -3,7 +3,7 @@ package utils
 import matrix.{Ogre, AttributedPhi}
 import documents.Alphabet
 import java.io.FileWriter
-import main.scala.Category
+import attribute.Category
 
 
 /**

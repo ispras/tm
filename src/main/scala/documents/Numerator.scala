@@ -3,7 +3,7 @@ package documents
 import scala.collection.mutable
 import grizzled.slf4j.Logging
 import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

@@ -3,7 +3,7 @@ package initialapproximationgenerator
 import utils.ModelParameters
 import documents.Document
 import matrix.{AttributedPhi, Theta}
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

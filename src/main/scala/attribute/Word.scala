@@ -1,4 +1,4 @@
-package main.scala
+package attribute
 
 /**
  * Created with IntelliJ IDEA.

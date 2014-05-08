@@ -1,12 +1,10 @@
 package brick.fixedphi
 
 import utils.ModelParameters
-import matrix.{AttributedPhi, Theta}
-import documents.Document
 import regularizer.ZeroRegularizer
 import sparsifier.ZeroSparsifier
 import brick.AbstractPLSABrick
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

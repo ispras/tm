@@ -1,7 +1,7 @@
 package plsa
 
 import matrix.{Theta, AttributedPhi}
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

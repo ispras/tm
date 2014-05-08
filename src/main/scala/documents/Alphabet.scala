@@ -1,7 +1,7 @@
 package documents
 
 import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

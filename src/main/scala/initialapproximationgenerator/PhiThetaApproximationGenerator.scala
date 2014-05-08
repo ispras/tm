@@ -4,7 +4,7 @@ import documents.Document
 import matrix.{Theta, AttributedPhi}
 import utils.ModelParameters
 import scala.Predef._
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.

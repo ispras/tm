@@ -6,7 +6,7 @@ import java.io.File
 import builder.PLSABuilder
 import java.util.Random
 import utils.TopicProcessing
-import main.scala.Category
+import attribute.Category
 
 /**
  * Created with IntelliJ IDEA.

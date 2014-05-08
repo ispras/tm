@@ -8,7 +8,7 @@ import scala.io.Source
 import java.io.{FileInputStream, BufferedInputStream, File}
 import grizzled.slf4j.Logging
 import java.util.zip.GZIPInputStream
-import main.scala.AttributeType
+import attribute.AttributeType
 
 /**
  * Created with IntelliJ IDEA.
