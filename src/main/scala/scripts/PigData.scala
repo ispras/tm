@@ -6,7 +6,7 @@ import scala.io.Source
 import java.io.{FileWriter, File}
 import builder.{FixedPhiBuilder, LDABuilder, PLSABuilder, RobustPLSABuilder}
 import qualitimeasurment.{PMI}
-import utils.{ModelParameters, TopicProcessing}
+import utils.{ModelParameters, TopicHelper}
 import brick.fixedphi.NonRobustPhiFixedBrick
 import attribute.Category
 
@@ -47,13 +47,13 @@ object PigData extends App {
         val trainedModel = plsa.train(docs)
 
         println(trainedModel)
-        TopicProcessing.saveMatrix("/home/padre/tmp/Theta" + param, trainedModel.theta)
-        TopicProcessing.printAllTopics(10, trainedModel.phi(Category), alphabet)
+        TopicHelper.saveMatrix("/home/padre/tmp/Theta" + param, trainedModel.theta)
+        TopicHelper.printAllTopics(10, trainedModel.phi(Category), alphabet)
         println("train time " + (System.currentTimeMillis() * 0.001 - start / 1000))
 
         val fixedPhi = new FixedPhiBuilder(alphabet, docs, 100, trainedModel.phi).build()
         val fixedTheta = fixedPhi.train(docs).theta
-        TopicProcessing.saveMatrix("/home/padre/tmp/Theta_fixed" + param, fixedTheta)
+        TopicHelper.saveMatrix("/home/padre/tmp/Theta_fixed" + param, fixedTheta)
 
         val loadNGrams = System.currentTimeMillis()
         val pmi = PMI("/home/padre/arxiv/arxiv.unigram", "/home/padre/arxiv/arxiv.bigram.fltr10000.gz", alphabet, 10, Category, " ")

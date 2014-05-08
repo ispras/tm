@@ -3,7 +3,7 @@ package regularizer
 import gnu.trove.map.TObjectFloatMap
 import qualitimeasurment.{PMI, Bigram}
 import matrix.{ImmutableTheta, Theta, AttributedPhi}
-import utils.TopicProcessing
+import utils.TopicHelper
 import documents.Alphabet
 import attribute.AttributeType
 
@@ -33,7 +33,7 @@ class PMIRegularizer(private val parameter: Float,
     }
 
     private def processOneTopic(topicId: Int, phi: AttributedPhi) = {
-        val topWords = TopicProcessing.getTopWords(phi, topicId, n)
+        val topWords = TopicHelper.getTopWords(phi, topicId, n)
         var wordIndex = 0
         while(wordIndex < phi.numberOfColumns) {
             processOneWord(wordIndex, topicId, phi, topWords: Array[Int])

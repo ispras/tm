@@ -5,8 +5,8 @@ import scala.io.Source
 import java.io.File
 import builder.PLSABuilder
 import java.util.Random
-import utils.TopicProcessing
-import attribute.Category
+import utils.TopicHelper
+import attribute.{Word, Category}
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,9 +18,9 @@ import attribute.Category
 object QuickStart extends App{
 
     /**
-     * first of all we have to read textual main.scala.documents.
-     * Textual document is a sequence of words(String)
-     * We read textual main.scala.documents from a textual file, one document per line. Words are separated by space.
+     * first of all we have to read documents.TextualDocument
+     * that are sequences of words(Strings)
+     * We read TextualDocument from a textual file, one document per line. Words are separated by space.
      * Documents should be preprocessed.
      */
     def getTextualDocuments(): Iterator[TextualDocument] = {
@@ -40,7 +40,7 @@ object QuickStart extends App{
          * for example text in english, translation of this text to russian etc. If you document contain only one text
          * you may use main.scala.attribute Category
          */
-        val textualDocuments = wordsSequence.map(words => new TextualDocument(Map(Category -> words)))
+        val textualDocuments = wordsSequence.map(words => new TextualDocument(Map(Word("en") -> words)))
 
         /**
          * and now we return sequence of textual main.scala.documents
@@ -70,9 +70,9 @@ object QuickStart extends App{
      * to generate initial approximation
      */
     val numberOfTopics = 25
-    val numberOfIteration = 100 // number of iteration in EM algorithm
+    val numberOfIterations = 100 // number of iteration in EM algorithm
     val random = new Random() // java.util.Random
-    val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random,  numberOfIteration)
+    val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random,  numberOfIterations)
 
     /**
      * and now we build main.scala.plsa
@@ -80,20 +80,20 @@ object QuickStart extends App{
     val plsa  = builder.build()
 
     /**
-     * now we have main.scala.documents and model and we may train model
+     * now we have documents and model and we may train model
      */
     val trainedModel = plsa.train(documents)
 
     /**
-     * now we obtain main.scala.matrix of distribution of words by topics and we may see most popular words from each topic
+     * now we obtain matrix of distribution of words by topics and we may see most popular words from each topic
      */
     val n = 10 // number of top words to see
-    TopicProcessing.printAllTopics(n, trainedModel.phi(Category), alphabet)
+    TopicHelper.printAllTopics(n, trainedModel.phi(Category), alphabet)
 
     /**
-     * now we save main.scala.matrix Phi (words by topic ) into file examples/Phi
-     * and main.scala.matrix Theta (topic by document) in file examples/Theta
+     * now we save matrix Phi (words by topic ) into file examples/Phi
+     * and matrix Theta (topic by document) in file examples/Theta
      */
-    TopicProcessing.saveMatrix("examples/Phi", trainedModel.phi(Category))
-    TopicProcessing.saveMatrix("examples/Theta", trainedModel.theta)
+    TopicHelper.saveMatrix("examples/Phi", trainedModel.phi(Category))
+    TopicHelper.saveMatrix("examples/Theta", trainedModel.theta)
 }

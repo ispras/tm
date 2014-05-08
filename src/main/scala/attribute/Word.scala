@@ -16,3 +16,7 @@ final class Word(val lang: String) extends AttributeType {
 
     override def hashCode(): Int = classOf[Word].hashCode() + 13 * lang.hashCode
 }
+
+object Word {
+    def apply(lang: String) = new Word(lang)
+}
