@@ -1,4 +1,4 @@
-package matrix
+package ru.ispras.modis.matrix
 
 /**
  * Created with IntelliJ IDEA.

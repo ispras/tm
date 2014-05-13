@@ -1,7 +1,7 @@
 package attributes
 
 import org.scalatest.{FlatSpec, Matchers}
-import attribute.{Word, Category}
+import ru.ispras.modis.attribute.{Word, Category}
 
 /**
  * Created with IntelliJ IDEA.
