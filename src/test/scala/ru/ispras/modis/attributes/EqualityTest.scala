@@ -1,4 +1,4 @@
-package attributes
+package ru.ispras.modis.attributes
 
 import org.scalatest.{FlatSpec, Matchers}
 import ru.ispras.modis.attribute.{Word, Category}

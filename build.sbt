@@ -13,3 +13,5 @@ libraryDependencies += "log4j" % "log4j" % "1.2.14"
 resolvers +="Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
 libraryDependencies += "net.sf.trove4j" % "trove4j" % "3.0.3"
+
+libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
