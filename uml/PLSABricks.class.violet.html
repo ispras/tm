@@ -40,12 +40,12 @@
         <text>AbstractPLSABrick</text>
       </name>
       <attributes id="10" justification="0" size="4" underlined="false">
-        <text>- regularizer : Regularizer
+        <text>- main.regularizer : Regularizer
 - phiSparsifier : Sparsifier
 - phi: AttributedPhi</text>
       </attributes>
       <methods id="11" justification="0" size="4" underlined="false">
-        <text># makeIteration(theta: StochasticMatrix, documents : Seq[Document], thetaCnt : Matrix, iterationCnt : Int) : Float
+        <text># makeIteration(theta: StochasticMatrix, main.documents : Seq[Document], thetaCnt : Matrix, iterationCnt : Int) : Float
 # getFixedPhiVersion : PLSABrickPhiFixed
 # getPhi : StochasticMatrix</text>
       </methods>
@@ -109,8 +109,8 @@
         <text>AbstractPLSABrickFactory</text>
       </name>
       <attributes id="33" justification="0" size="4" underlined="false">
-        <text>- attributeType : attribute.AttributeType
-- regularizer : Regularizer
+        <text>- attributeType : main.scala.AttributeType
+- main.regularizer : Regularizer
 - phiSparsifier : Sparsifier
 - initApprox : InitialApproximationGeneratorPhi</text>
       </attributes>
@@ -176,7 +176,7 @@
         <text>PLSABrickPhiFixed</text>
       </name>
       <attributes id="56" justification="0" size="4" underlined="false">
-        <text>- regularizer : Regularizer</text>
+        <text>- main.regularizer : Regularizer</text>
       </attributes>
       <methods id="57" justification="0" size="4" underlined="false">
         <text># makeIteration(theta: Array[Float], document: Document, thetaCnt : Array[Float]) : Unit
@@ -251,7 +251,7 @@
       </name>
       <attributes id="84" justification="0" size="4" underlined="false">
         <text>+ phi : StochasticMatrix
-+ attributeType : attribute.AttributeType</text>
++ attributeType : main.scala.AttributeType</text>
       </attributes>
       <methods id="85" justification="0" size="4" underlined="false">
         <text></text>

@@ -81,14 +81,17 @@ object QuickStart extends App{
 
     /**
      * now we have documents and model and we may train model. Our model take into input sequence of documents and
-     * perform stochastic matrix decomposition F ~ Phi * Theta where Phi is distribution of words by topics and
-     * Theta is distribution of document by topic. The result would be saved in TrainedModel
+     * perform stochastic matrix decomposition F ~ Phi * Theta where Phi is distribution of words by topics, thus
+     * the number in the intersects of i-th row and j-th column show the probability to generate word j from topic i.
+     * Theta is distribution of document by topic thus the number in the intersects of i-th row and j-th column show
+     * the weight of topic j in document i.
+     * The result would be saved in TrainedModel
      */
     val trainedModel = plsa.train(documents)
 
     /**
      * now we obtain matrix of distribution of words by topics and we may see most popular words from each topic
-     * For this porpose we use util printAllTopics. It print n words with the highest probability from every topic.
+     * For this purpose we use util printAllTopics. It print n words with the highest probability from every topic.
      */
     val n = 10 // number of top words to see
     TopicHelper.printAllTopics(n, trainedModel.phi(Category), alphabet)
@@ -99,4 +102,5 @@ object QuickStart extends App{
      */
     TopicHelper.saveMatrix("examples/Phi", trainedModel.phi(Category))
     TopicHelper.saveMatrix("examples/Theta", trainedModel.theta)
+
 }
