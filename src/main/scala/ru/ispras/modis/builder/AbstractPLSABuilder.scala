@@ -29,32 +29,32 @@ abstract class AbstractPLSABuilder(protected val numberOfTopics: Int,
     protected val modelParameters = new ModelParameters(numberOfTopics, alphabet.numberOfWords())
 
     protected var initialApproximationGenerator: InitialApproximationGenerator = new RandomInitialApproximationGenerator(new Random)
-    def setInitialApproximationGenerator(newValue: InitialApproximationGenerator) {
+    def setInitialApproximationGenerator(newValue: InitialApproximationGenerator) = {
         initialApproximationGenerator = newValue
         this
     }
 
 
     protected var stoppingCriteria: StoppingCriteria = new MaxNumberOfIterationStoppingCriteria(100)
-    def setStoppingCriteria (newValue: StoppingCriteria) {
+    def setStoppingCriteria (newValue: StoppingCriteria) = {
         stoppingCriteria = newValue
         this
     }
     
     protected var thetaSparsifier: Sparsifier = new ZeroSparsifier()
-    def setThetaSparsifier (newValue: Sparsifier) {
+    def setThetaSparsifier (newValue: Sparsifier) = {
         thetaSparsifier = newValue
         this
     }
     
     protected var phiSparsifier: Sparsifier = new ZeroSparsifier()
-    def setPhiSparsifier (newValue: Sparsifier) {
+    def setPhiSparsifier (newValue: Sparsifier) = {
         phiSparsifier = newValue
         this
     }
     
     protected var regularizer: Regularizer = new ZeroRegularizer()
-    def setRegularizer(newValue: Regularizer) {
+    def setRegularizer(newValue: Regularizer) = {
         regularizer = newValue
         this
     }
