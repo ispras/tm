@@ -9,13 +9,13 @@ import ru.ispras.modis.matrix.MatrixForSparsifier
  * Time: 15:55
  */
 /**
- * replace value in main.scala.matrix by zero, but do not sparsify more than maxNumberOfZeroised and only if number of currant
+ * replace value in matrix by zero, but do not sparsify more than maxNumberOfZeroised and only if number of currant
  * iteration greater or equal than startIteration
- * @param threshold if main.scala.matrix element less than this threshold it may be replaced by zero
+ * @param threshold if matrix element less than this threshold it may be replaced by zero
  * @param startIteration do not do sparsification before this iteration
  * @param maxNumberOfZeroised maximum number of elements, that may be replaced by zero in one row.
  */
-class ThresholdSparcifier(private val threshold : Float, private val startIteration : Int, private val maxNumberOfZeroised : Int) extends Sparsifier{
+class ThresholdSparsifier(private val threshold : Float, private val startIteration : Int, private val maxNumberOfZeroised : Int) extends Sparsifier{
 
     /**
      * decide is given nest should be set to zero
@@ -26,9 +26,9 @@ class ThresholdSparcifier(private val threshold : Float, private val startIterat
     protected def isToBeZeroised(value: Float, numIter: Int): Boolean = (value < threshold) && (numIter > startIteration)
 
     /**
-     * sparsify given main.scala.matrix. Do not sparsify more than maxNumberOfZeroised and only if number of currant iteration greater or
+     * sparsify given matrix. Do not sparsify more than maxNumberOfZeroised and only if number of currant iteration greater or
      * equal than startIteration
-     * @param matrix input main.scala.matrix (phi or theta) with method setZero
+     * @param matrix input matrix (phi or theta) with method setZero
      * @param numIter serial number of currant iteration
      */
     def apply(matrix: MatrixForSparsifier, numIter : Int): Unit = {

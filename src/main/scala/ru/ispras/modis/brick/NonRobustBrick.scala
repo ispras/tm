@@ -16,17 +16,17 @@ import ru.ispras.modis.attribute.AttributeType
  */
 /**
  * 
- * @param regularizer main.scala.regularizer to apply
- * @param phiSparsifier main.scala.sparsifier for phi main.scala.matrix
- * @param attribute main.scala.attribute of main.scala.brick (process only phi main.scala.matrix with corresponding main.scala.attribute)
+ * @param regularizer regularizer to apply
+ * @param phiSparsifier sparsifier for phi matrix
+ * @param attribute attribute of brick (process only phi matrix with corresponding attribute)
  * @param modelParameters number of topics and number of words
  */
 class NonRobustBrick(regularizer: Regularizer, phiSparsifier: Sparsifier, attribute: AttributeType, modelParameters: ModelParameters) extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters) {
     /**
      *
-     * @param theta main.scala.matrix of distribution of main.scala.documents by topics
-     * @param phi distribution of words by topics. Attribute of phi main.scala.matrix should corresponds with main.scala.attribute of main.scala.brick
-     * @param documents seq of main.scala.documents to process
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
+     * @param documents seq of documents to process
      * @param iterationCnt number of iteration
      * @return log likelihood of observed collection. log(P(D\ theta, phi))
      */
@@ -43,10 +43,10 @@ class NonRobustBrick(regularizer: Regularizer, phiSparsifier: Sparsifier, attrib
     }
 
     /**
-     * calculate n_dwt for given document and update expectation main.scala.matrix
+     * calculate n_dwt for given document and update expectation matrix
      * @param document document to process
-     * @param theta main.scala.matrix of distribution of main.scala.documents by topics
-     * @param phi distribution of words by topics. Attribute of phi main.scala.matrix should corresponds with main.scala.attribute of main.scala.brick
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
      * @return log likelihood of observed document. log(P(d\ theta, phi))
      */
     private def processSingleDocument(document: Document, theta: Theta, phi: AttributedPhi) = {
@@ -58,12 +58,12 @@ class NonRobustBrick(regularizer: Regularizer, phiSparsifier: Sparsifier, attrib
     }
 
     /**
-     * calculate n_dwt for given word in given document and update expectation main.scala.matrix
+     * calculate n_dwt for given word in given document and update expectation matrix
      * @param wordIndex serial number of words in alphabet
      * @param numberOfWords number of words wordIndex in document
      * @param documentIndex serial number of document in collection
-     * @param theta main.scala.matrix of distribution of main.scala.documents by topics
-     * @param phi distribution of words by topics. Attribute of phi main.scala.matrix should corresponds with main.scala.attribute of main.scala.brick
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
      * @return log likelihood to observe word wordIndex in document documentIndex
      */
     protected def processOneWord(wordIndex: Int, numberOfWords: Int, documentIndex: Int, phi: AttributedPhi, theta: Theta): Double = {

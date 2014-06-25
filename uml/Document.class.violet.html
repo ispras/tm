@@ -40,11 +40,11 @@
         <text>Document</text>
       </name>
       <attributes id="10" justification="0" size="4" underlined="false">
-        <text>- attributes : Map[attribute.AttributeType, Seq[Int, Int]]</text>
+        <text>- attributes : Map[main.scala.AttributeType, Seq[Int, Int]]</text>
       </attributes>
       <methods id="11" justification="0" size="4" underlined="false">
         <text>+ getAttributes(attributeType: AttributeType): Array[(Int, Short)]
-+ contains(attribute: AttributeType): Boolean
++ contains(main.attribute: AttributeType): Boolean
 + numberOfWords(): Int</text>
       </methods>
     </ClassNode>
@@ -70,7 +70,7 @@
         <text>TextualDocument</text>
       </name>
       <attributes id="19" justification="0" size="4" underlined="false">
-        <text>- attributes : Map[attribute.AttributeType, Seq[String]]</text>
+        <text>- attributes : Map[main.scala.AttributeType, Seq[String]]</text>
       </attributes>
       <methods id="20" justification="0" size="4" underlined="false">
         <text></text>
@@ -110,11 +110,11 @@
 - wordsIndexMap: Map[AttributeType, TObjectIntHashMap[String]]</text>
       </attributes>
       <methods id="34" justification="0" size="4" underlined="false">
-        <text>+ apply(at : attribute.AttributeType, index : Int) : String
+        <text>+ apply(at : main.scala.AttributeType, index : Int) : String
 + numberOfWords(): Map[AttributeType, Int] 
-+ numberOfWords(attribute: AttributeType):  Int
-+ contain(attribute: AttributeType, word: String): Boolean
-+ getIndex(attribute: AttributeType, word: String): Option[Int]
++ numberOfWords(main.attribute: AttributeType):  Int
++ contain(main.attribute: AttributeType, word: String): Boolean
++ getIndex(main.attribute: AttributeType, word: String): Option[Int]
 </text>
       </methods>
     </ClassNode>

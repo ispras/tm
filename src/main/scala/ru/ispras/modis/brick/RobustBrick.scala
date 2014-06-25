@@ -6,8 +6,8 @@ import ru.ispras.modis.utils.ModelParameters
 import ru.ispras.modis.matrix.{Background, AttributedPhi, Theta}
 import ru.ispras.modis.documents.Document
 import scala.collection.mutable
-import grizzled.slf4j.Logging
 import ru.ispras.modis.attribute.AttributeType
+import grizzled.slf4j.Logging
 
 
 /**
@@ -18,9 +18,9 @@ import ru.ispras.modis.attribute.AttributeType
  */
 /**
  * 
- * @param regularizer main.scala.regularizer to apply
- * @param phiSparsifier main.scala.sparsifier for phi main.scala.matrix
- * @param attribute main.scala.attribute of main.scala.brick (process only phi main.scala.matrix with corresponding main.scala.attribute)
+ * @param regularizer regularizer to apply
+ * @param phiSparsifier sparsifier for phi matrix
+ * @param attribute attribute of brick (process only phi matrix with corresponding attribute)
  * @param modelParameters number of topics and number of words
  * @param noiseParameters weight of noise and background
  * @param background distribution of common words
@@ -41,9 +41,9 @@ class RobustBrick private(regularizer: Regularizer,
 
     /**
      * 
-     * @param theta main.scala.matrix of distribution of main.scala.documents by topics
-     * @param phi distribution of words by topics. Attribute of phi main.scala.matrix should corresponds with main.scala.attribute of main.scala.brick
-     * @param documents seq of main.scala.documents to process
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
+     * @param documents seq of documents to process
      * @param iterationCnt number of iteration
      * @return log likelihood of observed collection. log(P(D\ theta, phi))
      */
@@ -60,10 +60,10 @@ class RobustBrick private(regularizer: Regularizer,
     }
 
     /**
-     * calculate n_dwt for given document and update expectation main.scala.matrix
+     * calculate n_dwt for given document and update expectation matrix
      * @param document document to process
-     * @param theta main.scala.matrix of distribution of main.scala.documents by topics
-     * @param phi distribution of words by topics. Attribute of phi main.scala.matrix should corresponds with main.scala.attribute of main.scala.brick
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
      * @return log likelihood of observed document. log(P(d\ theta, phi))
      */
     private def processSingleDocument(document: Document,
@@ -79,12 +79,12 @@ class RobustBrick private(regularizer: Regularizer,
     }
 
     /**
-     * calculate n_dwt for given word in given document and update expectation main.scala.matrix
+     * calculate n_dwt for given word in given document and update expectation matrix
      * @param wordIndex serial number of words in alphabet
      * @param numberOfWords number of words wordIndex in document
      * @param documentIndex serial number of document in collection
-     * @param theta main.scala.matrix of distribution of main.scala.documents by topics
-     * @param phi distribution of words by topics. Attribute of phi main.scala.matrix should corresponds with main.scala.attribute of main.scala.brick
+     * @param theta matrix of distribution of documents by topics
+     * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
      * @return log likelihood to observe word wordIndex in document documentIndex
      */
     private def processOneWord(wordIndex: Int,
@@ -130,12 +130,12 @@ class RobustBrick private(regularizer: Regularizer,
 object RobustBrick extends  Logging {
     /**
      * generate noise and background and put it all together in class RobustBrick
-     * @param regularizer main.scala.regularizer for phi
-     * @param phiSparsifier main.scala.sparsifier for phi
-     * @param attribute type of main.scala.attribute
+     * @param regularizer regularizer for phi
+     * @param phiSparsifier sparsifier for phi
+     * @param attribute type of attribute
      * @param modelParameters number of words and number of topics
      * @param noiseParameters weight of noise and background
-     * @param documents sequence of main.scala.documents
+     * @param documents sequence of documents
      * @return RobustBrick
      */
     def apply(regularizer: Regularizer,
@@ -152,8 +152,8 @@ object RobustBrick extends  Logging {
 
     /**
      * generate initial noise for every document
-     * @param documents sequence of main.scala.documents
-     * @param attribute type of main.scala.attribute
+     * @param documents sequence of documents
+     * @param attribute type of attribute
      * @return Array of noise
      */
     private def generateNoise(documents: Seq[Document], attribute: AttributeType): Array[mutable.Map[Int, Float]] = {

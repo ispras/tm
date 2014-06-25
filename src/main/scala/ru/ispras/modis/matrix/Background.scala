@@ -12,8 +12,8 @@ import ru.ispras.modis.attribute.AttributeType
  */
 /**
  * hold distribution of words by background and expectation of words, produced by background
- * @param attribute type of main.scala.attribute
- * @param ogre anonymous ogre, hold expectation and stochastic main.scala.matrix with one row
+ * @param attribute type of attribute
+ * @param ogre anonymous ogre, hold expectation and stochastic matrix with one row
  */
 class Background private(val attribute: AttributeType, private val ogre: Ogre) {
     /**
@@ -24,7 +24,7 @@ class Background private(val attribute: AttributeType, private val ogre: Ogre) {
     def probability(wordIndex: Int): Float = ogre.probability(0, wordIndex)
 
     /**
-     * add value to corresponding element of expectation main.scala.matrix
+     * add value to corresponding element of expectation matrix
      * @param wordIndex word serial number
      * @param value value to add
      */
@@ -38,15 +38,15 @@ class Background private(val attribute: AttributeType, private val ogre: Ogre) {
     def expectation(wordIndex: Int): Float = ogre.expectation(0, wordIndex)
 
     /**
-     * dump values from expectation main.scala.matrix to stochastic main.scala.matrix,
-     * perform normalisation of stochastic main.scala.matrix,
-     * replace all values in expectation main.scala.matrix by zeros
+     * dump values from expectation matrix to stochastic matrix,
+     * perform normalisation of stochastic matrix,
+     * replace all values in expectation matrix by zeros
      */
     def dump() = ogre.dump()
 
     /**
-     * number of words is equal to number of columns in main.scala.matrix
-     * @return number of columns in main.scala.matrix
+     * number of words is equal to number of columns in matrix
+     * @return number of columns in matrix
      */
     def numberOfWords = ogre.numberOfColumns
 }
@@ -58,7 +58,7 @@ class Background private(val attribute: AttributeType, private val ogre: Ogre) {
 object Background {
     /**
      * construct background
-     * @param attribute main.scala.attribute type
+     * @param attribute attribute type
      * @param modelParameters model parameters hold information about number of words.
      * @return instance of class background
      */

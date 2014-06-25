@@ -19,11 +19,11 @@ import ru.ispras.modis.attribute.AttributeType
 class RandomInitialApproximationGenerator(private val random: Random) extends PhiThetaApproximationGenerator {
 
     /**
-     * full expectation main.scala.matrix by the random numbers from uniform distribution
+     * full expectation matrix by the random numbers from uniform distribution
      * @param parameters model parameters
-     * @param documents sequence of main.scala.documents
-     * @param theta main.scala.matrix with zero values in expectation and stochastic main.scala.matrix
-     * @param phi main.scala.matrix with zero values in expectation and stochastic main.scala.matrix
+     * @param documents sequence of documents
+     * @param theta matrix with zero values in expectation and stochastic matrix
+     * @param phi matrix with zero values in expectation and stochastic matrix
      */
     protected def fillMatrix(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: Map[AttributeType, AttributedPhi]){
         fullSingleMatrix(theta)

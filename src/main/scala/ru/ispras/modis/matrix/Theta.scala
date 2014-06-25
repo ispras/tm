@@ -8,7 +8,7 @@ package ru.ispras.modis.matrix
  * Time: 18:56
  */
 /**
- * contain distribution of main.scala.documents by topic. row is a document, column is a topic.
+ * contain distribution of documents by topic. row is a document, column is a topic.
  * @param expectationMatrix hold expectation from E-step
  * @param stochasticMatrix hold probabilities, so sum of any row is equal to 1 and every element non-negative
  */
@@ -31,13 +31,13 @@ class Theta private(expectationMatrix: Array[Array[Float]], stochasticMatrix: Ar
 }
 
 /**
- * construct theta by given expectation main.scala.matrix
+ * construct theta by given expectation matrix
  */
 object Theta {
     /**
-     * construct theta by given expectation main.scala.matrix
-     * @param expectationMatrix expectation main.scala.matrix
-     * @return main.scala.matrix Theta
+     * construct theta by given expectation matrix
+     * @param expectationMatrix expectation matrix
+     * @return matrix Theta
      */
     def apply(expectationMatrix: Array[Array[Float]]) = {
         val stochasticMatrix = Ogre.stochasticMatrix(expectationMatrix)
