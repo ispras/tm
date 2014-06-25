@@ -93,12 +93,12 @@ class PMI(private val unigrams: TIntFloatHashMap,
 
     /**
      * calculate average pmi for given words. average may be mean or median
-     * @param phi main.scala.matrix of distribution of words by topic
+     * @param phi matrix of distribution of words by topic
      * @param average function to calculate a
      * @return average pmi for pairs of given words
      */
     private def averegePMI(phi: AttributedPhi, average:Array[Double] => Double) = {
-        require(attribute == phi.attribute, "type of main.scala.attribute in phi and in this does not correspond")
+        require(attribute == phi.attribute, "type of attribute in phi and in this does not correspond")
         (0 until phi.numberOfRows).map{ topicIndex =>
             val topWords = getTopWords((0 until phi.numberOfColumns).map(wordIndex => phi.probability(topicIndex, wordIndex)).toArray)
             (topicIndex, average(pmi(topWords)))
@@ -107,14 +107,14 @@ class PMI(private val unigrams: TIntFloatHashMap,
 
     /**
      *  calculate mean pmi for given words.
-     * @param phi main.scala.matrix of distribution of words by topic
+     * @param phi matrix of distribution of words by topic
      * @return mean pmi for pairs of given words
      */
     def meanPMI(phi: AttributedPhi) = averegePMI(phi, mean)
 
     /**
      *  calculate median pmi for given words.
-     * @param phi main.scala.matrix of distribution of words by topic
+     * @param phi matrix of distribution of words by topic
      * @return median pmi for pairs of given words
      */
     def medianPMI(phi: AttributedPhi) = averegePMI(phi, median)
@@ -140,7 +140,7 @@ object PMI extends Logging{
      * @param pathToBigrams path to file with bigrams
      * @param alphabet alphabet to map word to index
      * @param n number of top words to take to calculate pmi
-     * @param attribute main.scala.attribute type
+     * @param attribute attribute type
      * @param sep separator in bigrams and unigrams file
      * @return instance of class PMI
      */
@@ -154,7 +154,7 @@ object PMI extends Logging{
      *
      * @param pathToUnigrams path to file with unigrams
      * @param alphabet alphabet to map word to index
-     * @param attribute main.scala.attribute type
+     * @param attribute attribute type
      * @param sep separator in bigrams file
      * @return trove map with unigrams weight
      */
@@ -184,7 +184,7 @@ object PMI extends Logging{
      *
      * @param pathToBigrams path to file with bigrams
      * @param alphabet alphabet to map word to index
-     * @param attribute main.scala.attribute type
+     * @param attribute attribute type
      * @param sep separator in bigrams  file
      * @return trove map from bigram (two words, replaced by serial number and placed in set) to the number of occurrence in collection
      */

@@ -17,12 +17,12 @@ import ru.ispras.modis.attribute.AttributeType
  */
 /**
  * main part of all project. It class put all bricks together and process training algorithm
- * @param bricks plsaBrick to process one main.scala.attribute
+ * @param bricks plsaBrick to process one attribute
  * @param stoppingCriteria check is it time to stop
- * @param thetaSparsifier sparsify main.scala.matrix theta
- * @param regularizer main.scala.regularizer, for example direchlet
- * @param phi words by topic distribution main.scala.matrix
- * @param theta document by topic distribution main.scala.matrix
+ * @param thetaSparsifier sparsify matrix theta
+ * @param regularizer regularizer, for example direchlet
+ * @param phi words by topic distribution matrix
+ * @param theta document by topic distribution matrix
  */
 class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
            private val stoppingCriteria: StoppingCriteria,
@@ -32,9 +32,9 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
            private val theta: Theta) extends Logging {
 
     /**
-     * take sequence of main.scala.documents into input and train model on it
-     * @param documents sequence of main.scala.documents (after numerator)
-     * @return trained model (main.scala.matrix phi and theta)
+     * take sequence of documents into input and train model on it
+     * @param documents sequence of documents (after numerator)
+     * @return trained model (matrix phi and theta)
      */
     def train(documents: Seq[Document]): TrainedModel = {
         val collectionLength = documents.foldLeft(0) {
@@ -64,7 +64,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
      * perform iteration
      * @param iterationCnt serial number of iteration
      * @param collectionLength number of words in collection
-     * @param documents sequence of input main.scala.documents
+     * @param documents sequence of input documents
      * @return perplexity of model after iteration
      */
     protected def makeIteration(iterationCnt: Int, collectionLength: Int, documents: Seq[Document]) = {
@@ -80,7 +80,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
     }
 
     /**
-     * apply main.scala.regularizer to main.scala.matrix theta
+     * apply regularizer to matrix theta
      */
     private def applyRegularizer() {
         regularizer.regularizeTheta(phi, theta)

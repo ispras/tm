@@ -14,7 +14,7 @@ import ru.ispras.modis.attribute.AttributeType
  * @param expectationMatrix hold expectation from E-step, number of words w, produced by topic t. n_tw
  *                          t is index of row, w is index of column
  * @param stochasticMatrix hold probabilities to generate words w from topic t.
- * @param attribute main.scala.attribute type e.g. language
+ * @param attribute attribute type e.g. language
  */
 class AttributedPhi private(expectationMatrix: Array[Array[Float]],
                             stochasticMatrix: Array[Array[Float]],

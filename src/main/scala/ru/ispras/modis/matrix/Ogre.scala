@@ -10,19 +10,19 @@ import math.max
  * Time: 18:08
  */
 /**
- * hold two matrices, distribution of probabilities and expectation main.scala.matrix. Matrices should have the same dimension
+ * hold two matrices, distribution of probabilities and expectation matrix. Matrices should have the same dimension
  * @param expectationMatrix hold expectation from E-step
  * @param stochasticMatrix hold probabilities, so sum of any row is equal to 1 and every element non-negative
  */
 abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]]) {
     require(expectationMatrix.length == stochasticMatrix.length && expectationMatrix.head.length == stochasticMatrix.head.length,
-        "stochastic and expectation main.scala.matrix should have the same number of rows and number of columns")
+        "stochastic and expectation matrix should have the same number of rows and number of columns")
 
     /**
      *
      * @param rowIndex index of row
      * @param columnIndex index of column
-     * @return element from interceptions of rowIndex row and columnIndex column of stochastic main.scala.matrix
+     * @return element from interceptions of rowIndex row and columnIndex column of stochastic matrix
      */
     def probability(rowIndex: Int, columnIndex: Int) = stochasticMatrix(rowIndex)(columnIndex)
 
@@ -30,12 +30,12 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      *
      * @param rowIndex index of row
      * @param columnIndex index of column
-     * @return element from interceptions of rowIndex row and columnIndex column of expectationMatrix main.scala.matrix
+     * @return element from interceptions of rowIndex row and columnIndex column of expectationMatrix matrix
      */
     def expectation(rowIndex: Int, columnIndex: Int) = expectationMatrix(rowIndex)(columnIndex)
 
     /**
-     * add value to (rowIndex, columnIndex) of expectation main.scala.matrix
+     * add value to (rowIndex, columnIndex) of expectation matrix
      * @param rowIndex index of row
      * @param columnIndex index of column
      * @param value value to add
@@ -50,7 +50,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
 
 
     /**
-     * copy values from expectation main.scala.matrix to stochastic main.scala.matrix, perform normalization of stochastic main.scala.matrix, replace every
+     * copy values from expectation matrix to stochastic matrix, perform normalization of stochastic matrix, replace every
      * element in expectationMatrix by zero.
      */
     def dump() {
@@ -59,7 +59,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
     }
 
     /**
-     * some of elements in main.scala.matrix may be replaced by zero without drop of quality of model. This method do this replacement.
+     * some of elements in matrix may be replaced by zero without drop of quality of model. This method do this replacement.
      * @param sparsifier object of class Sparsifier. Decide what to replace
      * @param numberOfIteration nuber of iteration when the method was called
      */
@@ -72,7 +72,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
     override def toString = stochasticMatrix.map(_.mkString(", ")).mkString("\n")
 
     /**
-     * perform normalization of stochastic main.scala.matrix e.g. multiply every row by 1 / (som of row)
+     * perform normalization of stochastic matrix e.g. multiply every row by 1 / (som of row)
      */
     private def normalise() {
         var columnIndex = 0
@@ -91,7 +91,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
 
 
     /**
-     * copy values from expectation main.scala.matrix to stochastic main.scala.matrix and perform normalization. Does not change
+     * copy values from expectation matrix to stochastic matrix and perform normalization. Does not change
      * expectationMatrix
      */
     private def copyToStochasticMatrix() {
@@ -126,12 +126,12 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
 }
 
 /**
- * companion object help to build appropriate stochastic main.scala.matrix for given expectation main.scala.matrix
+ * companion object help to build appropriate stochastic matrix for given expectation matrix
  */
 object Ogre {
     /**
-     * main.scala.matrix with size, corresponds to given main.scala.matrix
-     * @param expectationMatrix given expectation main.scala.matrix
+     * matrix with size, corresponds to given matrix
+     * @param expectationMatrix given expectation matrix
      * @return Array[Array[Float] ] fill by zeros
      */
     def stochasticMatrix(expectationMatrix: Array[Array[Float]]) = {

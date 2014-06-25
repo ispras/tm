@@ -7,7 +7,7 @@ package ru.ispras.modis.stoppingcriteria
  * Time: 17:52
  */
 /**
- *
+ * this stopping criterion execute a fixed number of iteration and stop
  * @param maxNumberOfIteration number of iteration to stop
  */
 class MaxNumberOfIterationStoppingCriteria(private val maxNumberOfIteration: Int) extends StoppingCriteria {

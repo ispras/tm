@@ -11,7 +11,7 @@ import ru.ispras.modis.attribute.AttributeType
 /**
  * class hold information about different model parameters
  * @param numberOfTopics number of topic
- * @param numberOfWords it is map main.scala.attribute to number of unique words, corresponding to this main.scala.attribute.
+ * @param numberOfWords it is map attribute to number of unique words, corresponding to this attribute.
  */
 class ModelParameters(val numberOfTopics: Int, val numberOfWords: Map[AttributeType, Int]) {
     /**

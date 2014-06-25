@@ -10,8 +10,8 @@ import ru.ispras.modis.attribute.AttributeType
  * Time: 16:51
  */
 /**
- * store distribution of words by topic and main.scala.documents by topics
- * @param phi distribution of words by topic for every main.scala.attribute
+ * store distribution of words by topic and documents by topics
+ * @param phi distribution of words by topic for every attribute
  * @param theta distribution of document by topic
  */
 class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta)

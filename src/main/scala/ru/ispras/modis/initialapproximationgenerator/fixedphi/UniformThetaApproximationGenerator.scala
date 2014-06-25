@@ -16,8 +16,8 @@ class UniformThetaApproximationGenerator(phi: Map[AttributeType, AttributedPhi])
      * this method full matrices theta by some initial values.
      * !WARNING! do NOT do dump before return matrices
      * @param parameters model parameters
-     * @param documents sequence of main.scala.documents
-     * @param theta main.scala.matrix with zero values in expectation and stochastic main.scala.matrix
+     * @param documents sequence of documents
+     * @param theta matrix with zero values in expectation and stochastic matrix
      */
     protected def fullMatrixTheta(parameters: ModelParameters, documents: Seq[Document], theta: Theta): Unit = {
         0.until(theta.numberOfRows).foreach(row => 0.until(theta.numberOfColumns).foreach(column => theta.addToExpectation(row, column, 1)))

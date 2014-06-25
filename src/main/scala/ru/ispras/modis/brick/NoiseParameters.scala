@@ -7,7 +7,7 @@ package ru.ispras.modis.brick
  * Time: 19:45
  */
 /**
- * store parameters for robust main.scala.plsa. Background is a common words which can be explain by any topic
+ * store parameters for robust plsa. Background is a common words which can be explain by any topic
  * noise is a very specific words, which can not be explain by any topic
  * @param gamma noise weight.
  * @param eps background weight
