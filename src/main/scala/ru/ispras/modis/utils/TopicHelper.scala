@@ -2,8 +2,10 @@ package ru.ispras.modis.utils
 
 import ru.ispras.modis.matrix.{Ogre, AttributedPhi}
 import ru.ispras.modis.documents.Alphabet
-import java.io.FileWriter
+import java.io.{File, FileWriter}
 import ru.ispras.modis.attribute.Category
+
+import scala.io.Source
 
 
 /**
@@ -31,4 +33,7 @@ object TopicHelper {
         out.write(phi)
         out.close()
     }
+
+    def loadMatrix(path: String): Array[Array[Float]] =
+        Source.fromFile(new File(path)).getLines().map(_.split(", ").map(_.toFloat)).toArray
 }
