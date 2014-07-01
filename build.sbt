@@ -16,7 +16,7 @@ resolvers +="Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/reposi
 
 libraryDependencies += "net.sf.trove4j" % "trove4j" % "3.0.3"
 
-libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
+libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.0" % "test"
 
 libraryDependencies += "org.mockito" % "mockito-core" % "1.8.5"
 
