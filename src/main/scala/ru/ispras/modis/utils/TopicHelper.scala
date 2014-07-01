@@ -34,6 +34,11 @@ object TopicHelper {
         out.close()
     }
 
+    /**
+     *
+     * @param path
+     * @return matrix of size numberOfTopics*NumberOfWords
+     */
     def loadMatrix(path: String): Array[Array[Float]] =
         Source.fromFile(new File(path)).getLines().map(_.split(", ").map(_.toFloat)).toArray
 }
