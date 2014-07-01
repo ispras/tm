@@ -1,7 +1,7 @@
 package ru.ispras.modis.tm.scripts
 
 import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
-import ru.ispras.modis.tm.plsa.TrainedModel
+import ru.ispras.modis.tm.plsa.{TrainedModelSerializer, TrainedModel}
 import scala.io.Source
 import java.io.File
 import ru.ispras.modis.tm.builder.PLSABuilder
@@ -114,11 +114,11 @@ object QuickStart extends App{
      * and now we can serialize trainedModel using kryo. Kryo saves objects in binary format, so do not try to open
      * model by textual redactor.
      */
-    TrainedModel.save(trainedModel, "examples/model")
+    TrainedModelSerializer.save(trainedModel, "examples/model")
 
     /**
      * and now we may load model
      */
-    TrainedModel.load("examples/model").getPhi.probability(1, 1)
+    TrainedModelSerializer.load("examples/model").getPhi.probability(1, 1)
 
 }

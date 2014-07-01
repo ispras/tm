@@ -5,8 +5,8 @@ import java.io.{FileInputStream, FileOutputStream}
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.io.{Input, Output}
 import org.objenesis.strategy.StdInstantiatorStrategy
-import ru.ispras.modis.tm.matrix.{Theta, AttributedPhi}
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category, AttributeType}
+import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
+import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,21 +25,3 @@ class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta)
     def getPhi = phi(DefaultAttributeType)
 }
 
-object TrainedModel {
-    def save(model: TrainedModel, path: String) {
-        val kryo = new Kryo
-        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
-        val output = new Output(new FileOutputStream(path))
-        kryo.writeObject(output, model)
-        output.close()
-    }
-
-    def load(path: String) = {
-        val kryo = new Kryo
-        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy)
-        val input = new Input(new FileInputStream(path))
-        val trainedModel = kryo.readObject(input, classOf[TrainedModel])
-        input.close()
-        trainedModel
-    }
-}
