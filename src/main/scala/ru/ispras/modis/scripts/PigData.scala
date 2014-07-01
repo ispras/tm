@@ -3,6 +3,8 @@ package ru.ispras.modis.scripts
 import grizzled.slf4j.Logging
 import ru.ispras.modis.documents.{TextualDocument, Numerator}
 import java.util.Random
+import ru.ispras.modis.plsa.TrainedModel
+
 import scala.io.Source
 import java.io.{FileWriter, File}
 import ru.ispras.modis.builder.{FixedPhiBuilder, LDABuilder, PLSABuilder, RobustPLSABuilder}
@@ -30,7 +32,7 @@ object PigData extends App with Logging {
             0.05f,
             param,
             random,
-            100).build()
+            1).build()
 
 
         (plsa, docs, alphabet)
@@ -38,7 +40,7 @@ object PigData extends App with Logging {
 
     def doIt(param: Float) {
         val readDataTime = System.currentTimeMillis()
-        val (plsa, docs, alphabet) = getDocs("/mnt/first/arxivprepr/res.nonr/", param)
+        val (plsa, docs, alphabet) = getDocs("examples/arxiv.part", param)
 
         println("number of words " + alphabet.numberOfWords()(Category))
         println(" readDataTime " + (System.currentTimeMillis() * 0.001 - readDataTime / 1000))

@@ -1,7 +1,7 @@
 package ru.ispras.modis.documents
 
 import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
-import ru.ispras.modis.attribute.AttributeType
+import ru.ispras.modis.attribute.{Category, AttributeType}
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,6 +22,14 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
      * @return words, corresponding to attribute and index
      */
     def apply(attribute: AttributeType, index: Int) = indexWordsMap(attribute).get(index)
+
+    /**
+     * apply with default attribute, it is useful if you use only one attribute. It even more useful if you do not know
+     * what attribute is and what is a multilingual model (e.g. you wont to run a classical PLSA).
+     * @param index index of words
+     * @return words, corresponding to index
+     */
+    def apply(index: Int) = indexWordsMap(Category).get(index)    // TODO add warning or exception if there is more than one attribute
 
     /**
      *

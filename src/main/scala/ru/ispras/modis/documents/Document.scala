@@ -1,6 +1,6 @@
 package ru.ispras.modis.documents
 
-import ru.ispras.modis.attribute.AttributeType
+import ru.ispras.modis.attribute.{Category, AttributeType}
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,9 +19,13 @@ class Document(private val attributes: Map[AttributeType, Seq[(Int, Short)]], va
      * @param attributeType type of attribute
      * @return array (index of word, number of occurrence in given document
      */
-    //TODO replace array by something immutable
     def getAttributes(attributeType: AttributeType): Seq[(Int, Short)] = attributes.getOrElse(attributeType, Seq[(Int, Short)]())
 
+
+    def getWords = {
+        require(attributes.contains(Category), "use this method only in case of one attribute Category")
+        attributes(Category)
+    }
     /**
      * check is given attribute presented in document
      * @param attribute type of attribute

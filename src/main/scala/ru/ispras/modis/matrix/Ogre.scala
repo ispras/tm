@@ -15,6 +15,7 @@ import math.max
  * @param stochasticMatrix hold probabilities, so sum of any row is equal to 1 and every element non-negative
  */
 abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]]) {
+
     require(expectationMatrix.length == stochasticMatrix.length && expectationMatrix.head.length == stochasticMatrix.head.length,
         "stochastic and expectation matrix should have the same number of rows and number of columns")
 

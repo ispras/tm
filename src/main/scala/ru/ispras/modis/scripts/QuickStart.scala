@@ -1,6 +1,7 @@
 package ru.ispras.modis.scripts
 
 import ru.ispras.modis.documents.{Numerator, TextualDocument}
+import ru.ispras.modis.plsa.TrainedModel
 import scala.io.Source
 import java.io.File
 import ru.ispras.modis.builder.PLSABuilder
@@ -54,13 +55,19 @@ object QuickStart extends App{
      * read textual documents from file (see functions getTextualDocuments for details)
      */
     val textualDocuments = getTextualDocuments()
-
     /**
      * now we have to replace words by it serial number. For this purposes we would use object Numerator
      * Numerator take into input iterator of TextualDocuments, replace words by it serial numbers and return
      * sequence of documents and instance of class alphabet (alphabet hold map from wordsNumber to word and vice versa)
      */
     val (documents, alphabet) = Numerator(textualDocuments)
+
+    /**
+     * val splitLines = Source.fromFile(new File("examples/arxiv.part")).getLines().map(_.split(" "))
+     * val (documents, alphabet) = Numerator(splitLines)
+     */
+
+
 
 
     /**
@@ -102,5 +109,16 @@ object QuickStart extends App{
      */
     TopicHelper.saveMatrix("examples/Phi", trainedModel.phi(Category))
     TopicHelper.saveMatrix("examples/Theta", trainedModel.theta)
+
+    /**
+     * and now we can serialize trainedModel using kryo. Kryo saves objects in binary format, so do not try to open
+     * model by textual redactor.
+     */
+    TrainedModel.save(trainedModel, "examples/model")
+
+    /**
+     * and now we may load model
+     */
+    TrainedModel.load("examples/model").getPhi.probability(1, 1)
 
 }

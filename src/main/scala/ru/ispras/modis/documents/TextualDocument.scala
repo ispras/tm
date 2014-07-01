@@ -22,6 +22,16 @@ class TextualDocument(private val attributes: Map[AttributeType, Seq[String]]) {
      */
     def words(attributeType: AttributeType): Seq[String] = attributes(attributeType)
 
+
+    /**
+     *
+     * @return sequence of words
+     */
+    def words: Seq[String] = {
+        require(attributes.contains(Category), "Use this method only if your model contain only one attribute Category")
+        attributes(Category)
+    }
+
     /**
      *
      * @return set of presented attributes
