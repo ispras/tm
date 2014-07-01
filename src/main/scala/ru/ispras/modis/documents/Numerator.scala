@@ -3,7 +3,7 @@ package ru.ispras.modis.documents
 import scala.collection.mutable
 import grizzled.slf4j.Logging
 import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
-import ru.ispras.modis.attribute.{Category, AttributeType}
+import ru.ispras.modis.attribute.{DefaultAttributeType, AttributeType}
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,17 +25,12 @@ object Numerator extends Logging {
         val wordsToNumber = mutable.Map[AttributeType, TObjectIntHashMap[String]]()
         var documentIndex = -1
         val documents = textDocuments.map {case(textDocument) =>
-                 documentIndex += 1
+            documentIndex += 1
                 if (documentIndex % 1000 == 0) info("done " + documentIndex)
                 processDocument(textDocument, numberOfWords, wordsToNumber, documentIndex)
         }.toVector
         info("numerator done")
         (documents, Alphabet(wordsToNumber.toMap))
-
-    }
-
-    def apply(textDocuments: Iterator[Array[String]])(implicit i1:DummyImplicit): (Seq[Document], Alphabet) = {
-        apply(textDocuments.map(words => new TextualDocument(Map(Category -> words))))
     }
 
     /**

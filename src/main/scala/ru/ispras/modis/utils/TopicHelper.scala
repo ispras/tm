@@ -3,6 +3,7 @@ package ru.ispras.modis.utils
 import ru.ispras.modis.matrix.{Ogre, AttributedPhi}
 import ru.ispras.modis.documents.Alphabet
 import java.io.{File, FileWriter}
+import ru.ispras.modis.attribute.Category
 
 import scala.io.Source
 
@@ -53,6 +54,7 @@ object TopicHelper {
         out.close()
     }
 
+
     /**
      * load matrix from txt file, see description of format in saveMatrix
      * @param path path to file with matrix
@@ -69,4 +71,3 @@ object TopicHelper {
     def copyMatrixToArray(matrix: Ogre): Array[Array[Float]] = 0.until(matrix.numberOfRows).map(row =>
         0.until(matrix.numberOfColumns).map(column => matrix.probability(row, column)).toArray).toArray
 }
-
