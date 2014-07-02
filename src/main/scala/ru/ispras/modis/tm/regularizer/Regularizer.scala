@@ -13,14 +13,17 @@ import ru.ispras.modis.tm.attribute.AttributeType
 abstract class Regularizer {
     def apply(phi: Map[AttributeType, AttributedPhi], theta: Theta): Float
 
-    def regularizePhi(phi: AttributedPhi, theta: ImmutableTheta): Unit
-
-    def regularizeTheta(phi: Map[AttributeType, AttributedPhi], theta: Theta): Unit
-
-    final def regularizePhi(phi: AttributedPhi, theta: Theta) {
-        regularizePhi(phi, ImmutableTheta.toImmutableTheta(theta))
+    final def regularizePhi(phi: AttributedPhi, theta: Theta): Unit = {
+        regularizePhiImmutable(phi, ImmutableTheta.toImmutableTheta(theta))
     }
 
+    final def regularizeTheta(phi: Map[AttributeType, AttributedPhi], theta: Theta): Unit = {
+        regularizeThetaImmutable(phi.map { case (attr, phi) => (attr, ImmutablePhi.toImmutablePhi(phi))}, theta)
+    }
+
+    protected def regularizePhiImmutable(phi: AttributedPhi, theta: ImmutableTheta): Unit
+
+    protected def regularizeThetaImmutable(phi: Map[AttributeType, ImmutablePhi], theta: Theta): Unit
 }
 
 object Regularizer {

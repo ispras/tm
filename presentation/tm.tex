@@ -1,0 +1,173 @@
+\documentclass{beamer}
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+
+ %Стиль презентации
+\usetheme{Warsaw}
+\begin{document}
+\title{IM presentation}  
+\author{Ilya Kozlov \\Avanesov Valeriy}
+
+
+
+
+\frame{\titlepage} 
+
+\begin{frame}{Тематическое моделирование. Снова. }
+	
+	
+	\begin{block}{PLSA}
+			$$L(\Phi, \Theta) = \sum\limits_{d \in D} \sum\limits_{w \in d} 
+	n_{dw} \ln \sum\limits_{t \in T} \phi_{wt}\theta_{td} \rightarrow \max\limits_{\Phi, \Theta}$$
+	\end{block}
+	\begin{block}{RobustPLSA}
+			$$L(\Phi, \Theta, \Pi) = \sum\limits_{d \in D} \sum\limits_{w \in d} 
+	n_{dw} \ln \frac{ \sum_{t \in T} \phi_{wt}\theta_{td} + \gamma \pi_{dw} + \varepsilon \pi_w  }{1+\gamma+\varepsilon} \rightarrow \max\limits_{\Phi, \Theta, \Pi}$$	
+	\end{block}
+	
+	\begin{block}{Регуляризованный PLSA}
+		$$\mathfrak{L}(\Phi, \Theta) =  L(\Phi, \Theta) + R(\Phi, \Theta) \rightarrow \max\limits_{\Phi, \Theta} $$
+	\end{block}
+	
+\end{frame}
+
+\begin{frame}{Запустите уже!!!}
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=110mm]{quckstart}
+\label{overflow}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Огр}
+\begin{block}{EM-алгоритм}
+\begin{itemize}
+\item Считаются $n_{dwt}$
+\item Затем $\phi_{wt} \propto \sum_d n_{dwt}  $ и $\theta_{td} \propto \sum_w n_{dwt}$
+\end{itemize}
+\end{block}
+\begin{block}{Почему огр? Я троллей ждал... }
+\begin{itemize}
+\item матрица счетчиков $n_{\cdot \cdot}$
+\item матрица параметров
+\item они всегда вместе
+\end{itemize}
+\end{block}
+
+\begin{block}{А мне какое дело?}
+\begin{itemize}
+\item матрицы $\Phi$ и $\Theta$ -- огры
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Регуляризаторы}
+\begin{block}{$+R(\Theta, \Phi)$}
+\begin{itemize}
+\item более человекопонятные темы
+\item частичное обучение
+\item LDA
+\item все что вы хотите
+\end{itemize}
+\end{block}
+
+\begin{block}{ЕМ-алгоритм}
+$$ \theta_{dt} \propto\sum_d n_{dwt}   + \theta_{dt}\frac{\partial R}{\partial \theta_{dt}} (\Theta, \Phi) $$
+$$\phi_{wt} \propto \sum_d n_{dwt} + \phi_{wt}\frac{\partial R}{\partial \phi_{wt}} (\Theta, \Phi)$$
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Интерфейс}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=115mm]{regularizer}
+\label{overflow}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Разреживатели}
+\begin{block}{Но зачем?}
+Есть мнение, что каждый документ и каждое слово относятся не ко всем темам.
+
+\texttt{def apply(matrix: MatrixForSparsifier, numberOfIteration: Int): Unit}
+\end{block}
+
+\begin{block}{\texttt{ MatrixForSparsifier ?}}
+Единственный изменяющий состояние метод -- 
+
+\texttt{def setZero(rowIndex: Int, columnIndex: Int)}
+\end{block}
+\end{frame}
+
+\begin{frame}{ Генераторы начального приближения}
+\begin{block}{Рандомом плохо?}
+\begin{enumerate}
+\item Да, плохо
+\item Невыпуклость задачи
+\item Быстрее сходится, лучше максимум
+\end{enumerate}
+\end{block}
+
+\begin{block}{Варианты}
+\begin{enumerate}
+\item Рандом
+\item Равномерно (fixed $\phi$)
+\item Гиббсом
+\end{enumerate}
+\end{block}
+\end{frame}
+
+
+\begin{frame}{Cобираем всю братию вместе}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=115mm]{builderConfugration.png}
+\label{overflow}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Многоязыковость и не только}
+\begin{block}{Было}
+$$z_{di} \sim \theta_{d \cdot}$$
+$$w_{di} \sim \phi_{z_{di} \cdot }$$
+\end{block}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

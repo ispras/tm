@@ -1,6 +1,6 @@
 package ru.ispras.modis.tm.regularizer
 
-import ru.ispras.modis.tm.matrix.{ImmutableTheta, AttributedPhi, Theta}
+import ru.ispras.modis.tm.matrix.{ImmutablePhi, ImmutableTheta, AttributedPhi, Theta}
 import ru.ispras.modis.tm.attribute.AttributeType
 
 
@@ -13,7 +13,7 @@ import ru.ispras.modis.tm.attribute.AttributeType
 class ZeroRegularizer extends Regularizer {
     def apply(phi: Map[AttributeType, AttributedPhi], theta: Theta): Float = 0f
 
-    def regularizePhi(phi: AttributedPhi, theta: ImmutableTheta) {}
+    def regularizePhiImmutable(phi: AttributedPhi, theta: ImmutableTheta) {}
 
-    def regularizeTheta(phi: Map[AttributeType, AttributedPhi], theta: Theta) {}
+    def regularizeThetaImmutable(phi: Map[AttributeType, ImmutablePhi], theta: Theta) {}
 }

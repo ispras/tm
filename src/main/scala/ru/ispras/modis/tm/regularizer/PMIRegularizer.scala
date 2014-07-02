@@ -2,7 +2,7 @@ package ru.ispras.modis.tm.regularizer
 
 import gnu.trove.map.TObjectFloatMap
 import ru.ispras.modis.tm.qualitimeasurment.{PMI, Bigram}
-import ru.ispras.modis.tm.matrix.{ImmutableTheta, Theta, AttributedPhi}
+import ru.ispras.modis.tm.matrix.{ImmutablePhi, ImmutableTheta, Theta, AttributedPhi}
 import ru.ispras.modis.tm.utils.TopicHelper
 import ru.ispras.modis.tm.documents.Alphabet
 import ru.ispras.modis.tm.attribute.AttributeType
@@ -22,7 +22,7 @@ class PMIRegularizer(private val parameter: Float,
     // TODO implement apply
     def apply(phi: Map[AttributeType, AttributedPhi], theta: Theta): Float = 0f
 
-    def regularizePhi(phi: AttributedPhi, theta: ImmutableTheta) {
+    def regularizePhiImmutable(phi: AttributedPhi, theta: ImmutableTheta) {
         if (phi.attribute == attribute) {
             var topicId = 0
             while (topicId < phi.numberOfRows) {
@@ -50,7 +50,7 @@ class PMIRegularizer(private val parameter: Float,
         math.log((bigrams.get(new Bigram(word, otherWord)) + 1e-15f) / unigrams(word) / unigrams(otherWord))
     }
 
-    def regularizeTheta(phi: Map[AttributeType, AttributedPhi], theta: Theta) {}
+    def regularizeThetaImmutable(phi: Map[AttributeType, ImmutablePhi], theta: Theta) {}
 }
 
 object PMIRegularizer {
