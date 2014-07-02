@@ -135,10 +135,24 @@ $$\phi_{wt} \propto \sum_d n_{dwt} + \phi_{wt}\frac{\partial R}{\partial \phi_{w
 
 \begin{frame}{Многоязыковость и не только}
 \begin{block}{Было}
-$$z_{di} \sim \theta_{d \cdot}$$
-$$w_{di} \sim \phi_{z_{di} \cdot }$$
+$$d = (w_1 .... w_n )$$
+$$z_{di} \sim \theta_{d \cdot} ~~~~ w_{di} \sim \phi_{z_{di} \cdot }$$
+$$L(\Phi, \Theta) = \sum\limits_{d \in D} \sum\limits_{w \in d} 
+	n_{dw} \ln \sum\limits_{t \in T} \phi_{wt}\theta_{td} \rightarrow \max\limits_{\Phi, \Theta}$$
 \end{block}
 
+\begin{block}{Стало}
+$$d = (w^1_1 .... w^1_{n_1} ), (w^2_1 .... w^2_{n_2} ) , ... (w^l_1 .... w^l_{n_l} ) $$
+$$z_{di^l} \sim \theta_{d \cdot} ~~~~ w_{di}^l \sim \phi_{z_{di} \cdot }^l$$
+\begin{equation*}
+\begin{split}
+L(\Phi_1, \Phi_2, \Theta) = \sum\limits_{(d_1,d_2) \in D}  \sum\limits_{w \in d^1} 
+	n_{dw} \ln \sum\limits_{t \in T} \phi^1_{wt}\theta_{td} + \\
+	\sum\limits_{w \in d^2} 
+	n_{dw} \ln \sum\limits_{t \in T} \phi^2_{wt}\theta_{td}  \rightarrow \max\limits_{\Phi, \Theta}
+\end{split}
+\end{equation*}
+\end{block}
 \end{frame}
 
 
