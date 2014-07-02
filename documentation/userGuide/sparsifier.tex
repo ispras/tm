@@ -1,0 +1,16 @@
+One document often corresponds to only a few topics, not to every. Analogously,
+word may corresponds only to a few topics, not to every topic. Thus some weights in
+matrices $\Phi$ and $\Theta$ may be replaced by zero without drop of quality of our model. For this aim we use
+sparsifier. Any sparsifier should inherit from trait Sparsifier and implement a method apply. This method take into input
+MatrixForSparsifier, numberOfIteration. Sparsifier may obtain probabilities from matrix and decide which cells should be replaced
+by zero, based on value, number of iteration and internal state. To replace $i$\--th row and $j$\--th column by zero one should call\\
+\texttt{matrix.setZero(i, j)}\\
+
+\subsection{Implemented sparsifier}
+    We implement
+    \begin{itemize}
+	\item ZeroSparsifier, it do nothing. If you don't want to use sparsifier you should use this one. 
+	\item ThresholdSparsifier \-- it class replace value by zero if it less than threshold, but not more than maxNumberOfZeroised by an iteration
+	    and only after startIteration.
+    \end{itemize}
+

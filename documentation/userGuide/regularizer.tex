@@ -1,0 +1,40 @@
+\subsection{Regularizer}
+    The description of theory are described in \ref{Regularizers}. Hear we would describe the detail of implementation of regularizer in our project and describe some standard regularizers,
+    which are implemented in our library.
+    \subsubsection{Implementation}
+	One may find regularizers in ru.ispras.modis.regularizer. Any regularizer should inherit from class Regularizer. In order to implement his own regularizer user have to implement methods
+	regularizePhi, regularizeTheta and apply.
+	\paragraph{Implementation of regularizePhi\\}
+	As one may see in \ref{RegularizersEquation},
+	\begin{equation} \varphi_{wt} \propto \left(\hat{n}_{wt} + \varphi_{wt} \frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{wt}} \right)_+ \end{equation}
+	Thus, in order to implement method regularizePhi one have to:
+	\begin{itemize}
+	    \item calculate $\varphi_{wt} \frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{wt}}$ using matrix $\Phi$ and matrix $\Theta$ for each word $w$ and
+		each topic $t$.\\
+		In order to take $i$\--th row and $j$\--th column in matrix $\Phi$ one may use $$phi.probability(i, j)$$ where $i$\--- topic index,
+		$j$\--- word index.\\
+		Analogously for matrix $\Theta$: $$theta.probability(i, j)$$, where $i$\--topic index, $j$ \-- document index.
+	    \item Add these values to matrix of expectation, in order to add $\varphi_{wt} \frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{wt}}$ to
+		expectation matrix $n_{wt}$ one should use method\\
+		$$phi.addToExpectation(t, w, \varphi_{wt} \frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{wt}})$$
+	\end{itemize}
+	
+    \paragraph{Implementation of regularizeTheta \\}
+	This method is analogous to the previous paragraph. One have to calculate $$ \theta_{td}\frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{td}} $$
+	and add it to expectation of $n_{dt}$.
+    \paragraph{Implementation of apply \\}
+	apply is used to calculate \ref{optimizeWithReqularizer} instead of log likelihood (and corresponding perplexity). If you wont calculate log likelihood or
+	you are lazy to implement this method return 0f. 
+
+    \subsubsection{Implemented reqularizer}
+	Now in our project are implemented following regularizers:
+	\begin{itemize}
+	    \item ZeroRegularizer, it regularizer do nothing, if you don't wont to use regularizer use this one
+	    \item RegularizerSum allow to apply a sequence of regularizers sequentially. For example if you have a few reqularizer: $r_1$, $r_2$, $r_3$ and you wont to
+		apply them sequentially. For this aim\\
+		\texttt{import ru.ispras.modis.regularizer.Regularizer.toRegularizerSum}
+		\texttt{val regularizerSum = $r_1$ + $r_2$ + $r_3$}
+	    \item SymmetricDirichlet, it regularizer add a dirichlet prior to the distribution of document by topic and words by topic, it is used to convert PLSA into LDA (see \ref{LDA})
+ 	\end{itemize}
+
+	

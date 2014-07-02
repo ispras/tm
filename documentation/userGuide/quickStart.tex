@@ -1,0 +1,128 @@
+In order to use topic modeling one have to perform the following step:
+\begin{enumerate}
+    \item Read documents
+    \item Split each document into a sequence of words
+    \item Replace words by it serial number
+    \item Build a topic model.
+    \item Train the topic model.
+    \item Save results or use it in application. 
+\end{enumerate}
+
+In this section would be shown how to perform each step. 
+\subsection{Read the data}
+    First of all we have to read the data from disc. It worth mention that text normalization is non\--goal of our project, thus text should be already preprocessed. 
+    It step is depend on the organization of input data, so it is
+    no use to describe this step in general way. Instead of it we describe this step for our example file, one may easy modify this step for his use case. % !! криво
+    It worth to mention that our project do not performs any text normalization.
+    In this introduction we would use file arxiv.part from directory examples. This is a thousand of scientific articles
+    from Arxiv\footnote{\url{http://arxiv.org/}}. Texts was preprocessed, words was separated by space. One line corresponds
+    to one document.\\
+    First of all one have to read data, and split each line by space:\\
+    \texttt{val lines = Source.fromFile(new File("examples/arxiv.part")).getLines()}
+    \texttt{val wordsSequence = lines.map(line => line.split(" "))}\\
+    Than one have to construct a TextualDocument from each sequence of words:\\
+    \texttt{val textualDocuments = wordsSequence.map(words => \\  new TextualDocument(Map(Category -> words)))}\\
+    Each TextualDocument is a map from attribute to the correspond sequence of words. For example attribute may denote language of
+    text in the case of multilingual topic modeling. If there is only one attribute (as in our case) one may use Category. 
+\subsection{Replace words by it serial number}
+    In order to save the memory in our application we have to replace words by it serial number and group the same words together.
+    $$ Seq(duck, \ \ duck, \ \ duck, \ \ goose) \to Seq((0, 3), (1, 1))) $$
+    For this purpose we may use object Numerator. It takes into input sequence of textual documents, replace words by it serial number,
+    group the same words and return sequence of documents. It also return Alphabet (map form word to serial number and vice versa)
+    \texttt{val (documents, alphabet) = Numerator(textualDocuments)}.\\ 
+    \subsubsection{How to use alphabet}
+	Alphabet is hold map from words to it index and vice versa. Thus it allow to
+	\begin{enumerate}
+	    \item get words by it index and attribute:\\
+		\texttt{alphabet(Category, 1) // goose}
+	    \item get index of word by attribute and word: \\
+		\texttt{alphabet.getIndex(Category, duck) // 0}
+	    \item get the number of words, corresponding to the given attribute \\
+		\texttt{alphabet.numberOfWords(Category) // 100500}
+	\end{enumerate}
+	
+\subsection{Build model}
+    One may build model with class Builder (see package ru.ispras.modis.builder). Our project provide three types of builders:
+    \begin{enumerate}
+	\item PLSABuilder \--- builds a standard PLSA (as it described in original work \cite{PLSA_original})
+	\item LDABuilder  \--- builds an LDA (PLSA with Dirichlet regularizer, for details section \ref{Regularizers}) % TODO add a description of a Dirichlet regularizer in the section Regularizers
+	\item RobustPLSABuilder \--- build a robust PLSA. Robust PLSA take into account that some words are too rare and can't be explained by any topic 
+	    (we call this kind of words "noise"). Some other words may be too common (for example a stop\--word, that we forget to remove in the preprocessing step). This kind of words
+	    may be refer to any topic (we call that kind of word "background").  
+    \end{enumerate}
+
+    In this example we would
+    use a standard PLSA, other builders works analogously.  To build plsa one should
+    \begin{enumerate}
+	\item Set number of topic in model: \\ \texttt{ val numberOfTopics = 25}
+	\item Set the number of iteration in EM\--algorithm: \\ \texttt{ val numberOfIteration = 100}
+	\item Create instance of class java.util.Random: \\     \texttt{ val random = new Random()}
+	\item And build the model: \\ \texttt{ val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random,  numberOfIteration)}
+    \end{enumerate}
+
+\subsection{Training a model}
+    Now we build a model and may perform stochastic matrix decomposition(train the model) \\
+    \texttt{val trainedModel = plsa.train(documents)}\\
+    trainedModel hold the matrices $\Phi$ and $\Theta$ (see \ref{matrixDecomposition})
+    $\Phi$ is distribution of words by topic thus the number in the intersects of $i\--th$ row and $j\--th$ column show the
+    probability to generate word $j$ from topic $i$. Each attribute set according to the matrix $\Phi$.
+    To obtain matrix $\Phi$, corresponds to attribute Category:\\
+    \texttt{val phi = trainedModel.phi(Category)}\\
+    $\Theta$ is a distribution of documents by topic thus the number in the intersects of $i\--th$ row and $j\--th$ column show
+    the weight of topic $j$ in document $i$.
+    To obtain matrix $\Theta$: \\
+    \texttt{val theta = trainedModel.theta}\\
+
+    \subsubsection{How to interpret results}
+	If you don't familiar with topic modeling read at least \ref{generativeModel}. In our library we story distribution of words by topic in matrix $\Phi$,
+	distribution of documents by topics in matrix $\Theta$. To see the probability to generate word $w$ from topic $t$ one may use method \\
+	\texttt{trainedModel.phi(Category).probability(t, w)}\\
+	To see the probability to generate topic $t$ in document $d$ \\
+	\texttt{trainedModel.theta.probability(d, t)}\\
+    
+    \subsubsection{How to work with matrices}
+	Matrices $\Phi$ and $\Theta$ hold different information, but support the similar methods.
+	Both classes hold matrix of expectation and stochastic matrix. Expectation matrix hold values, estimated by E\--step (see \ref{EMAlgorithm}),
+	stochastic matrix contain a probability. One describe method of classes Phi and Theta in table \ref{phiAndThetaMethods}
+	    
+	\begin{table}[ht!]
+	    \caption{Method of class Phi and class Theta}
+	    \label{phiAndThetaMethods}
+	    \begin{tabular}{|l|p{4cm}|p{4cm} |p{4cm} |}
+		\hline
+		method & Phi & Theta \\
+		\hline
+		    addToExpectation($row$, $column$, $value$)
+		    & $row$ \-- topic index column \-- word index  $column$ \-- topic index
+		    & $row$ \-- document index  value \-- $n_{dwt}$  value \-- $n_{dwt}$ \\
+		\hline
+		    probability($rowIndex$, $columnIndex$)
+		    & probability to generate word $columnIndex$ from topic $rowIndex$
+		    & weight of topic $columnIndex$ in document $rowIndex$\\
+		\hline
+		    expectation($rowIndex$, $columnIndex$) &
+		    return expected value for words, $columnIndex$ generated from topic $rowIndex$: $n_{wt}$ &
+		    return expected value for words,  generated from topic $columnIndex$ in document $rowIndex$: $n_{dt}$ \\
+		\hline
+		    numberOfRows & number of topics & number of documents \\
+		\hline
+		    numberOfColumns & number of words& number of topics\\
+		\hline
+		dump() &\multicolumn{3}{|p{8.430cm} |}{replace negative value in expectation matrix by zero, replace value in stochastic matrix
+		by corresponding values from expectation matrix, normalize stochastic matrix and replace values in expectation matrix by zero} \\ % <---- inserted &
+		\hline
+	    \end{tabular}
+	\end{table}  
+	We also have an utility to save matrix in file: \\
+	\texttt{TopicHelper.saveMatrix("path/to/file", matrix)}
+	where matrix may be $\Phi$ or $\Theta$. 
+	One also may write top $n$ words from each topic to estimate topic coherence with 
+	\texttt{TopicHelper.printAllTopics(n, phi, alphabet)}
+
+
+
+    
+    
+
+
+

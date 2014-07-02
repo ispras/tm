@@ -1,0 +1,123 @@
+\subsection{Generative model}
+\label{generativeModel}
+    In topic modeling every document viewed as mixture of topics. Each topic is a multinomial distribution on words,
+    so generation model may be defined as follow:
+    \begin{itemize} \label{generation}
+	\item For every position in document $d$ i.i.d choose topic $t$ from distribution of topics by document
+	\item Choose word $w$ from topic $t$
+    \end{itemize}
+    \begin{figure}[!ht]
+	\caption{Graphical representation of PLSA generative process}
+	\begin{minipage}{\textwidth}
+	    \includegraphics[width=0.55\linewidth]{generation}
+	\end{minipage}
+    \end{figure}
+    The aim of topic modeling is to recover topics and distribution of document by topics.
+    \subsubsection{Polylingual topic model}
+	Suppose one has a collection of documents on different languages. We have a prior knowledge that some of the
+	documents (or all of them) are written on the same topic but in different languages (for example one document may be a translation of another).
+	Wikipedia may be considered as a source of this type of data. It leads us to a polylingual topic modeling \cite{polylingual}.
+	In this model we assume that every topic is a set of multinomial distributions, one per language. Also we assume that
+	every document may hold more than one set of words, so we represent document as map attribute $\to$ set of words.
+
+    \subsubsection{Robust PLSA}
+	In robust PLSA we assume that some of words too specific for document and may not be explained by topic
+	distribution. Conversely, some of words too common and may be explained by any topic.
+	Robust PLSA take it into account. In robust PLSA word may be generated from topic, noise or background.
+	Noise is a multinomial distribution on rare words. Every document has its own noise.
+	Background is a multinomial distribution on common words. Background is one for all documents.
+	To generate words $w$  in document $d$ we:
+	\begin{itemize}
+	    \item with probability $\gamma$ generate word from noise
+	    \item with probability $\varepsilon$ generate word from background
+	    \item with probability $1 - \gamma - \varepsilon$ generate word from topic
+		distribution as in \ref{generation}
+	\end{itemize}
+	$\gamma$ and $\varepsilon$ are hyperparameter of model.
+
+    \subsubsection{Sparse PLSA} \label{sparseModel} 
+	One document often corresponds to only a few topics, not to every. Analogously,
+	word may corresponds only to a few topics, not to every topic. Sparse PLSA takes it into account,
+	and replace some of topics weights in document by zero and replace some weights in distribution
+	of words by topic by zero. Sparsification of topic modeling has some features, which allow to sparse distribution of
+	words by topic and distribution of document by topics without decreasing of model quality.
+
+    \subsubsection{LDA} \label{LDA}
+	LDA is an extension of PLSA, LDA was described in \cite{LDA} and now it is one of the most popular (may be the most popular) topic model. The idea of this model is that
+	distribution of documents by topics and distribution of words by topic has some symmetric dirichlet\footnote{\url{http://en.wikipedia.org/wiki/Dirichlet_distribution}} prior distribution and we maximize
+	posterior distribution instead of finding a maximum likelihood solution. 
+	\begin{figure}[!ht]
+	\caption{Graphical representation of LDA generative process}
+	\begin{minipage}{\textwidth}
+	    \includegraphics[width=0.55\linewidth]{lda}
+	\end{minipage}
+	\end{figure}\\
+	$\alpha$ and $\beta$ is hyperparameters of model. 
+ 
+    \subsection{Topic modeling as optimization problem}
+	According to generative model one can estimate probability to observe collection $D$ as:
+	\begin{equation} p(D) = \prod_{d \in D} \prod_{w \in d} \sum_{t} p(t|d) p(w|t) \end{equation}
+	Denote $\varphi_{wt} = p(w|t)$ and $\theta_{td} = p(t|d)$. One may obtain $\varphi_{wt}$
+	and $\theta_{td}$ as solution of optimization problem
+
+	\begin{equation} \label{optimization} L = \sum_{d \in D} \sum_{w \in d} \log \sum_{t} \varphi_{wt} \theta_{td}  \to \max \end{equation}
+	    with boundary
+	\begin{equation} \forall t \ \ \sum_{w} \varphi_{wt} = 1, \ \ \forall d \ \ \sum_{w} \theta_{td} = 1 \end{equation}
+	and
+	\begin{equation} \forall t, w \ \  \varphi_{wt}  \geq 0, \ \ \forall d, t \ \ \theta_{wt}  \geq 0 \end{equation}
+
+    \subsection{Topic modeling as matrix decomposition} \label{matrixDecomposition}
+
+	\subsubsection{Kullback-Leibler divergence}
+	    Kullback-Leibler divergence is a non-negative measure of difference between two different probability distribution:
+	    \begin{equation} KL(p_i||q_i) = \sum_{i=1}^n p_i \ln\left(\frac{p_i}{q_i}\right)  \end{equation}
+	    Consider an empirical distribution $\hat{p}_i$ and some parametric distribution $q_i = q_i(\alpha)$ which is used to explain $\hat{p}_i$ .
+	    Easy to see that in this case minimization of KL\---divergence is equivalent to estimation of $\alpha$ by maximum-likelihood:
+	    \begin{equation} KL(p_i||q_i(\alpha)) = \sum_{i=1}^n p_i \ln\left(\frac{p_i}{q_i(\alpha)}\right) \to \min_{\alpha}
+	    \Leftrightarrow \sum_{i=1}^n p_i \ln(q_i(\alpha)) \to \max_{\alpha} \end{equation}
+
+	    Thus one can easily see that (\ref{optimization}) equivalent to weighted Kullback-Leibler divergence minimization:
+	    \begin{equation}
+		\sum_{d \in D} n_d KL_w \left( \frac{n_{dw}}{n_d} || \sum_{t \in T} \varphi_{wt}\theta_{td} \right) \to \min_{\Phi, \Theta}
+	    \end{equation}
+		where $n_{wd}$\--- number of words $w$ in document $d$, $n_d$ \--- number of words in document $d$.
+
+	\subsubsection{Matrix decomposition}
+	    Denote empirical distribution of words by document as $\hat{p}(w, d) = \frac{n_{wd}}{n_d}$.
+	    According to this notation one can consider the problem (\ref{optimization}) as matrix decomposition:
+	    \begin{equation} F \approx_{KL} \Phi \Theta \end{equation}
+	    where matrix $F = (\hat{p}(w, d))_{W \times D}$ is empirical distribution of words by document,
+	    matrix $\Phi = (\varphi_{wt})_{W \times D}$ is distribution of words by topics and
+	    matrix  $\Theta = (\theta_{td})_{T\times D}$ is distribution of documents by topics.
+	    Thus, our optimization problem may be rewritten in Kullback–Leibler notation as
+	    \begin{equation} KL(F , \Phi \Theta) \rightarrow \min \end{equation}
+	    Thus PLSA may be observed as stochastic matrix decomposition.
+
+    \subsection{Expectation\--Maximization algorithm} \label{EMAlgorithm}
+	    Unfortunately (\ref{optimization}) has no analytical solution. Thus we use Expectation \-- Maximization (EM) algorithm.
+	    This algorithm consists of two steps:
+	    \begin{enumerate}
+		\item Estimation of number $n_{dwt}$ of words $w$, produced by topic $t$ in document $d$. (E \-- step)
+		\item Optimization of distribution of documents by topics and optimization of distribution of topics by words relying on
+		    the $n_{dwt}$ values obtained during E \-- step . (M \-- step)
+	    \end{enumerate}
+	    One can estimate $n_{dwt}$ as follows:
+	    \begin{equation}  n_{dwt} = n_{wd} p(w|t) p(t|d) \end{equation}
+	    where $n_{wd}$ \--- number of words $w$ in document $d$.
+	    Thus, probability $p(w|t)$ may be estimated as
+	    \begin{equation}  p(w|t) = \frac{n_{wt}}{n_t} = \frac{\sum_d n_{dwt} }{\sum_w \sum_d n_{dwt}}   \end{equation}
+	    Similarly for $p(t|d)$
+
+    \subsection{Regularizers} \label{Regularizers}
+	Regularizers may improve human-understandability of the topics, transform PLSA to LDA, provide an ability
+	for semi-supervised learning (employ a prior knowledge about document topic or topics structure).
+	Instead of optimization (\ref{optimization}) we optimize
+	\begin{equation} \label{optimizeWithReqularizer} L(\Phi, \Theta) + R(\Phi, \Theta) \to \max_{\Phi, \Theta} \end{equation}
+	Where $R(\Phi, \Theta)$ is a twice differentiable function, named regularizer.
+	Solution of this problem leads to a modification of M\--step:
+	\begin{equation}
+	    \label{RegularizersEquation}
+	    \varphi_{wt} \propto \left(\hat{n}_{wt} + \varphi_{wt} \frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{wt}} \right)_+ ,\ \
+	    \theta_{td} \propto \left(\hat{n}_{dt} + \theta_{td}\frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{td}} \right)_+
+	\end{equation}
+	Where $\hat{n}$ has been estimated by E\--step.

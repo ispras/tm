@@ -1,0 +1,205 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Topic Modeling Library and Framework Specification}
+\author{Valeriy Avanesov, Ilya Kozlov}
+\date{February 2014}
+
+\begin{document}
+
+\maketitle
+
+\section{Terminology}
+    \begin{itemize}
+        \item Textual document \--- Textual document is a map attribute $\to$ sequence of words. 
+        \item Document \--- Document is a map from attribute to sequence of integer numbers.
+        \item Topic \--- multinomial distribution on words. 
+    \end{itemize}
+
+\section{Introduction}
+    \subsection{Generative model}
+        In topic modeling every document viewed as mixture of topics. Each topic is a multinomial distribution on words, 
+        so generation model may be defined as follow:
+        \begin{itemize} \label{generation}
+            \item For every position in document $d$ i.i.d choose topic $t$ from distribution of topics by document
+            \item Choose word $w$ from topic $t$
+        \end{itemize}
+        The aim of topic modeling is to recover topics and distribution of document by topics. 
+        \subsubsection{Polylingual topic model}
+	    Suppose one has a collection of documents on different languages. We have a prior knowledge that some of the
+	    documents (or all of them) are written on the same topic but in different languages (for example one document may be a translation of another).
+	    Wikipedia may be considered as a source of this type of data. It leads us to a polylingual topic modeling \cite{polylingual}.
+	    In this model we assume that every topic is a set of multinomial distributions, one per language. Also we assume that
+	    every document may hold more than one set of words, so we represent document as map attribute $\to$ set of words.  
+
+        \subsubsection{Robust PLSA}
+            In robust PLSA we assume that some of words too specific for document and may not be explained by topic 
+            distribution. Conversely, some of words too common and may be explained by any topic.
+            Robust PLSA take it into account. In robust PLSA word may be generated from topic, noise or background.
+            Noise is a multinomial distribution on rare words. Every document has its own noise.
+            Background is a multinomial distribution on common words. Background is one for all documents.  
+            To generate words $w$  in document $d$ we: 
+            \begin{itemize}
+                \item with probability $\gamma$ generate word from noise
+                \item with probability $\varepsilon$ generate word from background
+                \item with probability $1 - \gamma - \varepsilon$ generate word from topic
+		    distribution as in \ref{generation}
+            \end{itemize}
+            $\gamma$ and $\varepsilon$ are hyperparameter of model.  
+        
+        \subsubsection{Sparse PLSA}
+            One document often corresponds to only a few topics, not to every. Analogously,
+            word may corresponds only to a few topics, not to every topic. Sparse PLSA takes it into account,
+            and replace some of topics weights in document by zero and replace some weights in distribution
+            of words by topic by zero. Sparsification of topic modeling has some features, which allow to sparse distribution of 
+            words by topic and distribution of document by topics without decreasing of model quality. 
+    
+    
+        \subsection{Topic modeling as optimization problem}
+            According to generative model one can estimate probability to observe collection $D$ as:
+            \begin{equation} p(D) = \prod_{d \in D} \prod_{w \in d} \sum_{t} p(t|d) p(w|t) \end{equation}
+            Denote $\varphi_{wt} = p(w|t)$ and $\theta_{td} = p(t|d)$. One may obtain $\varphi_{wt}$ 
+            and $\theta_{td}$ as solution of optimization problem
+            
+            \begin{equation} \label{optimization} L = \sum_{d \in D} \sum_{w \in d} \log \sum_{t} \varphi_{wt} \theta_{td}  \to \max \end{equation}
+	     with boundary
+            \begin{equation} \forall t \ \ \sum_{w} \varphi_{wt} = 1, \ \ \forall d \ \ \sum_{w} \theta_{td} = 1 \end{equation}
+            and 
+            \begin{equation} \forall t, w \ \  \varphi_{wt}  \geq 0, \ \ \forall d, t \ \ \theta_{wt}  \geq 0 \end{equation}
+    
+        \subsection{Topic modeling as matrix decomposition}
+        
+            \subsubsection{Kullback-Leibler divergence}
+                Kullback-Leibler divergence is a non-negative measure of difference between two different probability distribution:
+                \begin{equation} KL(p_i||q_i) = \sum_{i=1}^n p_i \ln\left(\frac{p_i}{q_i}\right)  \end{equation}
+                Consider an empirical distribution $\hat{p}_i$ and some parametric distribution $q_i = q_i(\alpha)$ which is used to explain $\hat{p}_i$ . 
+                Easy to see that in this case minimization of KL\---divergence is equivalent to estimation of $\alpha$ by maximum-likelihood: 
+                \begin{equation} KL(p_i||q_i(\alpha)) = \sum_{i=1}^n p_i \ln\left(\frac{p_i}{q_i(\alpha)}\right) \to \min_{\alpha} 
+                \Leftrightarrow \sum_{i=1}^n p_i \ln(q_i(\alpha)) \to \max_{\alpha} \end{equation}
+                
+                Thus one can easily see that (\ref{optimization}) equivalent to weighted Kullback-Leibler divergence minimization:
+                \begin{equation} 
+                    \sum_{d \in D} n_d KL_w \left( \frac{n_{dw}}{n_d} || \sum_{t \in T} \varphi_{wt}\theta_{td} \right) \to \min_{\Phi, \Theta}
+                \end{equation}
+                 where $n_{wd}$\--- number of words $w$ in document $d$, $n_d$ \--- number of words in document $d$.
+            
+            \subsubsection{Matrix decomposition}
+                Denote empirical distribution of words by document as $\hat{p}(w, d) = \frac{n_{wd}}{n_d}$. 
+                According to this notation one can consider the problem (\ref{optimization}) as matrix decomposition:
+                \begin{equation} F \approx_{KL} \Phi \Theta \end{equation}
+                where matrix $F = (\hat{p}(w, d))_{W \times D}$ is empirical distribution of words by document,
+                matrix $\Phi = (\varphi_{wt})_{W \times D}$ is distribution of words by topics and 
+                matrix  $\Theta = (\theta_{td})_{T\times D}$ is distribution of documents by topics. 
+                Thus, our optimization problem may be rewritten in Kullback–Leibler notation as 
+                \begin{equation} KL(F , \Phi \Theta) \rightarrow \min \end{equation}
+                Thus PLSA may be observed as stochastic matrix decomposition. 
+        
+        \subsection{Expectation\--Maximization algorithm}
+             Unfortunately (\ref{optimization}) has no analytical solution. Thus we use Expectation \-- Maximization (EM) algorithm.
+             This algorithm consists of two steps:
+                \begin{enumerate}
+                    \item Estimation of number $n_{dwt}$ of words $w$, produced by topic $t$ in document $d$. (E \-- step)
+                    \item Optimization of distribution of documents by topics and optimization of distribution of topics by words relying on
+			the $n_{dwt}$ values obtained during E \-- step . (M \-- step)
+                \end{enumerate}  
+              One can estimate $n_{dwt}$ as follows:
+              \begin{equation}  n_{dwt} = n_{wd} p(w|t) p(t|d) \end{equation} 
+              where $n_{wd}$ \--- number of words $w$ in document $d$.
+              Thus, probability $p(w|t)$ may be estimated as 
+              \begin{equation}  p(w|t) = \frac{n_{wt}}{n_t} = \frac{\sum_d n_{dwt} }{\sum_w \sum_d n_{dwt}}   \end{equation} 
+              Similarly for $p(t|d)$
+        
+        \subsection{Regularizers}
+           Regularizers may improve human-understandability of the topics, transform PLSA to LDA, provide an ability 
+           for semi-supervised learning (employ a prior knowledge about document topic or topics structure). 
+           Instead of optimization (\ref{optimization}) we optimize
+            \begin{equation} L(\Phi, \Theta) + R(\Phi, \Theta) \to \max_{\Phi, \Theta} \end{equation}
+            Where $R(\Phi, \Theta)$ is a twice differentiable function, named regularizer. 
+            Solution of this problem leads to a modification of M\--step:
+            \begin{equation} 
+                \varphi_{wt} \propto \left(\hat{n}_{wt} + \varphi_{wt} \frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{wt}} \right)_+ ,\ \
+                \theta_{td} \propto \left(\hat{n}_{dt} + \theta_{td}\frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{td}} \right)_+
+            \end{equation}
+            Where $\hat{n}$ has been estimated by E\--step. 
+    
+    
+    \section{Implementation}  
+        We take a sequence of documents into input and return distributions of documents by topics and words by topics. We can divide our problem into the following parts: 
+        \begin{enumerate}        
+            \item Replace every word by its ordered number. For this purpose we use a class Numerator. Then we store a map from words to its ordered number in class Alphabet. 
+            \item Choose initial approximation for matrices $\Phi$ and $\Theta$. For this purpose we use class InitialApproxiomationGeneration.
+            \item Make E\--step for every attribute in every documents. For this purpose we use class PLSABrick. A single brick processes a single attribute.
+                Brick may be robust or non robust or whatever user implements it. 
+            \item Then we have to perform M\--step for matrix $\Phi$ (for every attribute) and $\Theta$
+        		To perform M\--step for matrix $\Phi$ we use PLSABrick and we in order to perform M\--step for
+        		matrix $\Theta$ we use class PLSA.
+	        \item After every iteration we check the stop criterion. We use class StoppingCriteria for this purpose.
+	        \item In each step we use class Sparcifier in order to make our model sparse. 
+        \end{enumerate}
+        
+        \subsection{Sparcifier}
+            We implement standard sparsifier, which replace weight by zero if it less then $threshold$, sparsification starts from 
+            iteration $startIteration$ and it does not replace more than $maxNumberOfZeroised$ numbers. $threshold$, $startIteration$ and 
+            $maxNumberOfZeroised$ a parameters.
+            
+                        
+        \subsection{Regularizer}
+            Every regularizer take into input matrices $\Phi$ and $\Theta$
+            We implement the following regularizers: ZeroRegularizer (do nothing), AnticorrelationRegularizer (make topics more different), 
+            DirechletRegularizer (transforme PLSA into LDA ). \\
+            Regularizer take into input distribution of words by topics (matrix $\Phi$) and distribution of documents by topics (matrix $\Theta$). 
+            Regularizer may calculate derivative $\frac{\partial R}{\partial \varphi_{wt}}$ and $\frac{\partial R}{\partial \theta_{wt}}$
+
+    \section{"Quick" start}
+        \subsection{Creating a documents}
+            Text normalization is not goal of this project. So we suppose that we have sequence of sequence of words (word is a string). 
+            First of all we have to create sequence of textual documents. To create TextualDocument type\\
+                \texttt{new TextualDocument(Map("lang" -> Seq[String])) }\\
+            Then use Numerator \\
+                \texttt{ Numerator(Seq[TextualDocument])($Doc_0, Doc_1, Doc_2, \dots Doc_n$) } \\
+            This method replace words by its serial number and group words. It also return Alphabet to convert serial number to word. 
+        
+        \subsection{Creation of PLSA}
+            PLSA consist of 4 main parts:
+                \begin{enumerate}
+                    \item PLSABrick one per attribute. 
+                    \item StopingCriteria
+                    \item InitiaApproximationGenerator
+                    \item ThetaSparsifier
+                \end{enumerate}
+                
+                Construction of PLSABrick is describes in corresponding subsection. 
+                One of commonly used stopping criteria is a MaxNumberOfIterationsStopingCriteria (performs fixed number of iteration and terminate)
+                    \\ \texttt{val stoppingCriteria = new MaxNumberOfIterationsStopingCriteria(numberOfIterations) } \\ 
+                If you don't wont use sparsifier you may use IdenticalSparsifier (it do nothing)
+                    \\ \texttt{ val sparsifier = new IdenticalSparsifier() } \\
+                Initial approximation generator generate Initial approximation for matrices $\Phi$ and $\Theta$. One of a commonly used method is 
+                to draw every position in matrix from uniform distribution and make normalization. For this purposes one may use RandomInitialApproximationGenerator
+                    \\ \texttt{ val initialApproximationGenerator  = new RandomInitialApproximationGenerator() } \\
+                Now we may construct PLSA:
+                    \\ \texttt{ val plsa = new PLSA(brick, sparsifier, initialApproximationGenerator, stoppingCriteria) } \\
+            \subsubsection{Creation of PLSABrick}
+                PLSABrick consist of three main parts:
+                    \begin{enumerate}
+                        \item attributeType: type of attribute to process
+                        \item phiSparsifier
+                        \item regularizer
+                    \end{enumerate}
+                Thus, before construct the PLSABrick we have to construct phiSparsifier and regularizer. 
+                If you don't wont use sparsifier you may use IdenticalSparsifier (it do nothing)\\
+                    \texttt{ val sparsifier = new IdenticalSparsifier() } \\
+                If you wont to use PLSA without regularizer you may use ZeroRegularizer (it do nothing). To convert PLSA to LDA you may use DirichletRegularizer.
+                    \\ \texttt{val regularizer = new ZeroRegularizer()}  for pure PLSA 
+                    \\ \texttt{val regularizer = new DirichletRegularizer($\alpha$, $\beta$)}  for LDA.  $\alpha$ and $\beta$ is parameters in dirichlet distribution \\
+                
+                Now we may construct PLSABrick:
+                    \\ \texttt{val brick = new PLSABrick("lang", sparsifier, regularizer) } \\
+
+        \subsection{Using of PLSA}
+            Now one may use PLSA for collection of documents:
+                \\ \texttt{val trainedModel = plsa.trainOnDocuments(documents) }  \\
+                Training model hold distribution of documents by topic (matrix $\Theta$), distribution of words by topics (matrix $\Phi$). Training model can also
+                calculate distribution of new document by topics with fixed distribution of words by topic (matrix $\Phi$).
+\bibliographystyle{unsrt}
+\bibliography{main} 
+\end{document} 

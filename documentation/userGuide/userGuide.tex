@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[pdftex]{graphicx}
+\graphicspath{{./fig/}}
+
+\title{Topic Modeling Library and Framework User Guide}
+\author{Avanesov Valeriy\\Kozlov Ilya}
+\date{\today}
+
+\usepackage{natbib}
+\usepackage{hyperref}
+\begin{document}
+
+\maketitle
+
+\section{Input}
+    The aim of this project is to provide flexible and simple library and framework for topic modeling.
+    The main properties of this project:
+    \begin{itemize}
+	\item Ability to apply user's defined regularizer, sparsifier and stopping criteria.
+	\item Ability to use multilingual topic modeling. 
+    \end{itemize}
+    The paper is organized as follow: section \ref{intro} contain a quick introduction on topic modeling,
+    \ref{quickStart} describe how to start project, without description of details of implementation. These two sections should allow you
+    to use model LDA or PLSA in a simple use\--causes. The fallowing section describes a details of implementation and it necessary for
+    deeper understanding of project structure and implementation of your own regularizer, sparsifier and other stuff.
+    Section \ref{projectStructure} describe structure of project, section \ref{regularizer} describe regularizers and explain how to implement you
+    own regularizer, section \ref{sparsifier} describe what sparsifier is and how to implement you own sparsifier. Section \ref{stoppingCriteria}
+    describe how to define that we do enough iteration of EM\--algorithm. Section \ref{multilingual} describe how to use model in case of a multilingual
+    texts. 
+
+\clearpage	\section{Introduction to the topic modeling}  \label{intro} \input{intro.tex}
+
+\clearpage	\section{Quick start} \label{quickStart} \input{quickStart.tex}
+
+\clearpage	\section{Building bricks of our model} \label{projectStructure} \input{buildingbrics.tex}
+
+\clearpage	\section{Regularizer} \label{regularizer} \input{regularizer.tex}
+
+\clearpage	\section{Sparsifier} \label{sparsifier} \input{sparsifier.tex}
+
+\clearpage	\section{Stopping Criteria} \label{stoppingCriteria} \input{stoppingCriteria.tex}
+
+\clearpage	\section{Multilingual topic modeling} \label{multilingual}
+
+\bibliographystyle{unsrt}
+\bibliography{userGuide} 
+\end{document}

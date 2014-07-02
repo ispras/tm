@@ -12,7 +12,7 @@ libraryDependencies += "org.slf4j" % "slf4j-log4j12" % "1.7.7"
 
 libraryDependencies += "log4j" % "log4j" % "1.2.14"
 
-resolvers +="Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
 libraryDependencies += "net.sf.trove4j" % "trove4j" % "3.0.3"
 
