@@ -1,6 +1,6 @@
 package ru.ispras.modis.tm.documents
 
-import ru.ispras.modis.tm.attribute.{Category, AttributeType}
+import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category, AttributeType}
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,8 +28,8 @@ class TextualDocument(private val attributes: Map[AttributeType, Seq[String]]) {
      * @return sequence of words
      */
     def words: Seq[String] = {
-        require(attributes.contains(Category), "Use this method only if your model contain only one attribute Category")
-        attributes(Category)
+        require(attributes.contains(DefaultAttributeType), "Use this method only if your model contain only one attribute DefaultAttributeType")
+        attributes(DefaultAttributeType)
     }
 
     /**

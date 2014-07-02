@@ -45,7 +45,7 @@ object PigData extends App with Logging {
         println("number of words " + alphabet.numberOfWords()(Category))
         println(" readDataTime " + (System.currentTimeMillis() * 0.001 - readDataTime / 1000))
         val start = System.currentTimeMillis()
-        val trainedModel = plsa.train(docs)
+        val trainedModel = plsa.train
         println("training time " + (System.currentTimeMillis() * 0.001 - start / 1000))
 
         println(trainedModel)

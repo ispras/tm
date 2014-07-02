@@ -21,6 +21,7 @@ import ru.ispras.modis.tm.attribute.AttributeType
  * @param stoppingCriteria check is it time to stop
  * @param thetaSparsifier sparsify matrix theta
  * @param regularizer regularizer, for example direchlet
+ * @param documents collection used for training
  * @param phi words by topic distribution matrix
  * @param theta document by topic distribution matrix
  */
@@ -28,15 +29,15 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
            private val stoppingCriteria: StoppingCriteria,
            private val thetaSparsifier: Sparsifier,
            private val regularizer: Regularizer,
+           private val documents: Seq[Document],
            private val phi: Map[AttributeType, AttributedPhi],
            private val theta: Theta) extends Logging {
 
     /**
      * take sequence of documents into input and train model on it
-     * @param documents sequence of documents (after numerator)
      * @return trained model (matrix phi and theta)
      */
-    def train(documents: Seq[Document]): TrainedModel = {
+    def train: TrainedModel = {
         val collectionLength = documents.foldLeft(0) {
             (sum, document) => sum + document.numberOfWords()
         }

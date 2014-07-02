@@ -94,7 +94,7 @@ object QuickStart extends App{
      * the weight of topic j in document i.
      * The result would be saved in TrainedModel
      */
-    val trainedModel = plsa.train(documents)
+    val trainedModel = plsa.train
 
     /**
      * now we obtain matrix of distribution of words by topics and we may see most popular words from each topic

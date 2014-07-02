@@ -22,6 +22,11 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta) {
     def this() = this(Map[AttributeType, AttributedPhi](), null)
 
-    def getPhi = phi(DefaultAttributeType)
+    def getPhi = {
+        require(phi.size == 1, "there is more than one attribute, use .phi(attribute)")
+        require(phi.contains(DefaultAttributeType), "there is no default attribute")
+
+        phi(DefaultAttributeType)
+    }
 }
 

@@ -17,21 +17,33 @@ import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
  */
 object Numerator extends Logging {
     /**
-      * @param textDocuments documents with words
-      * @return documents with numbers, alphabet
-      */
+     * @param textDocuments documents with words
+     * @return documents with numbers, alphabet
+     */
     def apply(textDocuments: Iterator[TextualDocument]): (Seq[Document], Alphabet) = {
         val numberOfWords = mutable.Map[AttributeType, Int]().withDefaultValue(0)
         val wordsToNumber = mutable.Map[AttributeType, TObjectIntHashMap[String]]()
         var documentIndex = -1
-        val documents = textDocuments.map {case(textDocument) =>
+        val documents = textDocuments.map { case (textDocument) =>
             documentIndex += 1
-                if (documentIndex % 1000 == 0) info("done " + documentIndex)
-                processDocument(textDocument, numberOfWords, wordsToNumber, documentIndex)
+            if (documentIndex % 1000 == 0) info("done " + documentIndex)
+            processDocument(textDocument, numberOfWords, wordsToNumber, documentIndex)
         }.toVector
         info("numerator done")
         (documents, Alphabet(wordsToNumber.toMap))
     }
+
+    /**
+     * @param textDocuments text documents to be numerated
+     * @param alphabet stays immutable, words not from the alphabet are ommited
+     * @return
+     */
+    def apply(textDocuments: Iterator[TextualDocument], alphabet: Alphabet): Seq[Document] =
+        (for ((doc, index) <- textDocuments.zipWithIndex) yield processDocument(doc, alphabet, index)).toVector
+
+    private def processDocument(text: TextualDocument, alphabet: Alphabet, docIndex: Int): Document =
+        new Document(text.attributeSet().map(attr => (attr, text.words(attr)))
+            .map { case (attr, tokens) => attr -> tokens.map(w => alphabet.getIndex(attr, w)).flatten.groupBy(x => x).map { case (w, cnt) => (w, cnt.size.toShort)}.toSeq}.toMap, docIndex)
 
     /**
      * replace words by number in a single document for every attribute
@@ -50,7 +62,7 @@ object Numerator extends Logging {
                 wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute), attribute, numberOfWords, wordsToNumber))
         }
 
-        new Document(document.map{case(key, value) => (key, value.toSeq)}, documentIndex)
+        new Document(document.map { case (key, value) => (key, value.toSeq)}, documentIndex)
     }
 
     /**
@@ -67,7 +79,7 @@ object Numerator extends Logging {
                                       wordsToNumber: mutable.Map[AttributeType, TObjectIntHashMap[String]]) = {
         val map = mutable.Map[Int, Short]().withDefaultValue(1)
         for (word <- words) {
-            if(!wordsToNumber.contains(attribute)) wordsToNumber(attribute) = new TObjectIntHashMap[String]()
+            if (!wordsToNumber.contains(attribute)) wordsToNumber(attribute) = new TObjectIntHashMap[String]()
             if (!wordsToNumber(attribute).containsKey(word)) {
                 wordsToNumber(attribute).put(word, numberOfWords(attribute))
                 numberOfWords(attribute) += 1

@@ -79,7 +79,7 @@ abstract class AbstractPLSABuilder(protected val numberOfTopics: Int,
     def build(): PLSA = {
         val (theta, phi) = initialApproximationGenerator.apply(modelParameters, documents)
         val bricks = buildBricks(modelParameters: ModelParameters)
-        new PLSA(bricks, stoppingCriteria, thetaSparsifier, regularizer, phi, theta)
+        new PLSA(bricks, stoppingCriteria, thetaSparsifier, regularizer, documents, phi, theta)
     }
 }
 
