@@ -7,7 +7,7 @@ package ru.ispras.modis.tm.attribute
  * Time: 19:34
  */
 final class Word(val lang: String) extends AttributeType {
-    override def toString = lang
+    override def toString = "attribute.Word " + lang
 
     override def equals(other: Any) = other match {
         case other: Word => lang == other.lang

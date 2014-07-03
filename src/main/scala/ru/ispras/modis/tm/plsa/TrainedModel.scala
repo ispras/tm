@@ -28,5 +28,10 @@ class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta)
 
         phi(DefaultAttributeType)
     }
+
+    def getPhi(attribute: AttributeType) = {
+        require(phi.contains(attribute), "there is no attribute " + attribute)
+        phi(attribute)
+    }
 }
 
