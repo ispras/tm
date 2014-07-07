@@ -3,7 +3,7 @@ package ru.ispras.modis.tm.scripts
 import java.util.Random
 
 import ru.ispras.modis.tm.attribute.Word
-import ru.ispras.modis.tm.builder.{FixedPhiBuilder, PLSABuilder}
+import ru.ispras.modis.tm.builder.{PLSABuilder}
 import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
 import ru.ispras.modis.tm.plsa.TrainedModelSerializer
 import ru.ispras.modis.tm.utils.TopicHelper
