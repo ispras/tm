@@ -5,30 +5,30 @@
  %Стиль презентации
 \usetheme{Warsaw}
 \begin{document}
-\title{IM presentation}
+\title{Доклад про фреймворк для тематического моделирования}  
 \author{Ilya Kozlov \\Avanesov Valeriy}
 
 
 
 
-\frame{\titlepage}
+\frame{\titlepage} 
 
 \begin{frame}{Тематическое моделирование. Снова. }
-
-
+	
+	
 	\begin{block}{PLSA}
-			$$L(\Phi, \Theta) = \sum\limits_{d \in D} \sum\limits_{w \in d}
+			$$L(\Phi, \Theta) = \sum\limits_{d \in D} \sum\limits_{w \in d} 
 	n_{dw} \ln \sum\limits_{t \in T} \phi_{wt}\theta_{td} \rightarrow \max\limits_{\Phi, \Theta}$$
 	\end{block}
 	\begin{block}{RobustPLSA}
-			$$L(\Phi, \Theta, \Pi) = \sum\limits_{d \in D} \sum\limits_{w \in d}
-	n_{dw} \ln \frac{ \sum_{t \in T} \phi_{wt}\theta_{td} + \gamma \pi_{dw} + \varepsilon \pi_w  }{1+\gamma+\varepsilon} \rightarrow \max\limits_{\Phi, \Theta, \Pi}$$
+			$$L(\Phi, \Theta, \Pi) = \sum\limits_{d \in D} \sum\limits_{w \in d} 
+	n_{dw} \ln \frac{ \sum_{t \in T} \phi_{wt}\theta_{td} + \gamma \pi_{dw} + \varepsilon \pi_w  }{1+\gamma+\varepsilon} \rightarrow \max\limits_{\Phi, \Theta, \Pi}$$	
 	\end{block}
-
+	
 	\begin{block}{Регуляризованный PLSA}
 		$$\mathfrak{L}(\Phi, \Theta) =  L(\Phi, \Theta) + R(\Phi, \Theta) \rightarrow \max\limits_{\Phi, \Theta} $$
 	\end{block}
-
+	
 \end{frame}
 
 \begin{frame}{Запустите уже!!!}
@@ -51,13 +51,13 @@
 	    \item матрицы счетчиков $n_{w t}$ и $n_{d t}$ и соответствующие матрицы вероятностей $\Phi$ и $\Theta$ связаны по смыслу
 	    \item Матриц вероятностей много, но каждой соответствует своя матрица счётчиков
 	    \item Матрица счётчиков бесполезна без своей матрицы вероятностей
-	    \item Матрица вероятностей бесполезна без  матрицы счётчиков
+	    \item Матрица вероятностей бесполезна без  матрицы счётчиков 
 	    \item Необходимо ограничить возможность изменения матрицы вероятностей, так чтобы она оставалась нормированной.
-	\end{itemize}
+	\end{itemize}	
     \end{block}
 \end{frame}
 
-\begin{frame}{Огр}
+\begin{frame}{Огр}    
     \begin{block}{Огры}
 	Огр \-- двухголовое создание.\\
 	Головы огра это матрица счётчиков и матрица вероятностей\\
@@ -69,15 +69,15 @@
 	    \item Изменять матрицу счётчиков
 	    \item Перемещать значения из матрицы счётчиков в матрицу вероятностей
 	    \item Разреживать матрицу вероятностей
-	\end{enumerate}
+	\end{enumerate}	
     \end{block}
 
     \begin{block}{Зачем это надо}
 	\begin{enumerate}
 	    \item Счётчики и вероятности всегда вместе, не перепутаешь
-	    \item Матрица вероятностей всегда нормирована на 1.
-	\end{enumerate}
-    \end{block}
+	    \item Матрица вероятностей всегда нормирована на 1.	    
+	\end{enumerate}	
+    \end{block}  
 \end{frame}
 
 \begin{frame}{Регуляризаторы}
@@ -173,8 +173,8 @@
 \begin{frame}{Менее формальное определение}
     \begin{block}{Документы и атрибуты}
 	В отличие от обычного тематического моделирования в мультиязычной тематической модели каждому документу может соответствовать несколько текстов, например на разных языках.\\
-	При этом распределение по темам у всех документов общее.
-
+	При этом распределение по темам у всех документов общее. 
+	
     \end{block}
 
     \begin{block}{Вот как это выглядит:}
@@ -188,7 +188,7 @@
 	\begin{itemize}
 	    \item Каждому языку ставится в соответствие свой атрибут. (Word("ru"), Word("en")...)
 	    \item Каждый текстовый документ создаётся как\\ Map(атрибут $\to$ текст)
-	    \item Каждому атрибуту ставится в соответствие своя матрица $\Phi$ (слова/темы), матрица $\Theta$ (документы/темы) общая.
+	    \item Каждому атрибуту ставится в соответствие своя матрица $\Phi$ (слова/темы), матрица $\Theta$ (документы/темы) общая. 
 	    \item Отображение слов в порядковый номер и наоборот своё для каждого атрибута, но хранится всё в классе $Alphabet$
 	\end{itemize}
     \end{block}
