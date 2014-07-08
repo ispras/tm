@@ -17,10 +17,10 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 /**
  * store distribution of words by topic and documents by topics
  * @param phi distribution of words by topic for every attribute
+ * @param perplexity perplexity value obtained on the training of this model
  * @param theta distribution of document by topic
  */
-class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta) {
-    def this() = this(Map[AttributeType, AttributedPhi](), null)
+class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta, perplexity: Double) {
 
     def getPhi = {
         require(phi.size == 1, "there is more than one attribute, use .phi(attribute)")
