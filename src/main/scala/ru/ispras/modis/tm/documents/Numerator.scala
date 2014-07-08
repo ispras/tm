@@ -100,8 +100,16 @@ object Numerator extends Logging {
         map.toArray
     }
 
-    def findFrequentTokens(textDocuments: Iterator[TextualDocument], rareTokenThreshold: Int)
+    private def findFrequentTokens(textDocuments: Iterator[TextualDocument], rareTokenThreshold: Int)
     : mutable.Map[AttributeType, mutable.Set[String]] = {
+
+        /**
+         * if rareTokenThreshold < 1, we don't want to remove any of words, so every word is
+         * "frequent". In order to avoid unnecessary travecing over collection, we instantiate a set,
+         * that includes every element.
+         *
+         * Yes, this set violates contract, but the only thing we need is contains(...) method
+         */
         val allIncludingSet = new mutable.Set[String] {
             override def +=(elem: String): this.type = ???
 
