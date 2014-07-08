@@ -12,7 +12,7 @@ import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category, AttributeTy
  * holds words, related to the given attribute
  * @param attributes map from attribute to sequence of words
  */
-class TextualDocument(private val attributes: Map[AttributeType, Seq[String]]) {
+class TextualDocument(private[documents] val attributes: Map[AttributeType, Seq[String]]) {
     require(attributes.values.forall(_.nonEmpty), "empty document")
 
     /**

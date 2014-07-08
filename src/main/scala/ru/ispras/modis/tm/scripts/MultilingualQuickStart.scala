@@ -14,8 +14,8 @@ import ru.ispras.modis.tm.utils.TopicHelper
 object MultilingualQuickStart extends App {
 
     val td1 = new TextualDocument(Map(
-        Word("ru") -> Seq("утки", "утки", "утки"),
-        Word("en") -> Seq("duck", "duck", "duck", "duck", "duck")))
+        Word("ru") -> Seq("утки", "утки", "утки", "жопа"),
+        Word("en") -> Seq("duck", "duck", "duck", "duck", "duck", "fuckaduck")))
 
     val td2 = new TextualDocument(Map(
         Word("ru") -> Seq("утки", "утки", "интеграл"),
@@ -28,7 +28,7 @@ object MultilingualQuickStart extends App {
     val td4 = new TextualDocument(Map(Word("ru") -> Seq("градиент", "производная", "интеграл", "логарифм")))
     val textualDocuments = Iterator(td1, td2, td3, td4)
 
-    val (documents, alphabet) = Numerator(textualDocuments)
+    val (documents, alphabet) = Numerator(textualDocuments, 2)
 
 
     val numberOfTopics = 2
