@@ -7,7 +7,7 @@ import ru.ispras.modis.tm.attribute.DefaultAttributeType
 import ru.ispras.modis.tm.builder.PLSABuilder
 import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
 import ru.ispras.modis.tm.plsa.TrainedModelSerializer
-import ru.ispras.modis.tm.regularizer.TopicEliminatingRegularizer
+import ru.ispras.modis.tm.regularizer.{DecorrelatingRegularizer, TopicEliminatingRegularizer}
 import ru.ispras.modis.tm.utils.TopicHelper
 
 import scala.io.Source
@@ -55,7 +55,7 @@ object TopicNumberSelection extends App {
      * Numerator take into input iterator of TextualDocuments, replace words by it serial numbers and return
      * sequence of documents and instance of class alphabet (alphabet hold map from wordsNumber to word and vice versa)
      */
-    val (documents, alphabet) = Numerator(textualDocuments)
+    val (documents, alphabet) = Numerator(textualDocuments, 20)
     /**
      * now we have to build model. In this example we would use a plsa
      * we use builder to build instance of class PLSA
@@ -69,6 +69,7 @@ object TopicNumberSelection extends App {
     // java.util.Random
     val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
         .addRegularizer(new TopicEliminatingRegularizer(documents, 100))
+        .addRegularizer(new DecorrelatingRegularizer(10))
 
     /**
      * and now we build plsa
