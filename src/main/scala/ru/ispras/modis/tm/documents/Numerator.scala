@@ -133,6 +133,7 @@ object Numerator extends Logging {
             )
 
 
+
             counters.map { case (attr, map) =>
                 val set = mutable.HashSet[String]()
                 map.forEachEntry(new TObjectIntProcedure[String] {

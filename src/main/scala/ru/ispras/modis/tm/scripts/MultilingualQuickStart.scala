@@ -28,7 +28,7 @@ object MultilingualQuickStart extends App {
     val td4 = new TextualDocument(Map(Word("ru") -> Seq("градиент", "производная", "интеграл", "логарифм")))
     val textualDocuments = Iterator(td1, td2, td3, td4)
 
-    val (documents, alphabet) = Numerator(textualDocuments, 2)
+    val (documents, alphabet) = Numerator(textualDocuments, 0)
 
 
     val numberOfTopics = 2
@@ -42,6 +42,8 @@ object MultilingualQuickStart extends App {
     val thetaArrayArray = TopicHelper.copyMatrixToArray(trainedModel.theta)
 
     println(thetaArrayArray.map(_.mkString(" ")).mkString("\n"))
+
+    println("phi " + trainedModel.getPhi(Word("en")))
 
     TrainedModelSerializer.save(trainedModel, "examples/model")
 
