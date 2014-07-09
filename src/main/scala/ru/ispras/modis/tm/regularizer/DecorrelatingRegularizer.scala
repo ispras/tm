@@ -32,7 +32,7 @@ class DecorrelatingRegularizer(private val regularizationParameters: Map[Attribu
 
             for (t <- 0 until phi.numberOfTopics) {
                 val phiwt = phi.probability(t, w)
-                phi.addToExpectation(t, w, regularizationParameters(phi.attribute) * phiwt * (sumAll - phiwt))
+                phi.addToExpectation(t, w, -regularizationParameters(phi.attribute) * phiwt * (sumAll - phiwt))
             }
         }
     }

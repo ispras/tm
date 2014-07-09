@@ -50,19 +50,10 @@ object TopicNumberSelection extends App {
      * read textual documents from file (see functions getTextualDocuments for details)
      */
     val textualDocuments = getTextualDocuments()
-    /**
-     * now we have to replace words by it serial number. For this purposes we would use object Numerator
-     * Numerator take into input iterator of TextualDocuments, replace words by it serial numbers and return
-     * sequence of documents and instance of class alphabet (alphabet hold map from wordsNumber to word and vice versa)
-     */
+
     val (documents, alphabet) = Numerator(textualDocuments, 20)
-    /**
-     * now we have to build model. In this example we would use a plsa
-     * we use builder to build instance of class PLSA
-     * it require define number of topics, number of iterations, alphabet, sequence of documents and random number generator
-     * to generate initial approximation
-     */
-    val numberOfTopics = 500
+
+    val numberOfTopics = 60
     val numberOfIteration = 100
     // number of iteration in EM algorithm
     val random = new Random()
@@ -71,27 +62,13 @@ object TopicNumberSelection extends App {
         .addRegularizer(new TopicEliminatingRegularizer(documents, 100))
         .addRegularizer(new DecorrelatingRegularizer(10))
 
-    /**
-     * and now we build plsa
-     */
     val plsa = builder.build()
 
-    /**
-     * now we have documents and model and we may train model. Our model take into input sequence of documents and
-     * perform stochastic matrix decomposition F ~ Phi * Theta where Phi is distribution of words by topics, thus
-     * the number in the intersects of i-th row and j-th column show the probability to generate word j from topic i.
-     * Theta is distribution of document by topic thus the number in the intersects of i-th row and j-th column show
-     * the weight of topic j in document i.
-     * The result would be saved in TrainedModel
-     */
     val trainedModel = plsa.train
 
     println(TopicHelper.getSignificantTopics(trainedModel.theta))
 
-    /**
-     * now we obtain matrix of distribution of words by topics and we may see most popular words from each topic
-     * For this purpose we use util printAllTopics. It print n words with the highest probability from every topic.
-     */
+
     val n = 10 // number of top words to see
     TopicHelper.printAllTopics(n, trainedModel.phi(DefaultAttributeType), alphabet)
 
