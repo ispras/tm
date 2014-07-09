@@ -121,3 +121,17 @@
 	    \theta_{td} \propto \left(\hat{n}_{dt} + \theta_{td}\frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{td}} \right)_+
 	\end{equation}
 	Where $\hat{n}$ has been estimated by E\--step.
+
+	\subsubsection{Probability interpretation}
+	    Does regularizer have probabilistic interpretation? Yes, it has. Imagine that $\Phi$ and $\Theta$ have some prior distribution, for example
+	    dirichlet distribution. In this case:
+	    \begin{equation} \label{probabilityWithReqularizer} P(D, \Theta, \Phi) = P(D| \Theta, \Phi) \times P(\Theta, \Phi) \end{equation}
+	    Logarithm equation \ref{probabilityWithReqularizer}:
+	    \begin{equation} \ln P(D, \Theta, \Phi) = \ln(P(D| \Theta, \Phi) \times P(\Theta, \Phi) = \ln(P(D| \Theta, \Phi)) + \ln(P(\Theta, \Phi)) \end{equation}
+	    Denote $L(\Phi, \Theta) = \ln(P(D| \Theta, \Phi))$ and $R(\Phi, \Theta) = \ln(P(\Theta, \Phi))$ and obtain \ref{optimizeWithReqularizer}
+
+	    \paragraph{Example}
+		Consider the example with symmetric dirichlet distribution\footnote{\url{http://en.wikipedia.org/wiki/Dirichlet_distribution}} with parameter $\alpha$.
+		+  every topic is driven from symmetric dirichlet and
+		
+		
