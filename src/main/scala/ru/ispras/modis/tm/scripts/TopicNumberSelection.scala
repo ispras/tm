@@ -24,7 +24,7 @@ object TopicNumberSelection extends App {
      * Documents should be preprocessed.
      */
     def getTextualDocuments(): Iterator[TextualDocument] = {
-        val lines = Source.fromFile(new File("/mnt/first/arxivprepr/res.nonr")).getLines().take(3000)
+        val lines = Source.fromFile(new File("/mnt/first/arxivprepr/res.nonr")).getLines().take(1000)
 
         /**
          * split each line by space
@@ -62,13 +62,13 @@ object TopicNumberSelection extends App {
      * it require define number of topics, number of iterations, alphabet, sequence of documents and random number generator
      * to generate initial approximation
      */
-    val numberOfTopics = 100
-    val numberOfIteration = 150
+    val numberOfTopics = 500
+    val numberOfIteration = 100
     // number of iteration in EM algorithm
     val random = new Random()
     // java.util.Random
     val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
-        .addRegularizer(new TopicEliminatingRegularizer(documents, 1))
+        .addRegularizer(new TopicEliminatingRegularizer(documents, 100))
 
     /**
      * and now we build plsa
