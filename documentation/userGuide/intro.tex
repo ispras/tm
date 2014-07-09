@@ -1,4 +1,4 @@
-\subsection{Generative model}
+   \subsection{Generative model}
 \label{generativeModel}
     In topic modeling every document viewed as mixture of topics. Each topic is a multinomial distribution on words,
     so generation model may be defined as follow:
@@ -118,7 +118,7 @@
 	\begin{equation}
 	    \label{RegularizersEquation}
 	    \varphi_{wt} \propto \left(\hat{n}_{wt} + \varphi_{wt} \frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{wt}} \right)_+ ,\ \
-	    \theta_{td} \propto \left(\hat{n}_{dt} + \theta_{td}\frac{\partial  R(\Phi, \Theta)}{\partial \varphi_{td}} \right)_+
+	    \theta_{td} \propto \left(\hat{n}_{dt} + \theta_{td}\frac{\partial  R(\Phi, \Theta)}{\partial \theta_{td}} \right)_+
 	\end{equation}
 	Where $\hat{n}$ has been estimated by E\--step.
 
@@ -132,6 +132,20 @@
 
 	    \paragraph{Example}
 		Consider the example with symmetric dirichlet distribution\footnote{\url{http://en.wikipedia.org/wiki/Dirichlet_distribution}} with parameter $\alpha$.
-		+  every topic is driven from symmetric dirichlet and
+		Assume we estimate $n_{td}$ for each topic in E\--step and want to perform M\-- step. We would find new distribution of document by topic as a maximum posterior probability solution:
+		\begin{equation} \ln(P(\vec{\theta}| \vec{n}_{dt})) \to \max \end{equation}
+		\begin{equation} \ln(P(\vec{\theta}| \vec{n}_{dt})) \propto \ln(P(\vec{n}_{dt}|\vec{\theta}) \times P(\vec{\theta})) \Leftrightarrow \end{equation}
+		\begin{equation} \ln(P(\vec{\theta}| \vec{n}_{dt})) = \ln(\prod_{t \in T} \theta_t^{n_{td}} \times \prod_{t \in T}\theta_t^{\alpha - 1}) + const \Leftrightarrow  \end{equation}
+		\begin{equation} \label{regularizerEquation} \ln(P(\vec{\theta}| \vec{n}_{dt})) = (\sum_{t \in T}(n_{td} + \alpha - 1) \ln(\theta_t)  + const \Leftrightarrow  \end{equation}
+		And boundary:
+		\begin{equation} \label{regularizerBoundary} \sum_{t \in T} \theta_t = 1 \end{equation}
+		We may write down a Lagrangian from \ref{regularizerEquation} and \ref{regularizerBoundary}
+		\begin{equation} L(\vec{\theta}, \lambda) = \sum_{t \in T}(n_{td} + \alpha - 1) \ln(\theta_t) - \lambda (\sum_{t \in T} \theta_t - 1)  \end{equation}
+		\begin{equation} \frac{\partial L}{\partial \theta_t} = \frac{n_{td} + \alpha - 1}{\theta_t} - \lambda = 0  \end{equation}
+		\begin{equation} \theta_t \propto  n_{td} + \alpha - 1 \end{equation}
+		Where $n_{td}$ was estimated in E\--step and
+		$\theta_{td}\frac{\partial  R(\Phi, \Theta)}{\partial \theta_{td}} = \theta_{td} \frac{\partial (\alpha - 1)\ln(\theta_{td})}{\partial \theta_{td}} = \alpha - 1 $
+		is regularizer.\\
+		See example of regularizer implementation in ru.ispras.modis.tm.regularizer.SymmetricDirichlet
 		
 		
