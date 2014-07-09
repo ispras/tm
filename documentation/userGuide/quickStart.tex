@@ -45,7 +45,7 @@ In this section would be shown how to perform each step.
     One may build model with class Builder (see package ru.ispras.modis.builder). Our project provide three types of builders:
     \begin{enumerate}
 	\item PLSABuilder \--- builds a standard PLSA (as it described in original work \cite{PLSA_original})
-	\item LDABuilder  \--- builds an LDA (PLSA with Dirichlet regularizer, for details section \ref{Regularizers}) % TODO add a description of a Dirichlet regularizer in the section Regularizers
+	\item LDABuilder  \--- builds an LDA (PLSA with Dirichlet regularizer, for details section \ref{Regularizers})
 	\item RobustPLSABuilder \--- build a robust PLSA. Robust PLSA take into account that some words are too rare and can't be explained by any topic 
 	    (we call this kind of words "noise"). Some other words may be too common (for example a stop\--word, that we forget to remove in the preprocessing step). This kind of words
 	    may be refer to any topic (we call that kind of word "background").  
