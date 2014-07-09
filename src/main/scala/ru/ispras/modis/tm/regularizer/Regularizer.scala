@@ -23,7 +23,7 @@ abstract class Regularizer {
      * if you want to calculate log(P(D| Phi, Theta)) return 0f
      * @param phi distribution of words by topics
      * @param theta distribution of document by topics
-     * @return log(P(Pii, Theta| prior))
+     * @return log(P(Phi, Theta| prior))
      */
     def apply(phi: Map[AttributeType, AttributedPhi], theta: Theta): Float
 

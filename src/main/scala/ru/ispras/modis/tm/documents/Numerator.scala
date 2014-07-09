@@ -100,12 +100,21 @@ object Numerator extends Logging {
         map.toArray
     }
 
+    /**
+     * this methods look throw the collection and if word "frequent" or not. Frequent means that word occur >= than rareTokenThreshold
+     * in collection. Experiments shows that rare tokens present a 50-60%% of vocabulary, but this word may be omitted
+     * without drop of model quality.
+     * @param textDocuments sequence of textual documents
+     * @param rareTokenThreshold threshold for rare tokens. Each token which occur >= rareTokenThreshold are frequent
+     * @return set with all frequent topics. It set provide method contains which return true if and only if a token is
+     *         frequent
+     */
     private def findFrequentTokens(textDocuments: Iterator[TextualDocument], rareTokenThreshold: Int)
     : mutable.Map[AttributeType, mutable.Set[String]] = {
 
         /**
          * if rareTokenThreshold < 1, we don't want to remove any of words, so every word is
-         * "frequent". In order to avoid unnecessary travecing over collection, we instantiate a set,
+         * "frequent". In order to avoid unnecessary traversing over collection, we instantiate a set,
          * that includes every element.
          *
          * Yes, this set violates contract, but the only thing we need is contains(...) method
@@ -133,7 +142,9 @@ object Numerator extends Logging {
             )
 
 
-
+            /**
+             * this strange peace of code  simply convert trove mat to set
+             */
             counters.map { case (attr, map) =>
                 val set = mutable.HashSet[String]()
                 map.forEachEntry(new TObjectIntProcedure[String] {
