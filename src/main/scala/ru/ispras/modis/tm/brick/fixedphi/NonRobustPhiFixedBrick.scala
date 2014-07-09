@@ -12,8 +12,8 @@ import ru.ispras.modis.tm.attribute.AttributeType
  * Date: 06.05.14
  * Time: 15:06
  */
-class NonRobustPhiFixedBrick(attribute: AttributeType, modelParameters: ModelParameters)
-    extends BrickPhiFixed(attribute, modelParameters) {
+class NonRobustPhiFixedBrick(attribute: AttributeType, modelParameters: ModelParameters, attributeWeight: Float)
+    extends BrickPhiFixed(attribute, modelParameters, attributeWeight) {
     /**
      * execute one iteration
      * @param theta main.scala.matrix of distribution of main.scala.documents by topics

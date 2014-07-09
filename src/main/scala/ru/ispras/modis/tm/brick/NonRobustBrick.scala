@@ -21,7 +21,12 @@ import ru.ispras.modis.tm.attribute.AttributeType
  * @param attribute attribute of brick (process only phi matrix with corresponding attribute)
  * @param modelParameters number of topics and number of words
  */
-class NonRobustBrick(regularizer: Regularizer, phiSparsifier: Sparsifier, attribute: AttributeType, modelParameters: ModelParameters) extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters) {
+class NonRobustBrick(regularizer: Regularizer,
+                     phiSparsifier: Sparsifier,
+                     attribute: AttributeType,
+                     modelParameters: ModelParameters,
+                     attributeWeight: Float)
+    extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight) {
     /**
      *
      * @param theta matrix of distribution of documents by topics

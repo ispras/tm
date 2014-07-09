@@ -13,6 +13,7 @@ import ru.ispras.modis.tm.attribute.AttributeType
  * Time: 16:24
  */
 abstract class BrickPhiFixed(attribute: AttributeType,
-                             modelParameters: ModelParameters)
-    extends AbstractPLSABrick(new ZeroRegularizer, new ZeroSparsifier, attribute, modelParameters) {
+                             modelParameters: ModelParameters,
+                             attributeWeight: Float)
+    extends AbstractPLSABrick(new ZeroRegularizer, new ZeroSparsifier, attribute, modelParameters, attributeWeight) {
 }

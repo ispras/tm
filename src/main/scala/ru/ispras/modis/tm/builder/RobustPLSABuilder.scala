@@ -20,12 +20,15 @@ class RobustPLSABuilder(numberOfTopics: Int,
                         private val noiseWeight: Float,
                         private val backgroundWeight: Float,
                         private val random: Random = new Random,
-                        private val numberOfIteration: Int = 100) extends AbstractPLSABuilder(numberOfTopics, alphabet, documents) {
+                        private val numberOfIteration: Int = 100,
+                        attributeWeight: Map[AttributeType, Float])
+    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight) {
 
     override protected def buildBricks(modelParameters: ModelParameters) = {
         val noiseParameter = new NoiseParameters(noiseWeight, backgroundWeight)
         modelParameters.numberOfWords.map {
-            case (key, value) => (key, RobustBrick(regularizer, phiSparsifier, key, modelParameters, noiseParameter, documents))
+            case (attribute, value) => (attribute,
+                RobustBrick(regularizer, phiSparsifier, attribute, modelParameters, noiseParameter, documents, attributeWeight.getOrElse(attribute, 1f)))
         }
     }
 

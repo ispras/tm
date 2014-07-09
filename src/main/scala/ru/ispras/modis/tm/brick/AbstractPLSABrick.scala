@@ -19,11 +19,14 @@ import ru.ispras.modis.tm.attribute.AttributeType
  * @param phiSparsifier sparsifier for phi matrix
  * @param attribute attribute of brick (process only phi matrix with corresponding attribute)
  * @param modelParameters number of topics and number of words
+ * @param attributeWeight attribute weight show how important this attribute. For example title may be more
+ *                        important than ordinary word from text.
  */
 abstract class AbstractPLSABrick(private val regularizer: Regularizer,
                                  private val phiSparsifier: Sparsifier,
                                  protected val attribute: AttributeType,
-                                 protected val modelParameters: ModelParameters) {
+                                 protected val modelParameters: ModelParameters,
+                                 private val attributeWeight: Float) {
 
     /**
      * execute one iteration
@@ -61,7 +64,7 @@ abstract class AbstractPLSABrick(private val regularizer: Regularizer,
             sum += phi.probability(topicNumber, wordIndex) * theta.probability(documentIndex, topicNumber)
             topicNumber += 1
         }
-        sum
+        sum / attributeWeight
     }
 
 
