@@ -20,8 +20,9 @@ class PLSABuilder(numberOfTopics: Int,
                   alphabet: Alphabet,
                   documents: Seq[Document],
                   protected val random: Random = new Random,
-                  protected val numberOfIteration: Int = 100)
-    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents) {
+                  protected val numberOfIteration: Int = 100,
+                  attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float]())
+    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight) {
 
     initialApproximationGenerator = new RandomInitialApproximationGenerator(random) //TODO user setters
 
@@ -34,6 +35,7 @@ class PLSABuilder(numberOfTopics: Int,
     regularizer = new ZeroRegularizer()
 
     protected def brickBuilder(modelParameters: ModelParameters): Map[AttributeType, AbstractPLSABrick] = modelParameters.numberOfWords.map {
-        case (key, value) => (key, new NonRobustBrick(regularizer, phiSparsifier, key, modelParameters))
+        case (attribute, value) => (attribute,
+            new NonRobustBrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight.getOrElse(attribute, 1f)))
     }
 }
