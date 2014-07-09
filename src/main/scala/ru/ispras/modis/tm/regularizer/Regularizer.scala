@@ -53,7 +53,7 @@ abstract class Regularizer {
      * @param phi distribution of words by topics
      * @param theta distribution of document by topics
      */
-    protected def regularizePhiImmutable(phi: AttributedPhi, theta: ImmutableTheta): Unit
+    private[regularizer] def regularizePhiImmutable(phi: AttributedPhi, theta: ImmutableTheta): Unit
 
     /**
      * this method take into input matrix Phi and matrix Theta and regularize matrix Phi. To regularize matrix Theta one
@@ -63,9 +63,5 @@ abstract class Regularizer {
      * @param phi distribution of words by topics
      * @param theta distribution of document by topics
      */
-    protected def regularizeThetaImmutable(phi: Map[AttributeType, ImmutablePhi], theta: Theta): Unit
-}
-
-object Regularizer {
-    implicit def toRegularizerSum(reqularizer: Regularizer): RegularizerSum = new RegularizerSum(Vector(reqularizer))
+    private[regularizer] def regularizeThetaImmutable(phi: Map[AttributeType, ImmutablePhi], theta: Theta): Unit
 }

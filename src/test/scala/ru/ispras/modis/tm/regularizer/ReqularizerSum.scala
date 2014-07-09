@@ -1,7 +1,7 @@
 package ru.ispras.modis.tm.regularizer
 
 
-import ru.ispras.modis.tm.regularizer.Regularizer.toRegularizerSum
+import ru.ispras.modis.tm.regularizer.RegularizerSum._
 import org.mockito.Mockito
 import org.scalatest.{Matchers, FlatSpec}
 

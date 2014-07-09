@@ -1,22 +1,21 @@
 package ru.ispras.modis.tm.scripts
 
-import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
-import ru.ispras.modis.tm.plsa.{TrainedModelSerializer, TrainedModel}
-import scala.io.Source
 import java.io.File
-import ru.ispras.modis.tm.builder.PLSABuilder
 import java.util.Random
+
+import ru.ispras.modis.tm.attribute.DefaultAttributeType
+import ru.ispras.modis.tm.builder.PLSABuilder
+import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
+import ru.ispras.modis.tm.plsa.TrainedModelSerializer
+import ru.ispras.modis.tm.regularizer.TopicEliminatingRegularizer
 import ru.ispras.modis.tm.utils.TopicHelper
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category}
+
+import scala.io.Source
 
 /**
- * Created with IntelliJ IDEA.
- * User: padre
- * Date: 30.04.14
- * Time: 16:11
+ * Created by valerij on 7/9/14.
  */
-
-object QuickStart extends App{
+object TopicNumberSelection extends App {
 
     /**
      * first of all we have to read textual documents.
@@ -25,10 +24,7 @@ object QuickStart extends App{
      * Documents should be preprocessed.
      */
     def getTextualDocuments(): Iterator[TextualDocument] = {
-        /**
-         * read lines from textual file with a 1000 scientific articles
-         */
-        val lines = Source.fromFile(new File("examples/arxiv.part")).getLines()
+        val lines = Source.fromFile(new File("/mnt/first/arxivprepr/res.nonr")).getLines().take(3000)
 
         /**
          * split each line by space
@@ -50,7 +46,6 @@ object QuickStart extends App{
     }
 
 
-
     /**
      * read textual documents from file (see functions getTextualDocuments for details)
      */
@@ -61,30 +56,24 @@ object QuickStart extends App{
      * sequence of documents and instance of class alphabet (alphabet hold map from wordsNumber to word and vice versa)
      */
     val (documents, alphabet) = Numerator(textualDocuments)
-
-    /**
-     * val splitLines = Source.fromFile(new File("examples/arxiv.part")).getLines().map(_.split(" "))
-     * val (documents, alphabet) = Numerator(splitLines)
-     */
-
-
-
-
     /**
      * now we have to build model. In this example we would use a plsa
      * we use builder to build instance of class PLSA
      * it require define number of topics, number of iterations, alphabet, sequence of documents and random number generator
      * to generate initial approximation
      */
-    val numberOfTopics = 25
-    val numberOfIteration = 100 // number of iteration in EM algorithm
-    val random = new Random() // java.util.Random
-    val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random,  numberOfIteration)
+    val numberOfTopics = 100
+    val numberOfIteration = 150
+    // number of iteration in EM algorithm
+    val random = new Random()
+    // java.util.Random
+    val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
+        .addRegularizer(new TopicEliminatingRegularizer(documents, 1))
 
     /**
      * and now we build plsa
      */
-    val plsa  = builder.build()
+    val plsa = builder.build()
 
     /**
      * now we have documents and model and we may train model. Our model take into input sequence of documents and
@@ -96,29 +85,13 @@ object QuickStart extends App{
      */
     val trainedModel = plsa.train
 
+    println(TopicHelper.getSignificantTopics(trainedModel.theta))
+
     /**
      * now we obtain matrix of distribution of words by topics and we may see most popular words from each topic
      * For this purpose we use util printAllTopics. It print n words with the highest probability from every topic.
      */
     val n = 10 // number of top words to see
     TopicHelper.printAllTopics(n, trainedModel.phi(DefaultAttributeType), alphabet)
-
-    /**
-     * now we save matrix Phi (words by topic ) into file examples/Phi
-     * and matrix Theta (topic by document) in file examples/Theta
-     */
-    TopicHelper.saveMatrix("examples/Phi", trainedModel.phi(DefaultAttributeType))
-    TopicHelper.saveMatrix("examples/Theta", trainedModel.theta)
-
-    /**
-     * and now we can serialize trainedModel using kryo. Kryo saves objects in binary format, so do not try to open
-     * model by textual redactor.
-     */
-    TrainedModelSerializer.save(trainedModel, "examples/model")
-
-    /**
-     * and now we may load model
-     */
-    TrainedModelSerializer.load("examples/model").getPhi.probability(1, 1)
 
 }

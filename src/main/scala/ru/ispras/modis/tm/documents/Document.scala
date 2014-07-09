@@ -21,6 +21,11 @@ class Document(private val attributes: Map[AttributeType, Seq[(Int, Short)]], va
      */
     def getAttributes(attributeType: AttributeType): Seq[(Int, Short)] = attributes.getOrElse(attributeType, Seq[(Int, Short)]())
 
+    /**
+     *
+     * @return set of attributes included in the document
+     */
+    def attributeSet() = attributes.keySet
 
     def getWords = {
         require(attributes.contains(Category), "use this method only in case of one attribute Category")
