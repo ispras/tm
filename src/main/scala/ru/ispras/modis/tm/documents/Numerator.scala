@@ -143,7 +143,7 @@ object Numerator extends Logging {
 
 
             /**
-             * this strange peace of code  simply convert trove mat to set
+             * this strange peace of code  simply convert trove map to set
              */
             counters.map { case (attr, map) =>
                 val set = mutable.HashSet[String]()
