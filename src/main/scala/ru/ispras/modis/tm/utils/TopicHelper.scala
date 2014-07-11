@@ -16,8 +16,8 @@ import scala.io.Source
  */
 object TopicHelper {
     def getSignificantTopics(theta: Theta) =
-        (0 until theta.numberOfTopics).map(topic => (topic, (0 until theta.numberOfDocuments)
-            .map(docs => theta.probability(docs, topic)).sum)).filter(_._2 > 0.001).map(_._1)
+        (0 until theta.numberOfTopics).filterNot(topic =>
+            (0 until theta.numberOfDocuments).forall(docs => theta.probability(docs, topic) < 0.001))
 
 
     /**

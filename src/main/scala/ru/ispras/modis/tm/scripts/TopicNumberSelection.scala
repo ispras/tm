@@ -7,7 +7,7 @@ import ru.ispras.modis.tm.attribute.DefaultAttributeType
 import ru.ispras.modis.tm.builder.PLSABuilder
 import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
 import ru.ispras.modis.tm.plsa.TrainedModelSerializer
-import ru.ispras.modis.tm.regularizer.{DecorrelatingRegularizer, TopicEliminatingRegularizer}
+import ru.ispras.modis.tm.regularizer.{SymmetricDirichlet, DecorrelatingRegularizer, TopicEliminatingRegularizer}
 import ru.ispras.modis.tm.utils.TopicHelper
 
 import scala.io.Source
@@ -59,8 +59,9 @@ object TopicNumberSelection extends App {
     val random = new Random()
     // java.util.Random
     val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
-        .addRegularizer(new TopicEliminatingRegularizer(documents, 100))
-        .addRegularizer(new DecorrelatingRegularizer(10))
+        .addRegularizer(new TopicEliminatingRegularizer(documents, 4000))
+        //        .addRegularizer(new DecorrelatingRegularizer(10))
+        .addRegularizer(new SymmetricDirichlet(-0.5f, 0f))
 
     val plsa = builder.build()
 
