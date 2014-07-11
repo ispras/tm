@@ -76,11 +76,12 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * perform normalization of stochastic matrix e.g. multiply every row by 1 / (som of row)
      */
     private def normalise() {
+        stochasticMatrix.foreach(x => println(x.toSeq))
         var columnIndex = 0
         var rowIndex = 0
         while (rowIndex < numberOfRows) {
             val sum = stochasticMatrix(rowIndex).sum
-            require(sum > 0, "sum should be > 0. May be you dump twice in a row?")
+            require(sum > 0, "sum should be > 0. May be you dump twice in a row? number of row=" + rowIndex)
             while (columnIndex < numberOfColumns) {
                 stochasticMatrix(rowIndex)(columnIndex) /= sum
                 columnIndex += 1

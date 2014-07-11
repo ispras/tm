@@ -8,6 +8,7 @@ import ru.ispras.modis.tm.documents.Document
 import ru.ispras.modis.tm.regularizer.Regularizer
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.utils.TopicHelper
 
 /**
  * Created with IntelliJ IDEA.
