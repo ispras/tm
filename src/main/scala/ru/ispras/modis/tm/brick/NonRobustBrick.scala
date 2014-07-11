@@ -1,12 +1,13 @@
 package ru.ispras.modis.tm.brick
 
+import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.documents.Document
+import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
-import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
-import ru.ispras.modis.tm.documents.Document
 import ru.ispras.modis.tm.utils.ModelParameters
-import math.log
-import ru.ispras.modis.tm.attribute.AttributeType
+
+import scala.math.log
 
 /**
  * Created with IntelliJ IDEA.

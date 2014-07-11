@@ -1,8 +1,8 @@
 package ru.ispras.modis.tm.regularizer
 
 import ru.ispras.modis.tm.attribute.AttributeType
-import ru.ispras.modis.tm.documents.{Document, TextualDocument}
-import ru.ispras.modis.tm.matrix.{Theta, ImmutablePhi, ImmutableTheta, AttributedPhi}
+import ru.ispras.modis.tm.documents.Document
+import ru.ispras.modis.tm.matrix.{AttributedPhi, ImmutablePhi, ImmutableTheta, Theta}
 
 /**
  * Created by valerij on 7/9/14.

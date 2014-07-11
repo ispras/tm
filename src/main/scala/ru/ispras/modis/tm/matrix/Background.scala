@@ -1,8 +1,7 @@
 package ru.ispras.modis.tm.matrix
 
-import ru.ispras.modis.tm.utils.ModelParameters
-import scala.Array
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.utils.ModelParameters
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,13 +1,13 @@
 package ru.ispras.modis.tm.builder
 
-import ru.ispras.modis.tm.documents.{Alphabet, Document}
-import ru.ispras.modis.tm.utils.ModelParameters
-import ru.ispras.modis.tm.brick.{AbstractPLSABrick}
-import ru.ispras.modis.tm.brick.fixedphi.NonRobustPhiFixedBrick
-import ru.ispras.modis.tm.matrix.AttributedPhi
-import ru.ispras.modis.tm.initialapproximationgenerator.fixedphi.UniformThetaApproximationGenerator
-import ru.ispras.modis.tm.stoppingcriteria.MaxNumberOfIterationStoppingCriteria
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.brick.AbstractPLSABrick
+import ru.ispras.modis.tm.brick.fixedphi.NonRobustPhiFixedBrick
+import ru.ispras.modis.tm.documents.{Alphabet, Document}
+import ru.ispras.modis.tm.initialapproximationgenerator.fixedphi.UniformThetaApproximationGenerator
+import ru.ispras.modis.tm.matrix.AttributedPhi
+import ru.ispras.modis.tm.stoppingcriteria.MaxNumberOfIterationStoppingCriteria
+import ru.ispras.modis.tm.utils.ModelParameters
 
 /**
  * Created with IntelliJ IDEA.

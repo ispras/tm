@@ -3,13 +3,13 @@ package ru.ispras.modis.tm.scripts
 import java.util.Random
 
 import ru.ispras.modis.tm.attribute.Word
-import ru.ispras.modis.tm.builder.{PLSABuilder}
+import ru.ispras.modis.tm.builder.PLSABuilder
 import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
 import ru.ispras.modis.tm.plsa.TrainedModelSerializer
 import ru.ispras.modis.tm.utils.TopicHelper
 
 /**
- *  Created by padre on 03.07.14.
+ * Created by padre on 03.07.14.
  */
 object MultilingualQuickStart extends App {
 
@@ -36,7 +36,8 @@ object MultilingualQuickStart extends App {
     val random = new Random()
     val plsa = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration).build()
 
-    val trainedModel = plsa.train // the deepest and the darkest magic
+    val trainedModel = plsa.train
+    // the deepest and the darkest magic
     val phiArrayArray = TopicHelper.copyMatrixToArray(trainedModel.getPhi(Word("en")))
 
     val thetaArrayArray = TopicHelper.copyMatrixToArray(trainedModel.theta)

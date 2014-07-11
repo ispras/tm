@@ -1,13 +1,14 @@
 package ru.ispras.modis.tm.brick
 
+import grizzled.slf4j.Logging
+import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.documents.Document
+import ru.ispras.modis.tm.matrix.{AttributedPhi, Background, Theta}
 import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.utils.ModelParameters
-import ru.ispras.modis.tm.matrix.{Background, AttributedPhi, Theta}
-import ru.ispras.modis.tm.documents.Document
+
 import scala.collection.mutable
-import ru.ispras.modis.tm.attribute.AttributeType
-import grizzled.slf4j.Logging
 
 
 /**

@@ -1,14 +1,16 @@
 package ru.ispras.modis.tm.qualitimeasurment
 
-import gnu.trove.map.TObjectFloatMap
-import gnu.trove.map.hash.{TObjectFloatHashMap, TIntFloatHashMap}
-import ru.ispras.modis.tm.matrix.AttributedPhi
-import ru.ispras.modis.tm.documents.{Alphabet}
-import scala.io.Source
-import java.io.{FileInputStream, BufferedInputStream, File}
-import grizzled.slf4j.Logging
+import java.io.{BufferedInputStream, FileInputStream}
 import java.util.zip.GZIPInputStream
+
+import gnu.trove.map.TObjectFloatMap
+import gnu.trove.map.hash.{TIntFloatHashMap, TObjectFloatHashMap}
+import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.documents.Alphabet
+import ru.ispras.modis.tm.matrix.AttributedPhi
+
+import scala.io.Source
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,7 +1,8 @@
 package ru.ispras.modis.tm.matrix
 
 import ru.ispras.modis.tm.sparsifier.Sparsifier
-import math.max
+
+import scala.math.max
 
 /**
  * Created with IntelliJ IDEA.
@@ -76,7 +77,6 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * perform normalization of stochastic matrix e.g. multiply every row by 1 / (som of row)
      */
     private def normalise() {
-        stochasticMatrix.foreach(x => println(x.toSeq))
         var columnIndex = 0
         var rowIndex = 0
         while (rowIndex < numberOfRows) {

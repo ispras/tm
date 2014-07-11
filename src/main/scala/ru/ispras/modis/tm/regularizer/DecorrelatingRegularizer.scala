@@ -1,7 +1,7 @@
 package ru.ispras.modis.tm.regularizer
 
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
-import ru.ispras.modis.tm.matrix.{Theta, ImmutablePhi, ImmutableTheta, AttributedPhi}
+import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
+import ru.ispras.modis.tm.matrix.{AttributedPhi, ImmutablePhi, ImmutableTheta, Theta}
 
 /**
  * Created by valerij on 7/9/14.

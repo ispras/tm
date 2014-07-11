@@ -1,7 +1,7 @@
 package ru.ispras.modis.tm.documents
 
-import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category, AttributeType}
+import gnu.trove.map.hash.{TIntObjectHashMap, TObjectIntHashMap}
+import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
 
 /**
  * Created with IntelliJ IDEA.

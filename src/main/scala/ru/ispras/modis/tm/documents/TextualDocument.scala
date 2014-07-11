@@ -1,6 +1,6 @@
 package ru.ispras.modis.tm.documents
 
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category, AttributeType}
+import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
 
 /**
  * Created with IntelliJ IDEA.

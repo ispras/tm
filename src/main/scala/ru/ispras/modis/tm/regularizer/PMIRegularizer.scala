@@ -1,11 +1,11 @@
 package ru.ispras.modis.tm.regularizer
 
 import gnu.trove.map.TObjectFloatMap
-import ru.ispras.modis.tm.qualitimeasurment.{PMI, Bigram}
-import ru.ispras.modis.tm.matrix.{ImmutablePhi, ImmutableTheta, Theta, AttributedPhi}
-import ru.ispras.modis.tm.utils.TopicHelper
-import ru.ispras.modis.tm.documents.Alphabet
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.documents.Alphabet
+import ru.ispras.modis.tm.matrix.{AttributedPhi, ImmutablePhi, ImmutableTheta, Theta}
+import ru.ispras.modis.tm.qualitimeasurment.{Bigram, PMI}
+import ru.ispras.modis.tm.utils.TopicHelper
 
 /**
  * Created with IntelliJ IDEA.

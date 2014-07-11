@@ -1,7 +1,7 @@
 package ru.ispras.modis.tm.regularizer
 
-import ru.ispras.modis.tm.matrix.{ImmutablePhi, ImmutableTheta, AttributedPhi, Theta}
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.matrix.{AttributedPhi, ImmutablePhi, ImmutableTheta, Theta}
 
 
 /**

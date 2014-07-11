@@ -1,10 +1,10 @@
 package ru.ispras.modis.tm.brick.fixedphi
 
-import ru.ispras.modis.tm.utils.ModelParameters
+import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.brick.AbstractPLSABrick
 import ru.ispras.modis.tm.regularizer.ZeroRegularizer
 import ru.ispras.modis.tm.sparsifier.ZeroSparsifier
-import ru.ispras.modis.tm.brick.AbstractPLSABrick
-import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.utils.ModelParameters
 
 /**
  * Created with IntelliJ IDEA.

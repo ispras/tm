@@ -1,14 +1,12 @@
 package ru.ispras.modis.tm.builder
 
-import ru.ispras.modis.tm.documents.Document
-import ru.ispras.modis.tm.documents.Alphabet
 import java.util.Random
-import ru.ispras.modis.tm.regularizer.{Regularizer, SymmetricDirichlet}
-import ru.ispras.modis.tm.brick.{NonRobustBrick, AbstractPLSABrick}
-import ru.ispras.modis.tm.sparsifier.{ZeroSparsifier, Sparsifier}
-import ru.ispras.modis.tm.stoppingcriteria.{MaxNumberOfIterationStoppingCriteria, StoppingCriteria}
-import ru.ispras.modis.tm.initialapproximationgenerator.{RandomInitialApproximationGenerator, InitialApproximationGenerator}
+
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.documents.{Alphabet, Document}
+import ru.ispras.modis.tm.initialapproximationgenerator.RandomInitialApproximationGenerator
+import ru.ispras.modis.tm.regularizer.SymmetricDirichlet
+import ru.ispras.modis.tm.stoppingcriteria.MaxNumberOfIterationStoppingCriteria
 
 /**
  * Created with IntelliJ IDEA.

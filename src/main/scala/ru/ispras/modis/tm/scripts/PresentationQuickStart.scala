@@ -3,14 +3,12 @@ package ru.ispras.modis.tm.scripts
 import java.io.File
 import java.util.Random
 
-import ru.ispras.modis.tm.attribute.Category
 import ru.ispras.modis.tm.builder.{FixedPhiBuilder, PLSABuilder}
 import ru.ispras.modis.tm.documents.SingleAttributeNumerator
 import ru.ispras.modis.tm.initialapproximationgenerator.GibbsInitialApproximationGenerator
 import ru.ispras.modis.tm.plsa.TrainedModelSerializer
-import ru.ispras.modis.tm.regularizer.{PMIRegularizer, SymmetricDirichlet}
-import ru.ispras.modis.tm.sparsifier.{ZeroSparsifier, ThresholdSparsifier}
-import ru.ispras.modis.tm.stoppingcriteria.MaxNumberOfIterationStoppingCriteria
+import ru.ispras.modis.tm.regularizer.SymmetricDirichlet
+import ru.ispras.modis.tm.sparsifier.{ThresholdSparsifier, ZeroSparsifier}
 import ru.ispras.modis.tm.utils.TopicHelper
 
 import scala.io.Source

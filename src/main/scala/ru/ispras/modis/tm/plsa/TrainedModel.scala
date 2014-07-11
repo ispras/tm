@@ -1,10 +1,5 @@
 package ru.ispras.modis.tm.plsa
 
-import java.io.{FileInputStream, FileOutputStream}
-
-import com.esotericsoftware.kryo.Kryo
-import com.esotericsoftware.kryo.io.{Input, Output}
-import org.objenesis.strategy.StdInstantiatorStrategy
 import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
 import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 

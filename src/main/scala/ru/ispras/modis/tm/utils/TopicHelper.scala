@@ -1,9 +1,9 @@
 package ru.ispras.modis.tm.utils
 
-import ru.ispras.modis.tm.matrix.{Theta, Ogre, AttributedPhi}
-import ru.ispras.modis.tm.documents.Alphabet
 import java.io.{File, FileWriter}
-import ru.ispras.modis.tm.attribute.Category
+
+import ru.ispras.modis.tm.documents.Alphabet
+import ru.ispras.modis.tm.matrix.{AttributedPhi, Ogre, Theta}
 
 import scala.io.Source
 

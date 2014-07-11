@@ -1,17 +1,15 @@
 package ru.ispras.modis.tm.scripts
 
-import grizzled.slf4j.Logging
-import ru.ispras.modis.tm.documents.{TextualDocument, Numerator}
+import java.io.File
 import java.util.Random
-import ru.ispras.modis.tm.plsa.TrainedModel
+
+import grizzled.slf4j.Logging
+import ru.ispras.modis.tm.attribute.{Category, DefaultAttributeType}
+import ru.ispras.modis.tm.builder.LDABuilder
+import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
+import ru.ispras.modis.tm.utils.TopicHelper
 
 import scala.io.Source
-import java.io.{FileWriter, File}
-import ru.ispras.modis.tm.builder.{FixedPhiBuilder, LDABuilder, PLSABuilder, RobustPLSABuilder}
-import ru.ispras.modis.tm.qualitimeasurment.{PMI}
-import ru.ispras.modis.tm.utils.{ModelParameters, TopicHelper}
-import ru.ispras.modis.tm.brick.fixedphi.NonRobustPhiFixedBrick
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category}
 
 /**
  * Created with IntelliJ IDEA.
@@ -66,7 +64,6 @@ object PigData extends App with Logging {
     }
 
     doIt(0f)
-
 
 
 }

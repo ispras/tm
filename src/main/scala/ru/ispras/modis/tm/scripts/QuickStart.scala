@@ -1,13 +1,15 @@
 package ru.ispras.modis.tm.scripts
 
-import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
-import ru.ispras.modis.tm.plsa.{TrainedModelSerializer, TrainedModel}
-import scala.io.Source
 import java.io.File
-import ru.ispras.modis.tm.builder.PLSABuilder
 import java.util.Random
+
+import ru.ispras.modis.tm.attribute.DefaultAttributeType
+import ru.ispras.modis.tm.builder.PLSABuilder
+import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
+import ru.ispras.modis.tm.plsa.TrainedModelSerializer
 import ru.ispras.modis.tm.utils.TopicHelper
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category}
+
+import scala.io.Source
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +18,7 @@ import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category}
  * Time: 16:11
  */
 
-object QuickStart extends App{
+object QuickStart extends App {
 
     /**
      * first of all we have to read textual documents.
@@ -50,7 +52,6 @@ object QuickStart extends App{
     }
 
 
-
     /**
      * read textual documents from file (see functions getTextualDocuments for details)
      */
@@ -68,8 +69,6 @@ object QuickStart extends App{
      */
 
 
-
-
     /**
      * now we have to build model. In this example we would use a plsa
      * we use builder to build instance of class PLSA
@@ -77,14 +76,16 @@ object QuickStart extends App{
      * to generate initial approximation
      */
     val numberOfTopics = 25
-    val numberOfIteration = 100 // number of iteration in EM algorithm
-    val random = new Random() // java.util.Random
-    val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random,  numberOfIteration)
+    val numberOfIteration = 100
+    // number of iteration in EM algorithm
+    val random = new Random()
+    // java.util.Random
+    val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
 
     /**
      * and now we build plsa
      */
-    val plsa  = builder.build()
+    val plsa = builder.build()
 
     /**
      * now we have documents and model and we may train model. Our model take into input sequence of documents and

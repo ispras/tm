@@ -1,12 +1,13 @@
 package ru.ispras.modis.tm.builder
 
-import ru.ispras.modis.tm.documents.{Document, Alphabet}
 import java.util.Random
-import ru.ispras.modis.tm.utils.ModelParameters
-import ru.ispras.modis.tm.brick.{NoiseParameters, RobustBrick, NonRobustBrick, AbstractPLSABrick}
-import ru.ispras.modis.tm.initialapproximationgenerator.{RandomInitialApproximationGenerator, InitialApproximationGenerator}
-import ru.ispras.modis.tm.stoppingcriteria.{MaxNumberOfIterationStoppingCriteria, StoppingCriteria}
+
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.brick.{NoiseParameters, RobustBrick}
+import ru.ispras.modis.tm.documents.{Alphabet, Document}
+import ru.ispras.modis.tm.initialapproximationgenerator.RandomInitialApproximationGenerator
+import ru.ispras.modis.tm.stoppingcriteria.MaxNumberOfIterationStoppingCriteria
+import ru.ispras.modis.tm.utils.ModelParameters
 
 /**
  * Created with IntelliJ IDEA.

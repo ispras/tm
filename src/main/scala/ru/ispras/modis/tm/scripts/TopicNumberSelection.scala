@@ -5,13 +5,11 @@ import java.util.Random
 
 import ru.ispras.modis.tm.attribute.DefaultAttributeType
 import ru.ispras.modis.tm.builder.PLSABuilder
-import ru.ispras.modis.tm.documents.{SingleAttributeNumerator, Numerator, TextualDocument}
-import ru.ispras.modis.tm.plsa.TrainedModelSerializer
-import ru.ispras.modis.tm.regularizer.{SymmetricDirichlet, DecorrelatingRegularizer, TopicEliminatingRegularizer}
-import ru.ispras.modis.tm.sparsifier.{CarefulSparcifier, ThresholdSparsifier}
+import ru.ispras.modis.tm.documents.{Numerator, SingleAttributeNumerator, TextualDocument}
+import ru.ispras.modis.tm.regularizer.TopicEliminatingRegularizer
+import ru.ispras.modis.tm.sparsifier.CarefulSparcifier
 import ru.ispras.modis.tm.utils.TopicHelper
 
-import scala.collection.immutable.IndexedSeq
 import scala.io.Source
 
 /**
@@ -26,7 +24,7 @@ object TopicNumberSelection extends App {
      * Documents should be preprocessed.
      */
     def getTextualDocuments(): Iterator[TextualDocument] = {
-        val lines = Source.fromFile(new File("/mnt/first/arxivprepr/res.nonr")).getLines().take(3000)
+        val lines = Source.fromFile(new File("examples/arxiv.part")).getLines().take(3000)
 
         /**
          * split each line by space
@@ -51,20 +49,21 @@ object TopicNumberSelection extends App {
     /**
      * read textual documents from file (see functions getTextualDocuments for details)
      */
-    val textualDocuments = Seq("a a b b c c d d d ".split(' ').toSeq, "z z z x x x y y y ".split(' ').toSeq, "z z x x a a b b".split(' ').toSeq)//getTextualDocuments()
+    val textualDocuments = getTextualDocuments()
+//        Seq("a a b b c c d d d ".split(' ').toSeq, "z z z x x x y y y ".split(' ').toSeq, "z z x x a a b b".split(' ').toSeq)
 
-    val (documents, alphabet) = SingleAttributeNumerator(textualDocuments.iterator)
+    val (documents, alphabet) = Numerator(textualDocuments)
 
-    val numberOfTopics = 20
+    val numberOfTopics = 60
     val numberOfIteration = 1000
     // number of iteration in EM algorithm
     val random = new Random(13)
     // java.util.Random
     val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
-        .addRegularizer(new TopicEliminatingRegularizer(documents, 0.002f))
-        .setThetaSparsifier(new CarefulSparcifier(0.01f, 15, 2 ))
-//        .addRegularizer(new DecorrelatingRegularizer(10))
-//        .addRegularizer(new SymmetricDirichlet(-0.5f, -0.1f))
+        .addRegularizer(new TopicEliminatingRegularizer(documents, 500))
+        .setThetaSparsifier(new CarefulSparcifier(0.1f, 15, 2))
+    //        .addRegularizer(new DecorrelatingRegularizer(10))
+    //        .addRegularizer(new SymmetricDirichlet(-0.5f, -0.1f))
 
 
     val plsa = builder.build()

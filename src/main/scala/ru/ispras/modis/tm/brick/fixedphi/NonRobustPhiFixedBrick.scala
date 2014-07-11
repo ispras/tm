@@ -1,10 +1,11 @@
 package ru.ispras.modis.tm.brick.fixedphi
 
-import ru.ispras.modis.tm.utils.ModelParameters
-import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
-import ru.ispras.modis.tm.documents.Document
-import scala.math.log
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.documents.Document
+import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
+import ru.ispras.modis.tm.utils.ModelParameters
+
+import scala.math.log
 
 /**
  * Created with IntelliJ IDEA.

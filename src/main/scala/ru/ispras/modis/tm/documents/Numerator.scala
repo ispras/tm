@@ -1,11 +1,11 @@
 package ru.ispras.modis.tm.documents
 
+import gnu.trove.map.hash.TObjectIntHashMap
 import gnu.trove.procedure.TObjectIntProcedure
+import grizzled.slf4j.Logging
+import ru.ispras.modis.tm.attribute.AttributeType
 
 import scala.collection.mutable
-import grizzled.slf4j.Logging
-import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
 
 /**
  * Created with IntelliJ IDEA.

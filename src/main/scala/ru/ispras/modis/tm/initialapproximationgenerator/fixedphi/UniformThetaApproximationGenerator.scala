@@ -1,9 +1,9 @@
 package ru.ispras.modis.tm.initialapproximationgenerator.fixedphi
 
-import ru.ispras.modis.tm.matrix.{Theta, AttributedPhi}
-import ru.ispras.modis.tm.utils.ModelParameters
-import ru.ispras.modis.tm.documents.Document
 import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.documents.Document
+import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
+import ru.ispras.modis.tm.utils.ModelParameters
 
 /**
  * Created with IntelliJ IDEA.
