@@ -22,7 +22,9 @@ class LDABuilder(numberOfTopics: Int,
                  private val alpha: Float,
                  private val beta: Float,
                  private val random: Random = new Random(),
-                 private val maxNumberOfIteration: Int = 100) extends AbstractPLSABuilder(numberOfTopics, alphabet, documents) {
+                 private val maxNumberOfIteration: Int = 100,
+                 attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float]())
+    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight) {
     require(alpha > -1)
     require(beta > -1)
     initialApproximationGenerator = new RandomInitialApproximationGenerator(random) //TODO use setters

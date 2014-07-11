@@ -28,6 +28,10 @@ class Theta private(expectationMatrix: Array[Array[Float]], stochasticMatrix: Ar
      * @param value value to add
      */
     override def addToExpectation(documentNumber: Int, topic: Int, value: Float): Unit = super.addToExpectation(documentNumber, topic, value)
+
+    def numberOfTopics = numberOfColumns
+
+    def numberOfDocuments = numberOfRows
 }
 
 /**

@@ -3,7 +3,7 @@ package ru.ispras.modis.tm.scripts
 import java.util.Random
 
 import ru.ispras.modis.tm.attribute.Word
-import ru.ispras.modis.tm.builder.{FixedPhiBuilder, PLSABuilder}
+import ru.ispras.modis.tm.builder.{PLSABuilder}
 import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
 import ru.ispras.modis.tm.plsa.TrainedModelSerializer
 import ru.ispras.modis.tm.utils.TopicHelper
@@ -14,8 +14,8 @@ import ru.ispras.modis.tm.utils.TopicHelper
 object MultilingualQuickStart extends App {
 
     val td1 = new TextualDocument(Map(
-        Word("ru") -> Seq("утки", "утки", "утки"),
-        Word("en") -> Seq("duck", "duck", "duck", "duck", "duck")))
+        Word("ru") -> Seq("утки", "утки", "утки", "жопа"),
+        Word("en") -> Seq("duck", "duck", "duck", "duck", "duck", "fuckaduck")))
 
     val td2 = new TextualDocument(Map(
         Word("ru") -> Seq("утки", "утки", "интеграл"),
@@ -28,7 +28,7 @@ object MultilingualQuickStart extends App {
     val td4 = new TextualDocument(Map(Word("ru") -> Seq("градиент", "производная", "интеграл", "логарифм")))
     val textualDocuments = Iterator(td1, td2, td3, td4)
 
-    val (documents, alphabet) = Numerator(textualDocuments)
+    val (documents, alphabet) = Numerator(textualDocuments, 0)
 
 
     val numberOfTopics = 2
@@ -42,6 +42,8 @@ object MultilingualQuickStart extends App {
     val thetaArrayArray = TopicHelper.copyMatrixToArray(trainedModel.theta)
 
     println(thetaArrayArray.map(_.mkString(" ")).mkString("\n"))
+
+    println("phi " + trainedModel.getPhi(Word("en")))
 
     TrainedModelSerializer.save(trainedModel, "examples/model")
 

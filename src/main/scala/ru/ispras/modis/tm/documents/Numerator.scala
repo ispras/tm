@@ -1,5 +1,7 @@
 package ru.ispras.modis.tm.documents
 
+import gnu.trove.procedure.TObjectIntProcedure
+
 import scala.collection.mutable
 import grizzled.slf4j.Logging
 import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
@@ -18,16 +20,21 @@ import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
 object Numerator extends Logging {
     /**
      * @param textDocuments documents with words
+     * @param rareTokenThreshold remove the words that occur less than rareTokenThreshold
      * @return documents with numbers, alphabet
      */
-    def apply(textDocuments: Iterator[TextualDocument]): (Seq[Document], Alphabet) = {
+    def apply(textDocuments: Iterator[TextualDocument], rareTokenThreshold: Int = 0): (Seq[Document], Alphabet) = {
         val numberOfWords = mutable.Map[AttributeType, Int]().withDefaultValue(0)
         val wordsToNumber = mutable.Map[AttributeType, TObjectIntHashMap[String]]()
         var documentIndex = -1
-        val documents = textDocuments.map { case (textDocument) =>
+
+        val (itForMapping, itForCnt) = textDocuments.duplicate
+        val freqTokens = findFrequentTokens(itForCnt, rareTokenThreshold)
+
+        val documents = itForMapping.map { case (textDocument) =>
             documentIndex += 1
             if (documentIndex % 1000 == 0) info("done " + documentIndex)
-            processDocument(textDocument, numberOfWords, wordsToNumber, documentIndex)
+            processDocument(textDocument, numberOfWords, wordsToNumber, freqTokens, documentIndex)
         }.toVector
         info("numerator done")
         (documents, Alphabet(wordsToNumber.toMap))
@@ -50,16 +57,19 @@ object Numerator extends Logging {
      * @param textualDocument documents with words
      * @param numberOfWords map from attribute to max number of word, corresponding to this attribute
      * @param wordsToNumber is map from word(String) to serial number of this word(Int)
+     * @param frequentWords set of words that should not be removed from the dataset
      * @param documentIndex serial number of document in collection
      * @return new Document
      */
     private def processDocument(textualDocument: TextualDocument,
                                 numberOfWords: mutable.Map[AttributeType, Int],
                                 wordsToNumber: mutable.Map[AttributeType, TObjectIntHashMap[String]],
+                                frequentWords: mutable.Map[AttributeType, mutable.Set[String]],
                                 documentIndex: Int) = {
         val document = textualDocument.attributeSet().foldLeft(Map[AttributeType, Array[(Int, Short)]]()) {
             case (wordsInDocument, attribute) =>
-                wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute), attribute, numberOfWords, wordsToNumber))
+                wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute)
+                    .filter(word => frequentWords(attribute).contains(word)), attribute, numberOfWords, wordsToNumber))
         }
 
         new Document(document.map { case (key, value) => (key, value.toSeq)}, documentIndex)
@@ -88,5 +98,63 @@ object Numerator extends Logging {
 
         }
         map.toArray
+    }
+
+    /**
+     * this methods look throw the collection and if word "frequent" or not. Frequent means that word occur >= than rareTokenThreshold
+     * in collection. Experiments shows that rare tokens present a 50-60%% of vocabulary, but this word may be omitted
+     * without drop of model quality.
+     * @param textDocuments sequence of textual documents
+     * @param rareTokenThreshold threshold for rare tokens. Each token which occur >= rareTokenThreshold are frequent
+     * @return set with all frequent topics. It set provide method contains which return true if and only if a token is
+     *         frequent
+     */
+    private def findFrequentTokens(textDocuments: Iterator[TextualDocument], rareTokenThreshold: Int)
+    : mutable.Map[AttributeType, mutable.Set[String]] = {
+
+        /**
+         * if rareTokenThreshold < 1, we don't want to remove any of words, so every word is
+         * "frequent". In order to avoid unnecessary traversing over collection, we instantiate a set,
+         * that includes every element.
+         *
+         * Yes, this set violates contract, but the only thing we need is contains(...) method
+         */
+        val allIncludingSet = new mutable.Set[String] {
+            override def +=(elem: String): this.type = ???
+
+            override def -=(elem: String): this.type = ???
+
+            override def contains(elem: String): Boolean = true
+
+            override def iterator: Iterator[String] = ???
+        }
+
+        if (rareTokenThreshold < 1) mutable.Map[AttributeType, mutable.Set[String]]().withDefaultValue(allIncludingSet)
+        else {
+            val counters = mutable.Map[AttributeType, TObjectIntHashMap[String]]()
+
+            textDocuments.foreach(doc =>
+                for ((attr, tokens) <- doc.attributes) {
+                    if (!counters.contains(attr)) counters.put(attr, new TObjectIntHashMap[String]())
+
+                    for (token <- tokens) counters(attr).adjustOrPutValue(token, 1, 1)
+                }
+            )
+
+
+            /**
+             * this strange peace of code  simply convert trove map to set
+             */
+            counters.map { case (attr, map) =>
+                val set = mutable.HashSet[String]()
+                map.forEachEntry(new TObjectIntProcedure[String] {
+                    override def execute(token: String, cnt: Int): Boolean = {
+                        if (cnt > rareTokenThreshold) set += token
+                        true
+                    }
+                })
+                attr -> set
+            }
+        }
     }
 }

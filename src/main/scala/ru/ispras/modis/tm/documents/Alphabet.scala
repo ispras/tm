@@ -1,7 +1,7 @@
 package ru.ispras.modis.tm.documents
 
 import gnu.trove.map.hash.{TObjectIntHashMap, TIntObjectHashMap}
-import ru.ispras.modis.tm.attribute.{Category, AttributeType}
+import ru.ispras.modis.tm.attribute.{DefaultAttributeType, Category, AttributeType}
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,7 +29,11 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
      * @param index index of words
      * @return words, corresponding to index
      */
-    def apply(index: Int) = indexWordsMap(Category).get(index) // TODO add warning or exception if there is more than one attribute
+    def apply(index: Int) = {
+        require(indexWordsMap.keys.size == 1, "do not use this method with more than one attribute")
+        require(indexWordsMap.contains(DefaultAttributeType), "does not contain default attribute type")
+        indexWordsMap(DefaultAttributeType).get(index)
+    }
 
     /**
      *

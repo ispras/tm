@@ -32,8 +32,9 @@ class RobustBrick private(regularizer: Regularizer,
                           modelParameters: ModelParameters,
                           private val noiseParameters: NoiseParameters,
                           private val background: Background,
-                          private val noise: Array[mutable.Map[Int, Float]])
-    extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters) with Logging {
+                          private val noise: Array[mutable.Map[Int, Float]],
+                          attributeWeight: Float)
+    extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight) with Logging {
 
     require(background.attribute == attribute)
     if (noiseParameters.backgroundWeight + noiseParameters.noiseWeight == 0)
@@ -143,11 +144,12 @@ object RobustBrick extends Logging {
               attribute: AttributeType,
               modelParameters: ModelParameters,
               noiseParameters: NoiseParameters,
-              documents: Seq[Document]) = {
+              documents: Seq[Document],
+              attributeWeight: Float) = {
 
         val background = Background(attribute, modelParameters)
         val noise = generateNoise(documents: Seq[Document], attribute: AttributeType)
-        new RobustBrick(regularizer, phiSparsifier, attribute, modelParameters, noiseParameters, background, noise)
+        new RobustBrick(regularizer, phiSparsifier, attribute, modelParameters, noiseParameters, background, noise, attributeWeight)
     }
 
     /**

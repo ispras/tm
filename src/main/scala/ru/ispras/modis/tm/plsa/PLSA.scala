@@ -50,7 +50,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
             numberOfIteration += 1
         }
 
-        new TrainedModel(phi, theta)
+        new TrainedModel(phi, theta, newPpx)
     }
 
     /**

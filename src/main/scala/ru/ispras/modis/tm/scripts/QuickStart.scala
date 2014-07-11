@@ -101,13 +101,13 @@ object QuickStart extends App{
      * For this purpose we use util printAllTopics. It print n words with the highest probability from every topic.
      */
     val n = 10 // number of top words to see
-    TopicHelper.printAllTopics(n, trainedModel.phi(Category), alphabet)
+    TopicHelper.printAllTopics(n, trainedModel.phi(DefaultAttributeType), alphabet)
 
     /**
      * now we save matrix Phi (words by topic ) into file examples/Phi
      * and matrix Theta (topic by document) in file examples/Theta
      */
-    TopicHelper.saveMatrix("examples/Phi", trainedModel.phi(Category))
+    TopicHelper.saveMatrix("examples/Phi", trainedModel.phi(DefaultAttributeType))
     TopicHelper.saveMatrix("examples/Theta", trainedModel.theta)
 
     /**

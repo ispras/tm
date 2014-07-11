@@ -5,7 +5,7 @@ import ru.ispras.modis.tm.brick.{NonRobustBrick, AbstractPLSABrick}
 import ru.ispras.modis.tm.stoppingcriteria.{MaxNumberOfIterationStoppingCriteria, StoppingCriteria}
 import ru.ispras.modis.tm.sparsifier.{ZeroSparsifier, Sparsifier}
 import ru.ispras.modis.tm.regularizer.{ZeroRegularizer, Regularizer}
-import ru.ispras.modis.tm.regularizer.Regularizer.toRegularizerSum
+import ru.ispras.modis.tm.regularizer.RegularizerSum.toRegularizerSum
 import ru.ispras.modis.tm.initialapproximationgenerator.{RandomInitialApproximationGenerator, InitialApproximationGenerator}
 import ru.ispras.modis.tm.documents.{Document, Alphabet}
 import ru.ispras.modis.tm.utils.ModelParameters
@@ -24,7 +24,8 @@ import ru.ispras.modis.tm.attribute.AttributeType
  */
 abstract class AbstractPLSABuilder(protected val numberOfTopics: Int,
                                    protected val alphabet: Alphabet,
-                                   protected val documents: Seq[Document]) {
+                                   protected val documents: Seq[Document],
+                                   protected val attributeWeight: Map[AttributeType, Float]) {
 
     protected val modelParameters = new ModelParameters(numberOfTopics, alphabet.numberOfWords())
 
@@ -72,7 +73,8 @@ abstract class AbstractPLSABuilder(protected val numberOfTopics: Int,
 
     protected def buildBricks(modelParameters: ModelParameters): Map[AttributeType, AbstractPLSABrick] = {
         modelParameters.numberOfWords.map {
-            case (attribute, numberOfWords) => (attribute, new NonRobustBrick(regularizer, phiSparsifier, attribute, modelParameters))
+            case (attribute, numberOfWords) => (attribute,
+                new NonRobustBrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight.getOrElse(attribute, 1f)))
         }
     }
 

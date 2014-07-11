@@ -12,8 +12,9 @@ object SingleAttributeNumerator {
      * This method implicitly assigns DefaultAttributeType to the documents
      *
      * @param textDocuments iterator over tokenized documents (Seq[String] is a sequence of tokens)
+     * @param rareTokenThreshold remove the words that occur less than rareTokenThreshold
      * @return documents with numbers, alphabet
      */
-    def apply(textDocuments: Iterator[Seq[String]]): (Seq[Document], Alphabet) =
-        Numerator.apply(textDocuments.map(tokens => new TextualDocument(Map(DefaultAttributeType -> tokens))))
+    def apply(textDocuments: Iterator[Seq[String]], rareTokenThreshold: Int = 0): (Seq[Document], Alphabet) =
+        Numerator.apply(textDocuments.map(tokens => new TextualDocument(Map(DefaultAttributeType -> tokens))), rareTokenThreshold)
 }

@@ -1,6 +1,6 @@
 package ru.ispras.modis.tm.utils
 
-import ru.ispras.modis.tm.matrix.{Ogre, AttributedPhi}
+import ru.ispras.modis.tm.matrix.{Theta, Ogre, AttributedPhi}
 import ru.ispras.modis.tm.documents.Alphabet
 import java.io.{File, FileWriter}
 import ru.ispras.modis.tm.attribute.Category
@@ -15,6 +15,11 @@ import scala.io.Source
  * Time: 18:26
  */
 object TopicHelper {
+    def getSignificantTopics(theta: Theta) =
+        (0 until theta.numberOfTopics).filterNot(topic =>
+            (0 until theta.numberOfDocuments).forall(docs => theta.probability(docs, topic) < 0.001))
+
+
     /**
      *
      * @param phi matrix of distribution of words by topics
