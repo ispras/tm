@@ -16,6 +16,12 @@ import scala.io.Source
  * Time: 18:26
  */
 object TopicHelper {
+
+    /**
+     *
+     * @param sparseModel model with some useless topics (s.t. theta_td=0 forall d)
+     * @return a model without such topics
+     */
     def densifyModel(sparseModel: TrainedModel): TrainedModel = {
         val significantTopics = getSignificantTopics(sparseModel.theta)
 
@@ -37,6 +43,11 @@ object TopicHelper {
 
     private def densifyPhi(matrix: Array[Array[Float]], significantTopics: Seq[Int]) = significantTopics.map(t => matrix(t)).toArray
 
+    /**
+     *
+     * @param theta
+     * @return a sequence of topics s.t. exists d s.t. theta_{td} > 0
+     */
     def getSignificantTopics(theta: Theta) =
         (0 until theta.numberOfTopics).filterNot(topic =>
             (0 until theta.numberOfDocuments).forall(docs => theta.probability(docs, topic) < 0.001))

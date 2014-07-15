@@ -18,67 +18,53 @@ import scala.io.Source
 object TopicNumberSelection extends App {
 
     /**
-     * first of all we have to read textual documents.
-     * Textual document is a sequence of words(String)
-     * We read textual documents from a textual file, one document per line. Words are separated by space.
-     * Documents should be preprocessed.
+     * these methods define a simple way to generate a a collection via three topics.
+     * topics with tokens ("a", "b", "c", "d"), ("z", "x", "y", "q") and  ("a", "b", "z", "x").
+     *
+     * We assume  that probabilities p(w|t) are equal for every word given topic
      */
-    def getTextualDocuments(): Iterator[TextualDocument] = {
-        val lines = Source.fromFile(new File("examples/arxiv.part")).getLines().take(3000)
-
-        /**
-         * split each line by space
-         */
-        val wordsSequence = lines.map(line => line.split(" "))
-
-        /**
-         * now we obtain a sequences of sequence of words and should to construct textual documents.
-         * Textual document may contain a few texts, corresponding to different  attributes,
-         * for example text in english, translation of this text to russian etc. If you document contain only one text
-         * you may use attribute Category
-         */
-        val textualDocuments = wordsSequence.map(words => new TextualDocument(Map(DefaultAttributeType -> words)))
-
-        /**
-         * and now we return sequence of textual documents
-         */
-        textualDocuments
-    }
-
     def generateDoc(letters: Vector[String], random: Random) = (0 until 100).map(i => letters(random.nextInt(letters.size)))
 
     def generateCollection(random: Random) = (0 until 1000).map(i => generateDoc(Vector("a", "b", "c", "d"), random)) ++
         (0 until 1000).map(i => generateDoc(Vector("z", "x", "y", "q"), random)) ++
         (0 until 1000).map(i => generateDoc(Vector("a", "b", "z", "x"), random))
 
-    val random = new Random(13)
-
-
     /**
-     * read textual documents from file (see functions getTextualDocuments for details)
+     * numeration is performed as usual (see QuickStart)
      */
-    val textualDocuments = generateCollection(random).iterator //getTextualDocuments()
+    val random = new Random(13)
+    val textualDocuments = generateCollection(random).iterator
 
     val (documents, alphabet) = SingleAttributeNumerator(textualDocuments)
+
+    /**
+     * Note. We start from 60 topics -- that's excessive number of topics for our collection
+     */
     val numberOfTopics = 60
     val numberOfIteration = 100
 
+    /**
+     * Now the fun begins
+     *
+     * We are to add TopicEliminatingRegularizer in order to reduce the significance of not-so-good topics
+     * (topics that don't explain collection well) in matricies theta.
+     * It's wise to use theta sparicifier here, because in order to eliminate topic, we should set  theta_{dt} forall d equal zero ,
+     * but TopicEliminatingRegularizer usually reduces the value theta_{dt} but does not set it to zero
+     *
+     */
     val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
         .addRegularizer(new TopicEliminatingRegularizer(documents, 2000))
         .setThetaSparsifier(new CarefulSparcifier(0.1f, 15, 2))
-    //        .addRegularizer(new DecorrelatingRegularizer(10))
-    //        .addRegularizer(new SymmetricDirichlet(-0.5f, -0.1f))
-
 
     val plsa = builder.build()
 
+    /**
+     * train the model. Note, you'll get warnings "sum should be > 0" -- that means that useless topics were found.
+     *
+     * method densifyModel gets rid of useless topics, so number of topics in trainedModel should be much less that 60
+     */
     val trainedModel = TopicHelper.densifyModel(plsa.train)
 
-    private val significant = TopicHelper.getSignificantTopics(trainedModel.theta)
-    println(significant.size)
-    println(significant)
-
-    val n = 10 // number of top words to see
-    TopicHelper.printAllTopics(n, trainedModel.phi(DefaultAttributeType), alphabet)
+    TopicHelper.printAllTopics(4, trainedModel.phi(DefaultAttributeType), alphabet)
 
 }

@@ -6,6 +6,17 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, ImmutablePhi, ImmutableTheta, T
 
 /**
  * Created by valerij on 7/9/14.
+ *
+ * This regularizer is described in Vorontsov, Potapenko (2014) paper.
+ *
+ * The idea is to decrease values theta_td for topics s.t. p(t) is low
+ */
+
+/**
+ *
+ * @param documents documents you are going to perform training on
+ * @param regularizationParameter the higher this parameter is, the stronger topic elemination will be.
+ *                                If it's excessively high, you can possibly get theta_{td}=0 forall t.
  */
 class TopicEliminatingRegularizer(private val documents: Seq[Document],
                                   private val regularizationParameter: Float) extends Regularizer {
