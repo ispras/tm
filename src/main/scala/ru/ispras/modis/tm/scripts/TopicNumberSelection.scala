@@ -62,8 +62,7 @@ object TopicNumberSelection extends App {
     val (documents, alphabet) = SingleAttributeNumerator(textualDocuments)
     val numberOfTopics = 60
     val numberOfIteration = 100
-    // number of iteration in EM algorithm
-    // java.util.Random
+
     val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
         .addRegularizer(new TopicEliminatingRegularizer(documents, 2000))
         .setThetaSparsifier(new CarefulSparcifier(0.1f, 15, 2))
@@ -73,7 +72,7 @@ object TopicNumberSelection extends App {
 
     val plsa = builder.build()
 
-    val trainedModel = plsa.train
+    val trainedModel = TopicHelper.densifyModel(plsa.train)
 
     private val significant = TopicHelper.getSignificantTopics(trainedModel.theta)
     println(significant.size)

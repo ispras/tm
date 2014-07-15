@@ -4,6 +4,7 @@ import java.io.{File, FileWriter}
 
 import ru.ispras.modis.tm.documents.Alphabet
 import ru.ispras.modis.tm.matrix.{AttributedPhi, Ogre, Theta}
+import ru.ispras.modis.tm.plsa.TrainedModel
 
 import scala.io.Source
 
@@ -15,10 +16,30 @@ import scala.io.Source
  * Time: 18:26
  */
 object TopicHelper {
+    def densifyModel(sparseModel: TrainedModel): TrainedModel = {
+        val significantTopics = getSignificantTopics(sparseModel.theta)
+
+        val denseTheta = Theta(densifyTheta(copyMatrixToArray(sparseModel.theta), significantTopics))
+
+
+        val densePhi = sparseModel.phi.map { case (attr, ogre) => attr ->
+            AttributedPhi(densifyPhi(copyMatrixToArray(ogre), significantTopics), attr)
+        }
+
+        for ((_, phi) <- densePhi) phi.dump()
+        denseTheta.dump()
+
+        new TrainedModel(densePhi, denseTheta, sparseModel.perplexity)
+    }
+
+    private def densifyTheta(matrix: Array[Array[Float]], significantTopics: Seq[Int]) =
+        matrix.map(row => significantTopics.map(t => row(t)).toArray)
+
+    private def densifyPhi(matrix: Array[Array[Float]], significantTopics: Seq[Int]) = significantTopics.map(t => matrix(t)).toArray
+
     def getSignificantTopics(theta: Theta) =
         (0 until theta.numberOfTopics).filterNot(topic =>
             (0 until theta.numberOfDocuments).forall(docs => theta.probability(docs, topic) < 0.001))
-
 
     /**
      *
@@ -75,4 +96,5 @@ object TopicHelper {
      */
     def copyMatrixToArray(matrix: Ogre): Array[Array[Float]] = 0.until(matrix.numberOfRows).map(row =>
         0.until(matrix.numberOfColumns).map(column => matrix.probability(row, column)).toArray).toArray
+
 }

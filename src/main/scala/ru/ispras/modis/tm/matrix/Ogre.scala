@@ -81,8 +81,8 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         var columnIndex = 0
         var rowIndex = 0
         while (rowIndex < numberOfRows) {
-            val sum = stochasticMatrix(rowIndex).sum + Float.MinPositiveValue
-            if (sum <= Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row? " +
+            val sum = stochasticMatrix(rowIndex).sum + Float.MinPositiveValue // it's necessary to avoid division by zero
+            if (sum <= 2 * Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row? " +
                 ", may be you have set number of topics too damn high. number of row=" + rowIndex)
             while (columnIndex < numberOfColumns) {
                 stochasticMatrix(rowIndex)(columnIndex) /= sum

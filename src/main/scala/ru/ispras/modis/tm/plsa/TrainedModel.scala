@@ -15,7 +15,7 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
  * @param perplexity perplexity value obtained on the training of this model
  * @param theta distribution of document by topic
  */
-class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta, perplexity: Double) {
+class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta, val perplexity: Double) {
 
     def getPhi = {
         require(phi.size == 1, "there is more than one attribute, use .phi(attribute)")
