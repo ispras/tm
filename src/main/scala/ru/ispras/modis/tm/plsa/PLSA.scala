@@ -1,13 +1,14 @@
 package ru.ispras.modis.tm.plsa
 
 import grizzled.slf4j.Logging
-import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
 import ru.ispras.modis.tm.brick.AbstractPLSABrick
 import ru.ispras.modis.tm.documents.Document
 import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.stoppingcriteria.StoppingCriteria
+import ru.ispras.modis.tm.utils.TopicHelper
 
 /**
  * Created with IntelliJ IDEA.
@@ -74,6 +75,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
         }
         val newPpx = perplexity(logLikelihood, collectionLength)
         info(iterationCnt + " " + newPpx)
+        info("number of significant topics = " + TopicHelper.getSignificantTopics(theta).size)
         applyRegularizer()
         theta.dump()
         theta.sparsify(thetaSparsifier, iterationCnt)

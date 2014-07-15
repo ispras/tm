@@ -1,5 +1,6 @@
 package ru.ispras.modis.tm.matrix
 
+import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 
 import scala.math.max
@@ -15,7 +16,7 @@ import scala.math.max
  * @param expectationMatrix hold expectation from E-step
  * @param stochasticMatrix hold probabilities, so sum of any row is equal to 1 and every element non-negative
  */
-abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]]) {
+abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]]) extends Logging {
 
     require(expectationMatrix.length == stochasticMatrix.length && expectationMatrix.head.length == stochasticMatrix.head.length,
         "stochastic and expectation matrix should have the same number of rows and number of columns")
@@ -80,8 +81,9 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         var columnIndex = 0
         var rowIndex = 0
         while (rowIndex < numberOfRows) {
-            val sum = stochasticMatrix(rowIndex).sum
-            require(sum > 0, "sum should be > 0. May be you dump twice in a row? number of row=" + rowIndex)
+            val sum = stochasticMatrix(rowIndex).sum + Float.MinPositiveValue
+            if (sum <= Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row? " +
+                ", may be you have set number of topics too damn high. number of row=" + rowIndex)
             while (columnIndex < numberOfColumns) {
                 stochasticMatrix(rowIndex)(columnIndex) /= sum
                 columnIndex += 1

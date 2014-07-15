@@ -45,22 +45,27 @@ object TopicNumberSelection extends App {
         textualDocuments
     }
 
+    def generateDoc(letters: Vector[String], random: Random) = (0 until 100).map(i => letters(random.nextInt(letters.size)))
+
+    def generateCollection(random: Random) = (0 until 1000).map(i => generateDoc(Vector("a", "b", "c", "d"), random)) ++
+        (0 until 1000).map(i => generateDoc(Vector("z", "x", "y", "q"), random)) ++
+        (0 until 1000).map(i => generateDoc(Vector("a", "b", "z", "x"), random))
+
+    val random = new Random(13)
+
 
     /**
      * read textual documents from file (see functions getTextualDocuments for details)
      */
-    val textualDocuments = getTextualDocuments()
-//        Seq("a a b b c c d d d ".split(' ').toSeq, "z z z x x x y y y ".split(' ').toSeq, "z z x x a a b b".split(' ').toSeq)
+    val textualDocuments = generateCollection(random).iterator //getTextualDocuments()
 
-    val (documents, alphabet) = Numerator(textualDocuments)
-
+    val (documents, alphabet) = SingleAttributeNumerator(textualDocuments)
     val numberOfTopics = 60
-    val numberOfIteration = 1000
+    val numberOfIteration = 100
     // number of iteration in EM algorithm
-    val random = new Random(13)
     // java.util.Random
     val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random, numberOfIteration)
-        .addRegularizer(new TopicEliminatingRegularizer(documents, 500))
+        .addRegularizer(new TopicEliminatingRegularizer(documents, 2000))
         .setThetaSparsifier(new CarefulSparcifier(0.1f, 15, 2))
     //        .addRegularizer(new DecorrelatingRegularizer(10))
     //        .addRegularizer(new SymmetricDirichlet(-0.5f, -0.1f))
