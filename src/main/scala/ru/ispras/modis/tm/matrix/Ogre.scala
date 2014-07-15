@@ -2,6 +2,7 @@ package ru.ispras.modis.tm.matrix
 
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.sparsifier.Sparsifier
+import ru.ispras.modis.tm.utils.FloatMatrixTraverser
 
 import scala.math.max
 
@@ -16,7 +17,9 @@ import scala.math.max
  * @param expectationMatrix hold expectation from E-step
  * @param stochasticMatrix hold probabilities, so sum of any row is equal to 1 and every element non-negative
  */
-abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]]) extends Logging {
+abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]])
+    extends FloatMatrixTraverser
+    with Logging {
 
     require(expectationMatrix.length == stochasticMatrix.length && expectationMatrix.head.length == stochasticMatrix.head.length,
         "stochastic and expectation matrix should have the same number of rows and number of columns")
@@ -58,6 +61,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      */
     def dump() {
         copyToStochasticMatrix()
+        normalise()
         zeroAllTheShit()
     }
 
@@ -78,18 +82,16 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * perform normalization of stochastic matrix e.g. multiply every row by 1 / (som of row)
      */
     private def normalise() {
-        var columnIndex = 0
-        var rowIndex = 0
-        while (rowIndex < numberOfRows) {
+        forfor(stochasticMatrix) { rowIndex =>
             val sum = stochasticMatrix(rowIndex).sum + Float.MinPositiveValue // it's necessary to avoid division by zero
-            if (sum <= 2 * Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row?" +
-                ", may be the number of topics you have set is too damn high=" + rowIndex)
-            while (columnIndex < numberOfColumns) {
-                stochasticMatrix(rowIndex)(columnIndex) /= sum
-                columnIndex += 1
-            }
-            columnIndex = 0
-            rowIndex += 1
+            require(!sum.toDouble.isNaN, "NaN is somewhere in expectation")
+            if (sum <= 2 * Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row. " +
+                "May be the number of topics you have set is too damn high. " +
+                "May be regularization is too strict. " +
+                "row number=" + rowIndex)
+            sum
+        } { (rowIndex, columnIndex, sum) =>
+            stochasticMatrix(rowIndex)(columnIndex) /= sum
         }
     }
 
@@ -99,32 +101,17 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * expectationMatrix
      */
     private def copyToStochasticMatrix() {
-        var columnIndex = 0
-        var rowIndex = 0
-        while (rowIndex < numberOfRows) {
-            while (columnIndex < numberOfColumns) {
-                stochasticMatrix(rowIndex)(columnIndex) = max(0f, expectationMatrix(rowIndex)(columnIndex))
-                columnIndex += 1
-            }
-            columnIndex = 0
-            rowIndex += 1
+        forforfor(stochasticMatrix) { (rowIndex, columnIndex) =>
+            stochasticMatrix(rowIndex)(columnIndex) = max(0f, expectationMatrix(rowIndex)(columnIndex))
         }
-        normalise()
     }
 
     /**
      * replace every element in expectationMatrix by zero (before the new iteration)
      */
     private def zeroAllTheShit() {
-        var columnIndex = 0
-        var rowIndex = 0
-        while (rowIndex < numberOfRows) {
-            while (columnIndex < numberOfColumns) {
-                expectationMatrix(rowIndex)(columnIndex) = 0f
-                columnIndex += 1
-            }
-            columnIndex = 0
-            rowIndex += 1
+        forforfor(expectationMatrix) { (i, j) =>
+            expectationMatrix(i)(j) = 0f
         }
     }
 }
@@ -138,9 +125,8 @@ object Ogre {
      * @param expectationMatrix given expectation matrix
      * @return Array[Array[Float] ] fill by zeros
      */
-    def stochasticMatrix(expectationMatrix: Array[Array[Float]]) = {
-        Array.fill[Array[Float]](expectationMatrix.length)(new Array[Float](expectationMatrix.head.length))
-    }
+    def stochasticMatrix(expectationMatrix: Array[Array[Float]]) =
+        Array.ofDim[Float](expectationMatrix.length, expectationMatrix.head.length)
 }
 
 

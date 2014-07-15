@@ -30,7 +30,7 @@ object PigData extends App with Logging {
             0.05f,
             param,
             random,
-            1).build()
+            100).build()
 
 
         (plsa, docs, alphabet)
@@ -40,15 +40,15 @@ object PigData extends App with Logging {
         val readDataTime = System.currentTimeMillis()
         val (plsa, docs, alphabet) = getDocs("examples/arxiv.part", param)
 
-        println("number of words " + alphabet.numberOfWords()(Category))
+        println("number of words " + alphabet.numberOfWords()(DefaultAttributeType))
         println(" readDataTime " + (System.currentTimeMillis() * 0.001 - readDataTime / 1000))
         val start = System.currentTimeMillis()
         val trainedModel = plsa.train
         println("training time " + (System.currentTimeMillis() * 0.001 - start / 1000))
 
         println(trainedModel)
-        TopicHelper.saveMatrix("/home/padre/tmp/Theta" + param, trainedModel.theta)
-        TopicHelper.printAllTopics(10, trainedModel.phi(Category), alphabet)
+        //        TopicHelper.saveMatrix("/home/padre/tmp/Theta" + param, trainedModel.theta)
+        //        TopicHelper.printAllTopics(10, trainedModel.phi(Category), alphabet)
 
         //        val fixedPhi = new FixedPhiBuilder(alphabet, docs, 100, trainedModel.phi).build()
         //        val fixedTheta = fixedPhi.train(docs).theta

@@ -28,13 +28,6 @@ class BackgroundTest extends FlatSpec with Matchers {
         sumExp(background) should be(0f)
     }
 
-    it should "throw exception " in {
-        val background = Background(DefaultAttributeType, modelParameters)
-        a[IllegalArgumentException] should be thrownBy {
-            background.dump()
-        }
-    }
-
     private def sumProb(background: Background) = 0.until(background.numberOfWords).foldLeft(0f)((s, i) => s + background.probability(i))
 
     private def sumExp(background: Background) = 0.until(background.numberOfWords).foldLeft(0f)((s, i) => s + background.expectation(i))

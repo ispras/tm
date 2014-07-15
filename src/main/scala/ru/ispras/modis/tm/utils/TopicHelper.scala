@@ -39,7 +39,7 @@ object TopicHelper {
     }
 
     private def densifyTheta(matrix: Array[Array[Float]], significantTopics: Seq[Int]) =
-        matrix.map(row => significantTopics.map(t => row(t)).toArray)
+        matrix.map(row => significantTopics.map(row(_)).toArray)
 
     private def densifyPhi(matrix: Array[Array[Float]], significantTopics: Seq[Int]) = significantTopics.map(t => matrix(t)).toArray
 

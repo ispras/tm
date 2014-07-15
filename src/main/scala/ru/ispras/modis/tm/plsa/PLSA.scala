@@ -74,7 +74,8 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
             sum + brick.makeIteration(theta, phi(attribute), documents, iterationCnt)
         }
         val newPpx = perplexity(logLikelihood, collectionLength)
-        info(iterationCnt + " " + newPpx)
+        info("number of iteration = " + iterationCnt)
+        info("perplexity = " + newPpx)
         info("number of significant topics = " + TopicHelper.getSignificantTopics(theta).size)
         applyRegularizer()
         theta.dump()
