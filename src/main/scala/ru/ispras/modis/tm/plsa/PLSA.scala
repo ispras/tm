@@ -1,7 +1,7 @@
 package ru.ispras.modis.tm.plsa
 
 import grizzled.slf4j.Logging
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
+import ru.ispras.modis.tm.attribute.AttributeType
 import ru.ispras.modis.tm.brick.AbstractPLSABrick
 import ru.ispras.modis.tm.documents.Document
 import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}

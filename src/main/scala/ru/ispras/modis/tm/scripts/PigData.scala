@@ -4,10 +4,9 @@ import java.io.File
 import java.util.Random
 
 import grizzled.slf4j.Logging
-import ru.ispras.modis.tm.attribute.{Category, DefaultAttributeType}
+import ru.ispras.modis.tm.attribute.DefaultAttributeType
 import ru.ispras.modis.tm.builder.LDABuilder
 import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
-import ru.ispras.modis.tm.utils.TopicHelper
 
 import scala.io.Source
 

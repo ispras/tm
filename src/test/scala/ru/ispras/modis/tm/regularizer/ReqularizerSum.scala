@@ -1,9 +1,9 @@
 package ru.ispras.modis.tm.regularizer
 
 
-import ru.ispras.modis.tm.regularizer.RegularizerSum._
 import org.mockito.Mockito
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{FlatSpec, Matchers}
+import ru.ispras.modis.tm.regularizer.RegularizerSum._
 
 /**
  * Created with IntelliJ IDEA.

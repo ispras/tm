@@ -1,10 +1,11 @@
 package ru.ispras.modis.tm.buildertest
 
-import org.scalatest.{Matchers, FlatSpec}
+import java.util.Random
+
+import org.mockito.Mockito
+import org.scalatest.{FlatSpec, Matchers}
 import ru.ispras.modis.tm.builder.LDABuilder
 import ru.ispras.modis.tm.documents.{Alphabet, Document}
-import org.mockito.Mockito
-import java.util.Random
 
 
 /**

@@ -1,6 +1,6 @@
 package ru.ispras.modis.tm.matrix
 
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{FlatSpec, Matchers}
 
 /**
  * Created with IntelliJ IDEA.

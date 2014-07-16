@@ -2,8 +2,8 @@ package ru.ispras.modis.tm.regularizer
 
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
-import ru.ispras.modis.tm.matrix.{AttributedPhi, ImmutablePhi, ImmutableTheta, Theta}
 import ru.ispras.modis.tm.matrix.Ogre._
+import ru.ispras.modis.tm.matrix.{AttributedPhi, ImmutablePhi, ImmutableTheta, Theta}
 
 /**
  * Created with IntelliJ IDEA.

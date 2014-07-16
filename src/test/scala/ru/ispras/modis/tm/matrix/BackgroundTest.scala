@@ -1,6 +1,6 @@
 package ru.ispras.modis.tm.matrix
 
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{FlatSpec, Matchers}
 import ru.ispras.modis.tm.attribute.DefaultAttributeType
 import ru.ispras.modis.tm.utils.ModelParameters
 

@@ -1,16 +1,13 @@
 package ru.ispras.modis.tm.scripts
 
-import java.io.File
 import java.util.Random
 
 import ru.ispras.modis.tm.attribute.DefaultAttributeType
 import ru.ispras.modis.tm.builder.PLSABuilder
-import ru.ispras.modis.tm.documents.{Numerator, SingleAttributeNumerator, TextualDocument}
+import ru.ispras.modis.tm.documents.SingleAttributeNumerator
 import ru.ispras.modis.tm.regularizer.TopicEliminatingRegularizer
 import ru.ispras.modis.tm.sparsifier.CarefulSparcifier
 import ru.ispras.modis.tm.utils.TopicHelper
-
-import scala.io.Source
 
 /**
  * Created by valerij on 7/9/14.
