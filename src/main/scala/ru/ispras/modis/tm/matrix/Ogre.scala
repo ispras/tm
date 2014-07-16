@@ -95,17 +95,21 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
     private def normalise() {
         forfor(stochasticMatrix) { rowIndex =>
             val sum = stochasticMatrix(rowIndex).sum + Float.MinPositiveValue // it's necessary to avoid division by zero
-            require(!sum.toDouble.isNaN, "NaN is somewhere in expectation")
-            if (sum <= 2 * Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row. " +
-                "May be the number of topics you have set is too damn high. " +
-                "May be regularization is too strict. " +
-                "row number=" + rowIndex)
+            checkSum(rowIndex, sum)
             sum
         } { (rowIndex, columnIndex, sum) =>
             stochasticMatrix(rowIndex)(columnIndex) /= sum
         }
     }
 
+
+    private def checkSum(rowIndex: Int, sum: Float) {
+        require(!sum.toDouble.isNaN, "NaN is somewhere in expectation")
+        if (sum <= 2 * Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row. " +
+            "May be the number of topics you have set is too damn high. " +
+            "May be regularization is too strict. " +
+            "row number=" + rowIndex)
+    }
 
     /**
      * copy values from expectation matrix to stochastic matrix and perform normalization. Does not change
