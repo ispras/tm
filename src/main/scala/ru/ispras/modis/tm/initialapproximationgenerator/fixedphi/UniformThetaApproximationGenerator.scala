@@ -3,6 +3,7 @@ package ru.ispras.modis.tm.initialapproximationgenerator.fixedphi
 import ru.ispras.modis.tm.attribute.AttributeType
 import ru.ispras.modis.tm.documents.Document
 import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
+import ru.ispras.modis.tm.matrix.Ogre._
 import ru.ispras.modis.tm.utils.ModelParameters
 
 /**
@@ -19,8 +20,6 @@ class UniformThetaApproximationGenerator(phi: Map[AttributeType, AttributedPhi])
      * @param documents sequence of documents
      * @param theta matrix with zero values in expectation and stochastic matrix
      */
-    protected def fullMatrixTheta(parameters: ModelParameters, documents: Seq[Document], theta: Theta): Unit = {
-        0.until(theta.numberOfRows).foreach(row => 0.until(theta.numberOfColumns).foreach(column => theta.addToExpectation(row, column, 1)))
-    }
-
+    protected def fullMatrixTheta(parameters: ModelParameters, documents: Seq[Document], theta: Theta): Unit =
+        theta.addToExpectation(1f)
 }

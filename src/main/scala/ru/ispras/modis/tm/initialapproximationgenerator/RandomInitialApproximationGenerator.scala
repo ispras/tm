@@ -27,20 +27,11 @@ class RandomInitialApproximationGenerator(private val random: Random) extends Ph
      * @param phi matrix with zero values in expectation and stochastic matrix
      */
     protected def fillMatrix(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: Map[AttributeType, AttributedPhi]) {
-        fullSingleMatrix(theta)
-        phi.foreach { case (attribute, matrix) => fullSingleMatrix(matrix)}
+        fillSingleMatrix(theta)
+        phi.foreach { case (attribute, matrix) => fillSingleMatrix(matrix)}
     }
 
-    private def fullSingleMatrix(matrix: Ogre) {
-        var rowIndex = 0
-        var columnIndex = 0
-        while (rowIndex < matrix.numberOfRows) {
-            while (columnIndex < matrix.numberOfColumns) {
-                matrix.addToExpectation(rowIndex, columnIndex, random.nextFloat())
-                columnIndex += 1
-            }
-            columnIndex = 0
-            rowIndex += 1
-        }
+    private def fillSingleMatrix(matrix: Ogre) {
+        matrix.addToExpectation((_,_) => random.nextFloat )
     }
 }

@@ -5,6 +5,7 @@ import java.util.Random
 import ru.ispras.modis.tm.attribute.AttributeType
 import ru.ispras.modis.tm.documents.Document
 import ru.ispras.modis.tm.matrix.{AttributedPhi, Ogre, Theta}
+import ru.ispras.modis.tm.matrix.Ogre._
 import ru.ispras.modis.tm.utils.ModelParameters
 
 /**
@@ -40,15 +41,6 @@ class GibbsInitialApproximationGenerator(private val random: Random) extends Phi
     }
 
     private def smooth(matrix: Ogre) {
-        var rowIndex = 0
-        var columnIndex = 0
-        while (rowIndex < matrix.numberOfRows) {
-            while (columnIndex < matrix.numberOfColumns) {
-                matrix.addToExpectation(rowIndex, columnIndex, random.nextFloat())
-                columnIndex += 1
-            }
-            rowIndex += 1
-            columnIndex = 0
-        }
+        matrix.addToExpectation(random.nextFloat())
     }
 }

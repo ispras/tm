@@ -29,6 +29,18 @@ class Theta private(expectationMatrix: Array[Array[Float]], stochasticMatrix: Ar
      */
     override def addToExpectation(documentNumber: Int, topic: Int, value: Float): Unit = super.addToExpectation(documentNumber, topic, value)
 
+
+    /**
+     *
+     * @param documentNumber serial number of document
+     * @param topic topic serial number
+     * @return element from interceptions of rowIndex row and columnIndex column of expectationMatrix matrix
+     */
+    override def expectation(documentNumber: Int, topic: Int): Float = super.expectation(documentNumber, topic)
+
+
+    override def addToExpectation(documentNumberTopic2Addition: (Int, Int) => Float): Unit = super.addToExpectation(documentNumberTopic2Addition)
+
     def numberOfTopics = numberOfColumns
 
     def numberOfDocuments = numberOfRows

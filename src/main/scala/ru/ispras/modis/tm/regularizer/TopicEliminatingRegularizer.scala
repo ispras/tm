@@ -36,10 +36,10 @@ class TopicEliminatingRegularizer(private val documents: Seq[Document],
     override private[regularizer] def regularizeThetaImmutable(phi: Map[AttributeType, ImmutablePhi], theta: Theta): Unit = {
         val nt = calculateNt(theta)
 
-        for (docInd <- 0 until theta.numberOfDocuments; topic <- 0 until theta.numberOfTopics if nt(topic) > 0)
-            theta.addToExpectation(docInd,
-                topic,
-                -regularizationParameter * docLengths(docInd).toFloat / nt(topic) * theta.probability(docInd, topic))
+        theta.addToExpectation { (docInd, topic) =>
+            if (nt(topic) > 0) -regularizationParameter * docLengths(docInd).toFloat / nt(topic) * theta.probability(docInd, topic)
+            else 0
+        }
     }
 
     override private[regularizer] def regularizePhiImmutable(phi: AttributedPhi, theta: ImmutableTheta): Unit = {}

@@ -3,6 +3,7 @@ package ru.ispras.modis.tm.regularizer
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
 import ru.ispras.modis.tm.matrix.{AttributedPhi, ImmutablePhi, ImmutableTheta, Theta}
+import ru.ispras.modis.tm.matrix.Ogre._
 
 /**
  * Created with IntelliJ IDEA.
@@ -58,9 +59,7 @@ class SymmetricDirichlet(private val alphaForPhi: Map[AttributeType, Float], pri
      * @param phi distribution of words by topics
      * @param theta distribution of document by topics. Theta is immutable, so you can't add to it
      */
-    def regularizePhiImmutable(phi: AttributedPhi, theta: ImmutableTheta) =
-        for (t <- 0 until phi.numberOfTopics; w <- 0 until phi.numberOfWords)
-            phi.addToExpectation(t, w, alphaForPhi(phi.attribute))
+    def regularizePhiImmutable(phi: AttributedPhi, theta: ImmutableTheta) = phi.addToExpectation(alphaForPhi(phi.attribute))
 
     /**
      * To regularize matrix Phi one should add theta(d, t) * (dR(Phi, Theta) / d theta(d, t)) to every cells d, t.
@@ -72,8 +71,6 @@ class SymmetricDirichlet(private val alphaForPhi: Map[AttributeType, Float], pri
      * @param phi distribution of words by topics
      * @param theta distribution of document by topics
      */
-    def regularizeThetaImmutable(phi: Map[AttributeType, ImmutablePhi], theta: Theta) =
-        for (t <- 0 until theta.numberOfTopics; d <- 0 until theta.numberOfDocuments)
-            theta.addToExpectation(d, t, alphaForTheta)
+    def regularizeThetaImmutable(phi: Map[AttributeType, ImmutablePhi], theta: Theta) = theta.addToExpectation(alphaForTheta)
 }
 

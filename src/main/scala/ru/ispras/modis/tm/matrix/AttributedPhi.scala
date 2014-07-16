@@ -42,6 +42,9 @@ class AttributedPhi private(expectationMatrix: Array[Array[Float]],
      */
     override def addToExpectation(topicIndex: Int, wordIndex: Int, value: Float): Unit = super.addToExpectation(topicIndex, wordIndex, value)
 
+
+    override def addToExpectation(topicWord2Addition: (Int, Int) => Float): Unit = super.addToExpectation(topicWord2Addition)
+
     /**
      * @return number of topics
      */
