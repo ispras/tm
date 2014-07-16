@@ -46,7 +46,7 @@ class AttributedPhi private(expectationMatrix: Array[Array[Float]],
     /**
      *
      * @param topicWord2Addition a function that takes a pair of indexes (topic and word respectively)
-     *                 and returns a value that will be added to expectationMatrix(topic, word) element
+     *                           and returns a value that will be added to expectationMatrix(topic, word) element
      */
     override def addToExpectation(topicWord2Addition: (Int, Int) => Float): Unit = super.addToExpectation(topicWord2Addition)
 

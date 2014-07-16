@@ -55,9 +55,9 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * @param addition a function that takes a pair of indexes (row and column respectively)
      *                 and returns a value that will be added to expectationMatrix(row, column) element
      */
-    def addToExpectation(addition : (Int, Int) => Float ) {
+    def addToExpectation(addition: (Int, Int) => Float) {
         forforfor(expectationMatrix) { (row, col) =>
-            addToExpectation(row,col, addition(row,col))
+            addToExpectation(row, col, addition(row, col))
         }
     }
 
@@ -135,7 +135,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
  * companion object help to build appropriate stochastic matrix for given expectation matrix
  */
 object Ogre {
-    implicit def constant2Function(value : => Float)  = (_ : Int, _ : Int) => value
+    implicit def constant2Function(value: => Float) = (_: Int, _: Int) => value
 
     /**
      * matrix with size, corresponds to given matrix

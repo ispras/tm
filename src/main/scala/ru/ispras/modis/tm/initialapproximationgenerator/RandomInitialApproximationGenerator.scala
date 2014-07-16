@@ -6,6 +6,7 @@ import ru.ispras.modis.tm.attribute.AttributeType
 import ru.ispras.modis.tm.documents.Document
 import ru.ispras.modis.tm.matrix.{AttributedPhi, Ogre, Theta}
 import ru.ispras.modis.tm.utils.ModelParameters
+import ru.ispras.modis.tm.matrix.Ogre._
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,6 +33,6 @@ class RandomInitialApproximationGenerator(private val random: Random) extends Ph
     }
 
     private def fillSingleMatrix(matrix: Ogre) {
-        matrix.addToExpectation((_,_) => random.nextFloat )
+        matrix.addToExpectation(random.nextFloat())
     }
 }

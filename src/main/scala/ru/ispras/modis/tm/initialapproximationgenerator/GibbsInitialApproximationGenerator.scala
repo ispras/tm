@@ -23,7 +23,7 @@ class GibbsInitialApproximationGenerator(private val random: Random) extends Phi
 
     private def processAttribute(parameters: ModelParameters, documents: Seq[Document], theta: Theta, phi: AttributedPhi) {
         for (document <- documents if document.contains(phi.attribute)) {
-            processSingleDocument(parameters: ModelParameters, document: Document, theta: Theta, phi: AttributedPhi)
+            processSingleDocument(parameters, document, theta, phi)
         }
     }
 
