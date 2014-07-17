@@ -3,7 +3,6 @@ package ru.ispras.modis.tm.matrix
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.utils.FloatMatrixTraverser
-
 import scala.math.max
 
 /**
@@ -18,8 +17,7 @@ import scala.math.max
  * @param stochasticMatrix hold probabilities, so sum of any row is equal to 1 and every element non-negative
  */
 abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]])
-    extends FloatMatrixTraverser
-    with Logging {
+    extends Logging {
 
     require(expectationMatrix.length == stochasticMatrix.length && expectationMatrix.head.length == stochasticMatrix.head.length,
         "stochastic and expectation matrix should have the same number of rows and number of columns")
@@ -56,7 +54,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      *                 and returns a value that will be added to expectationMatrix(row, column) element
      */
     def addToExpectation(addition: (Int, Int) => Float) {
-        forforfor(expectationMatrix) { (row, col) =>
+        forforfor{ (row, col) =>
             addToExpectation(row, col, addition(row, col))
         }
     }
@@ -93,13 +91,15 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * perform normalization of stochastic matrix e.g. multiply every row by 1 / (som of row)
      */
     private def normalise() {
-        forfor(stochasticMatrix) { rowIndex =>
-            val sum = stochasticMatrix(rowIndex).sum + Float.MinPositiveValue // it's necessary to avoid division by zero
-            checkSum(rowIndex, sum)
-            sum
-        } { (rowIndex, columnIndex, sum) =>
+        forfor(calculateRowSum){ (rowIndex, columnIndex, sum) =>
             stochasticMatrix(rowIndex)(columnIndex) /= sum
         }
+    }
+
+    private def calculateRowSum(rowIndex: Int) = {
+        val sum = stochasticMatrix(rowIndex).sum + Float.MinPositiveValue // it's necessary to avoid division by zero
+        checkSum(rowIndex, sum)
+        sum
     }
 
 
@@ -116,7 +116,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * expectationMatrix
      */
     private def copyToStochasticMatrix() {
-        forforfor(stochasticMatrix) { (rowIndex, columnIndex) =>
+        forforfor{(rowIndex, columnIndex) =>
             stochasticMatrix(rowIndex)(columnIndex) = max(0f, expectationMatrix(rowIndex)(columnIndex))
         }
     }
@@ -125,9 +125,28 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * replace every element in expectationMatrix by zero (before the new iteration)
      */
     private def zeroAllTheShit() {
-        forforfor(expectationMatrix) { (i, j) =>
+        forforfor { (i, j) =>
             expectationMatrix(i)(j) = 0f
         }
+    }
+
+    def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit) = {
+        var columnIndex = 0
+        var rowIndex = 0
+
+        while (rowIndex < numberOfRows) {
+            val intermediate = rowOp(rowIndex)
+            while (columnIndex < numberOfColumns) {
+                rowColOp(rowIndex, columnIndex, intermediate)
+                columnIndex += 1
+            }
+            columnIndex = 0
+            rowIndex += 1
+        }
+    }
+
+    protected def forforfor(rowColOp: (Int, Int) => Unit) {
+        forfor{ x => 0} { (x, y, z) => rowColOp(x, y)}
     }
 }
 

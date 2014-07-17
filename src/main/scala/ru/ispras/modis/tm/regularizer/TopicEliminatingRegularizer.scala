@@ -24,7 +24,7 @@ class TopicEliminatingRegularizer(private val documents: Seq[Document],
 
     private val docLengths = documents.map(doc => doc.attributeSet().map(attr => doc.getAttributes(attr).map(_._2).sum).sum).toArray
 
-    override def apply(phi: Map[AttributeType, AttributedPhi], theta: Theta): Float = {
+    def apply(phi: Map[AttributeType, AttributedPhi], theta: Theta): Float = {
         val nt = calculateNt(theta)
 
         -regularizationParameter * (0 until theta.numberOfTopics).foldLeft(0d)((sum, topic) => sum + math.log(
