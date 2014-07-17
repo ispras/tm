@@ -2,7 +2,6 @@ package ru.ispras.modis.tm.matrix
 
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.sparsifier.Sparsifier
-import ru.ispras.modis.tm.utils.FloatMatrixTraverser
 import scala.math.max
 
 /**
@@ -130,7 +129,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         }
     }
 
-    def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit) = {
+    private def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit) = {
         var columnIndex = 0
         var rowIndex = 0
 
@@ -145,7 +144,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         }
     }
 
-    protected def forforfor(rowColOp: (Int, Int) => Unit) {
+    private def forforfor(rowColOp: (Int, Int) => Unit) {
         forfor{ x => 0} { (x, y, z) => rowColOp(x, y)}
     }
 }
