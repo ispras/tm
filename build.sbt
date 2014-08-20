@@ -6,7 +6,7 @@ name := "tm"
 
 version := "1.0"
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.2"
 
 resolvers += "JCenter" at "http://jcenter.bintray.com/"
 
