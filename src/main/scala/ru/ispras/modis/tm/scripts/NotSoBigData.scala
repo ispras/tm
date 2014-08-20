@@ -16,7 +16,7 @@ import scala.io.Source
  * Date: 28.03.14
  * Time: 13:49
  */
-object PigData extends App with Logging {
+object NotSoBigData extends App with Logging {
 
     def getDocs(path: String, param: Float) = {
         val lines = Source.fromFile(new File(path)).getLines().take(30000).map(line => new TextualDocument(Map(DefaultAttributeType -> line.split(" "))))
