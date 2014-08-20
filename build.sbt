@@ -1,3 +1,7 @@
+import SonatypeKeys._
+
+sonatypeSettings
+
 name := "tm"
 
 version := "1.0"
@@ -22,6 +26,36 @@ libraryDependencies += "org.mockito" % "mockito-core" % "1.8.5"
 
 libraryDependencies += "com.esotericsoftware.kryo" % "kryo" % "2.10"
 
-publishTo := Some("Sonatype Snapshots Nexus" at "https://oss.sonatype.org/content/repositories/snapshots")
 
-credentials += Credentials("Sonatype Nexus Repository Manager", "nexus.scala-tools.org", "admin", "admin123")
+organization := "ru.ispras.modis"
+
+profileName := "ru.ispras"
+
+pomExtra := {
+    <url>https://github.com/ispras/tm</url>
+        <licenses>
+            <license>
+                <name>Apache 2</name>
+                <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            </license>
+        </licenses>
+        <scm>
+            <connection>scm:git:github.com/ispras/tm.git</connection>
+            <developerConnection>scm:git:git@github.com:ispras/tm.git</developerConnection>
+            <url>github.com/ispras/tm.git</url>
+        </scm>
+        <developers>
+            <developer>
+                <id>acopich</id>
+                <name>Valeriy Avanesov</name>
+                <url>http://ispras.ru/en/</url>
+                <email>acopich@gmail.com</email>
+            </developer>
+            <developer>
+                <id>IlyaKozlov</id>
+                <name>Ilya Kozlov</name>
+                <url>http://ispras.ru/en/</url>
+                <email>kozlov-ilya@ispras.ru</email>
+            </developer>
+        </developers>
+}
