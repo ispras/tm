@@ -6,6 +6,7 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.utils.ModelParameters
+import scala.collection.optimizer._
 
 /**
  * Created with IntelliJ IDEA.
@@ -56,15 +57,13 @@ abstract class AbstractPLSABrick(private val regularizer: Regularizer,
      * @param documentIndex serial number of document
      * @return probability to generate word from topics
      */
-    protected def countZ(phi: AttributedPhi, theta: Theta, wordIndex: Int, documentIndex: Int) = {
-        var topicNumber = 0
-        var sum = 0f
+    protected def countZ(phi: AttributedPhi, theta: Theta, wordIndex: Int, documentIndex: Int) = optimize {
+        var Z = 0f
 
-        while (topicNumber < modelParameters.numberOfTopics) {
-            sum += phi.probability(topicNumber, wordIndex) * theta.probability(documentIndex, topicNumber)
-            topicNumber += 1
+        for (topicNumber <- 0 until modelParameters.numberOfTopics) {
+            Z += phi.probability(topicNumber, wordIndex) * theta.probability(documentIndex, topicNumber)
         }
-        sum / attributeWeight
+        Z / attributeWeight
     }
 
 

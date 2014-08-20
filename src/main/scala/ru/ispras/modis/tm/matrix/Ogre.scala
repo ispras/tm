@@ -3,6 +3,7 @@ package ru.ispras.modis.tm.matrix
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import scala.math.max
+import scala.collection.optimizer._
 
 /**
  * Created with IntelliJ IDEA.
@@ -129,18 +130,13 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         }
     }
 
-    private def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit) = {
-        var columnIndex = 0
-        var rowIndex = 0
+    private def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit): Unit = optimize {
 
-        while (rowIndex < numberOfRows) {
+        for (rowIndex <- 0 until numberOfRows) {
             val intermediate = rowOp(rowIndex)
-            while (columnIndex < numberOfColumns) {
+            for (columnIndex <- 0 until numberOfColumns) {
                 rowColOp(rowIndex, columnIndex, intermediate)
-                columnIndex += 1
             }
-            columnIndex = 0
-            rowIndex += 1
         }
     }
 

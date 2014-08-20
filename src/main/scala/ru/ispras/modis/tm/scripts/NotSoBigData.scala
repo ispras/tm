@@ -29,7 +29,7 @@ object NotSoBigData extends App with Logging {
             0.05f,
             param,
             random,
-            100).build()
+            20).build()
 
 
         (plsa, docs, alphabet)

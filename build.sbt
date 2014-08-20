@@ -6,7 +6,7 @@ name := "tm"
 
 version := "1.0"
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.2"
 
 resolvers += "JCenter" at "http://jcenter.bintray.com/"
 
@@ -26,6 +26,7 @@ libraryDependencies += "org.mockito" % "mockito-core" % "1.8.5"
 
 libraryDependencies += "com.esotericsoftware.kryo" % "kryo" % "2.10"
 
+libraryDependencies += "com.github.scala-blitz" %% "scala-blitz" % "1.2"
 
 organization := "ru.ispras.modis"
 

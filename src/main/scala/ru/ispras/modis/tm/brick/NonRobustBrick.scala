@@ -6,6 +6,7 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.utils.ModelParameters
+import scala.collection.optimizer._
 
 import scala.math.log
 
@@ -72,16 +73,15 @@ class NonRobustBrick(regularizer: Regularizer,
      * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
      * @return log likelihood to observe word wordIndex in document documentIndex
      */
-    protected def processOneWord(wordIndex: Int, numberOfWords: Int, documentIndex: Int, phi: AttributedPhi, theta: Theta): Double = {
+    protected def processOneWord(wordIndex: Int, numberOfWords: Int, documentIndex: Int, phi: AttributedPhi, theta: Theta): Double = optimize {
         val Z = countZ(phi, theta, wordIndex, documentIndex)
         var likelihood = 0f
-        var topic = 0
-        while (topic < modelParameters.numberOfTopics) {
+
+        for (topic <- 0 until modelParameters.numberOfTopics) {
             val ndwt = numberOfWords * theta.probability(documentIndex, topic) * phi.probability(topic, wordIndex) / Z
             theta.addToExpectation(documentIndex, topic, ndwt)
             phi.addToExpectation(topic, wordIndex, ndwt)
             likelihood += phi.probability(topic, wordIndex) * theta.probability(documentIndex, topic)
-            topic += 1
         }
         numberOfWords * log(likelihood)
     }
