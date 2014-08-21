@@ -1,10 +1,10 @@
-In the previous section we describe how to build a model, but we steel do not describe how model works. 
-Let's fix this shortcoming. Our model support a multilingual documents, thus document may contain a few text with
-different attributes, all texts in one document inherit the same distribution of topics. Thus we have had one matrix $\Phi$ per
-attribute and one matrix $\Theta$ for all attribute. In order to train our model we have to
+In the previous section we have described how to build a model, but we still have not described how our implementation works. 
+Let's fix this shortcoming. Our model supports a multilingual documents, thus document may contain few texts related to different attributes, every text from the same document inherits the same distribution of topics. Thus we have one matrix $\Phi$ per
+attribute and one matrix $\Theta$ for all attributes. In order to train our model we have to
 % TODO нарисовать пиздатую картинку из которой все сразу всё поймут.
+% у госпожи Воллох спереть не пробовал?
 \begin{enumerate}
-    \item Generate some initial approximation for matrix $\Theta$ and every matrices $\Phi$
+    \item Generate some initial approximation for matrix $\Theta$ and every matrix $\Phi$
     \item \label{AlgorithmBegin} Perform E\--step and estimate the number of words $w$ in document $d$, produced by topic $t$ for every attribute.
     \item Apply reqularizer to every matrix. (see \ref{Regularizers})
     \item Perform M\--step for every matrix.
@@ -12,6 +12,6 @@ attribute and one matrix $\Theta$ for all attribute. In order to train our model
     \item Check the stopping criteria and return training model if it time to stop or return to the step \ref{AlgorithmBegin} otherwise.   
 \end{enumerate}
 
-The main part of our project is PLSABricks, it do the main part of work. One brick process one attribute. It performs E\--step, apples
-reqularizer to matrix $\Phi$, performs M\--step to the matrix $\Phi$ and sparsifies matrix $\Phi$. PLSA include one brick per attribute,
-regularizer and sparsifier for matrix $\Theta$, stopping criteria.  
+The main part of our project is PLSABricks, it does the main part of work. Every brick processes a single attribute. It performs E\--step, apples
+reqularizer to matrix $\Phi$, performs M\--step to the matrix $\Phi$ and sparsifies matrix $\Phi$. PLSA includes one brick per attribute. Also it stores
+regularizer and sparsifier for matrix $\Theta$ and stopping criteria.  

@@ -1,7 +1,7 @@
    \subsection{Generative model}
 \label{generativeModel}
-    In topic modeling every document viewed as mixture of topics. Each topic is a multinomial distribution on words,
-    so generation model may be defined as follow:
+    In topic modeling every document viewed as a mixture of topics. Each topic is a multinomial distribution on words,
+    so generation model may be defined as follows:
     \begin{itemize} \label{generation}
 	\item For every position in document $d$ i.i.d choose topic $t$ from distribution of topics by document
 	\item Choose word $w$ from topic $t$
@@ -12,56 +12,55 @@
 	    \includegraphics[width=0.55\linewidth]{plsa}
 	\end{minipage}
     \end{figure}
-    The aim of topic modeling is to recover topics and distribution of document by topics.
+    The aim of topic modeling is to recover topics and distribution of every document by topics.
     \subsubsection{Polylingual topic model}
-	Suppose one has a collection of documents on different languages. We have a prior knowledge that some of the
+	Suppose one has a collection of documents in different languages. We have a prior knowledge that some of the
 	documents (or all of them) are written on the same topic but in different languages (for example one document may be a translation of another).
 	Wikipedia may be considered as a source of this type of data. It leads us to a polylingual topic modeling \cite{polylingual}.
 	In this model we assume that every topic is a set of multinomial distributions, one per language. Also we assume that
-	every document may hold more than one set of words, so we represent document as map attribute $\to$ set of words.
+	every document may hold more than one set of words, so we represent document as a map from attributes $\to$  sequences of words.
 
     \subsubsection{Robust PLSA}
-	In robust PLSA we assume that some of words too specific for document and may not be explained by topic
-	distribution. Conversely, some of words too common and may be explained by any topic.
-	Robust PLSA take it into account. In robust PLSA word may be generated from topic, noise or background.
-	Noise is a multinomial distribution on rare words. Every document has its own noise.
-	Background is a multinomial distribution on common words. Background is one for all documents.
+	In robust PLSA we assume that some words are too specific for a document and can not be explained by topic
+	distribution. Conversely, some of words are too common and may be explained by any topic.
+	Robust PLSA take it into account. In robust PLSA a word may be generated from topic, noise or background.
+	Noise is a multinomial distribution over rare words. Every document has its own noise.
+	Background is a multinomial distribution over common words. Background is the same for every document.
 	To generate words $w$  in document $d$ we:
 	\begin{itemize}
-	    \item with probability $\gamma$ generate word from noise
-	    \item with probability $\varepsilon$ generate word from background
-	    \item with probability $1 - \gamma - \varepsilon$ generate word from topic
+	    \item with probability $\propto \gamma$ generate word from noise
+	    \item with probability $\propto \varepsilon$ generate word from background
+	    \item with probability $\propto 1 - \gamma - \varepsilon$ generate word from topic
 		distribution as in \ref{generation}
 	\end{itemize}
-	$\gamma$ and $\varepsilon$ are hyperparameter of model.
+	$\gamma$ and $\varepsilon$ are hyperparameters of the model.
 
     \subsubsection{Sparse PLSA} \label{sparseModel} 
-	One document often corresponds to only a few topics, not to every. Analogously,
+	A single document often corresponds to only a few topics, not to every. Analogously,
 	word may corresponds only to a few topics, not to every topic. Sparse PLSA takes it into account,
-	and replace some of topics weights in document by zero and replace some weights in distribution
-	of words by topic by zero. Sparsification of topic modeling has some features, which allow to sparse distribution of
+	and replaces some of topics weights in document by zero and replaces some weights in distribution
+	of words by topic by zero. Sparsification of topic modeling has some features which allow to sparse distribution of
 	words by topic and distribution of document by topics without decreasing of model quality.
 
     \subsubsection{LDA} \label{LDA}
 	LDA is an extension of PLSA, LDA was described in \cite{LDA} and now it is one of the most popular (may be the most popular) topic model. The idea of this model is that
-	distribution of documents by topics and distribution of words by topic has some symmetric dirichlet\footnote{\url{http://en.wikipedia.org/wiki/Dirichlet_distribution}} prior distribution and we maximize
-	posterior distribution instead of finding a maximum likelihood solution. 
+	distribution of documents by topics and distribution of words by topics has Dirichlet \footnote{\url{http://en.wikipedia.org/wiki/Dirichlet_distribution}} (usually, symmetric) prior distribution and we maximize marginal distribution $P(data, parameters)$ instead of conditional one \-- $P(data | parameters)$. 
 	\begin{figure}[!ht]
 	\caption{Graphical representation of LDA generative process}
 	\begin{minipage}{\textwidth}
 	    \includegraphics[width=0.55\linewidth]{lda}
 	\end{minipage}
 	\end{figure}\\
-	$\alpha$ and $\beta$ is hyperparameters of model. 
+	$\alpha$ and $\beta$ are hyperparameters of the model. 
  
     \subsection{Topic modeling as optimization problem}
 	According to generative model one can estimate probability to observe collection $D$ as:
 	\begin{equation} p(D) = \prod_{d \in D} \prod_{w \in d} \sum_{t} p(t|d) p(w|t) \end{equation}
-	Denote $\varphi_{wt} = p(w|t)$ and $\theta_{td} = p(t|d)$. One may obtain $\varphi_{wt}$
-	and $\theta_{td}$ as solution of optimization problem
+	Denote $\varphi_{wt} = p(w|t)$ and $\theta_{td} = p(t|d)$. One can obtain $\varphi_{wt}$
+	and $\theta_{td}$ as a solution of optimization problem
 
 	\begin{equation} \label{optimization} L = \sum_{d \in D} \sum_{w \in d} \log \sum_{t} \varphi_{wt} \theta_{td}  \to \max \end{equation}
-	    with boundary
+	    with boundaries
 	\begin{equation} \forall t \ \ \sum_{w} \varphi_{wt} = 1, \ \ \forall d \ \ \sum_{w} \theta_{td} = 1 \end{equation}
 	and
 	\begin{equation} \forall t, w \ \  \varphi_{wt}  \geq 0, \ \ \forall d, t \ \ \theta_{wt}  \geq 0 \end{equation}
@@ -69,7 +68,7 @@
     \subsection{Topic modeling as matrix decomposition} \label{matrixDecomposition}
 
 	\subsubsection{Kullback-Leibler divergence}
-	    Kullback-Leibler divergence is a non-negative measure of difference between two different probability distribution:
+	    Kullback-Leibler divergence is a non-negative semi-metric between a pair of probability distributions:
 	    \begin{equation} KL(p_i||q_i) = \sum_{i=1}^n p_i \ln\left(\frac{p_i}{q_i}\right)  \end{equation}
 	    Consider an empirical distribution $\hat{p}_i$ and some parametric distribution $q_i = q_i(\alpha)$ which is used to explain $\hat{p}_i$ .
 	    Easy to see that in this case minimization of KL\---divergence is equivalent to estimation of $\alpha$ by maximum-likelihood:
@@ -110,7 +109,7 @@
 
     \subsection{Regularizers} \label{Regularizers}
 	Regularizers may improve human-understandability of the topics, transform PLSA to LDA, provide an ability
-	for semi-supervised learning (employ a prior knowledge about document topic or topics structure).
+	for semi-supervised learning (employ a prior knowledge about document topic or topics structure), select number of topics.
 	Instead of optimization (\ref{optimization}) we optimize
 	\begin{equation} \label{optimizeWithReqularizer} L(\Phi, \Theta) + R(\Phi, \Theta) \to \max_{\Phi, \Theta} \end{equation}
 	Where $R(\Phi, \Theta)$ is a twice differentiable function, named regularizer.
@@ -123,10 +122,10 @@
 	Where $\hat{n}$ has been estimated by E\--step.
 
 	\subsubsection{Probability interpretation}
-	    Does regularizer have probabilistic interpretation? Yes, it has. Imagine that $\Phi$ and $\Theta$ have some prior distribution, for example
+	    Does regularizer have probabilistic interpretation? Yes, it does. Imagine that $\Phi$ and $\Theta$ have some prior distribution, for example
 	    dirichlet distribution. In this case:
 	    \begin{equation} \label{probabilityWithReqularizer} P(D, \Theta, \Phi) = P(D| \Theta, \Phi) \times P(\Theta, \Phi) \end{equation}
-	    Logarithm equation \ref{probabilityWithReqularizer}:
+	    Take the logarithm of the equation \ref{probabilityWithReqularizer}:
 	    \begin{equation} \ln P(D, \Theta, \Phi) = \ln(P(D| \Theta, \Phi) \times P(\Theta, \Phi) = \ln(P(D| \Theta, \Phi)) + \ln(P(\Theta, \Phi)) \end{equation}
 	    Denote $L(\Phi, \Theta) = \ln(P(D| \Theta, \Phi))$ and $R(\Phi, \Theta) = \ln(P(\Theta, \Phi))$ and obtain \ref{optimizeWithReqularizer}
 
