@@ -107,6 +107,11 @@
 	    \begin{equation}  p(w|t) = \frac{n_{wt}}{n_t} = \frac{\sum_d n_{dwt} }{\sum_w \sum_d n_{dwt}}   \end{equation}
 	    Similarly for $p(t|d)$
 
+	\subsubsection{Complexity}
+	Obviously, time complexity for every iteration is $O(T \times n_{uniq} \times D)$.\\
+	Space complexity is given by $O(W \times T + D \times T)$.\\
+	Here $n_{uniq}$ is the average number of distinct tokens in a document, $D$ stands for number of documents and $W$  -- for the size of vocabulary.
+
     \subsection{Regularizers} \label{Regularizers}
 	Regularizers may improve human-understandability of the topics, transform PLSA to LDA, provide an ability
 	for semi-supervised learning (employ a prior knowledge about document topic or topics structure), select number of topics.
