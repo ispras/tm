@@ -28,7 +28,7 @@ object Numerator extends Logging {
         val wordsToNumber = mutable.Map[AttributeType, TObjectIntHashMap[String]]()
         var documentIndex = -1
 
-        val (itForMapping, itForCnt) = textDocuments.duplicate
+        val (itForMapping, itForCnt) = if (rareTokenThreshold == 0) (textDocuments, textDocuments) else textDocuments.duplicate
         val freqTokens = findFrequentTokens(itForCnt, rareTokenThreshold)
 
         val documents = itForMapping.map { case (textDocument) =>

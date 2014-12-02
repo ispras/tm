@@ -6,7 +6,7 @@ name := "tm"
 
 version := "1.0"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.4"
 
 resolvers += "JCenter" at "http://jcenter.bintray.com/"
 
@@ -30,6 +30,8 @@ libraryDependencies += "com.esotericsoftware.kryo" % "kryo" % "2.10"
 organization := "ru.ispras.modis"
 
 profileName := "ru.ispras"
+
+mainClass in assembly := Some("ru.ispras.modis.tm.wtf.ModelTrainer")
 
 pomExtra := {
     <url>https://github.com/ispras/tm</url>
