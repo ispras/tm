@@ -31,7 +31,7 @@ organization := "ru.ispras.modis"
 
 profileName := "ru.ispras"
 
-mainClass in assembly := Some("ru.ispras.modis.tm.wtf.ModelTrainer")
+//mainClass in assembly := Some("ru.ispras.modis.tm.wtf.ModelTrainer")
 
 pomExtra := {
     <url>https://github.com/ispras/tm</url>
