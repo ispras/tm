@@ -23,7 +23,7 @@ class NonRobustPhiFixedBrick(attribute: AttributeType, modelParameters: ModelPar
      * @param iterationCnt number of iteration
      * @return log likelihood of observed collection. log(P(D | theta, phi))
      */
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Array[Document], iterationCnt: Int): Double = {
         documents.foldLeft(0d)((logLikelihood, document) => logLikelihood + processSingleDocument(theta, phi, document))
     }
 

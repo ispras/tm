@@ -6,6 +6,9 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.utils.ModelParameters
+import scala.collection.par._
+import scala.collection.par.Scheduler.Implicits.global
+import scala.collection.optimizer._
 
 import scala.math.log
 
@@ -26,8 +29,10 @@ class NonRobustBrick(regularizer: Regularizer,
                      phiSparsifier: Sparsifier,
                      attribute: AttributeType,
                      modelParameters: ModelParameters,
-                     attributeWeight: Float)
-    extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight) {
+                     attributeWeight: Float,
+                     parallel : Boolean = false)
+    extends AbstractClassicalPLSABrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight, parallel) {
+
     /**
      *
      * @param theta matrix of distribution of documents by topics
@@ -36,12 +41,9 @@ class NonRobustBrick(regularizer: Regularizer,
      * @param iterationCnt number of iteration
      * @return log likelihood of observed collection. log(P(D\ theta, phi))
      */
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
-        var logLikelihood = 0d
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Array[Document], iterationCnt: Int): Double =  {
+        val logLikelihood = processCollection(theta, phi, documents)
 
-        for (doc <- documents if doc.contains(attribute)) {
-            logLikelihood += processSingleDocument(doc, theta, phi)
-        }
         applyRegularizer(theta, phi)
         phi.dump()
         phi.sparsify(phiSparsifier, iterationCnt)
@@ -55,7 +57,7 @@ class NonRobustBrick(regularizer: Regularizer,
      * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
      * @return log likelihood of observed document. log(P(d\ theta, phi))
      */
-    private def processSingleDocument(document: Document, theta: Theta, phi: AttributedPhi) = {
+    override protected def processSingleDocument(document: Document, theta: Theta, phi: AttributedPhi) : Double = {
         var logLikelihood = 0d
         for ((wordIndex, numberOfWords) <- document.getAttributes(attribute)) {
             logLikelihood += processOneWord(wordIndex, numberOfWords, document.serialNumber, phi, theta)

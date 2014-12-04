@@ -17,13 +17,14 @@ import ru.ispras.modis.tm.utils.ModelParameters
  */
 class RobustPLSABuilder(numberOfTopics: Int,
                         alphabet: Alphabet,
-                        documents: Seq[Document],
+                        documents: Array[Document],
                         private val noiseWeight: Float,
                         private val backgroundWeight: Float,
                         private val random: Random = new Random,
                         private val numberOfIteration: Int = 100,
-                        attributeWeight: Map[AttributeType, Float])
-    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight) {
+                        attributeWeight: Map[AttributeType, Float],
+                        parallel : Boolean = false)
+    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight, parallel) {
 
     override protected def buildBricks(modelParameters: ModelParameters) = {
         val noiseParameter = new NoiseParameters(noiseWeight, backgroundWeight)

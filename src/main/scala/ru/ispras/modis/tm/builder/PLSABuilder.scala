@@ -19,11 +19,12 @@ import ru.ispras.modis.tm.utils.ModelParameters
  */
 class PLSABuilder(numberOfTopics: Int,
                   alphabet: Alphabet,
-                  documents: Seq[Document],
+                  documents: Array[Document],
                   protected val random: Random = new Random,
                   protected val numberOfIteration: Int = 100,
-                  attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float]())
-    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight) {
+                  attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float](),
+                  parallel : Boolean = false)
+    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight, parallel) {
 
     initialApproximationGenerator = new RandomInitialApproximationGenerator(random) //TODO user setters
 

@@ -15,6 +15,6 @@ object SingleAttributeNumerator {
      * @param rareTokenThreshold remove the words that occur less than rareTokenThreshold
      * @return documents with numbers, alphabet
      */
-    def apply(textDocuments: Iterator[Seq[String]], rareTokenThreshold: Int = 0): (Seq[Document], Alphabet) =
+    def apply(textDocuments: Iterator[Seq[String]], rareTokenThreshold: Int = 0): (Array[Document], Alphabet) =
         Numerator.apply(textDocuments.map(tokens => new TextualDocument(Map(DefaultAttributeType -> tokens))), rareTokenThreshold)
 }

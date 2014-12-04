@@ -7,6 +7,9 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, Background, Theta}
 import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.utils.ModelParameters
+import scala.collection.par._
+import scala.collection.par.Scheduler.Implicits.global
+import scala.collection.optimizer._
 
 import scala.collection.mutable
 
@@ -34,8 +37,9 @@ class RobustBrick private(regularizer: Regularizer,
                           private val noiseParameters: NoiseParameters,
                           private val background: Background,
                           private val noise: Array[mutable.Map[Int, Float]],
-                          attributeWeight: Float)
-    extends AbstractPLSABrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight) with Logging {
+                          attributeWeight: Float,
+                          parallel : Boolean = false)
+    extends AbstractClassicalPLSABrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight, parallel) with Logging {
 
     require(background.attribute == attribute)
     if (noiseParameters.backgroundWeight + noiseParameters.noiseWeight == 0)
@@ -49,11 +53,16 @@ class RobustBrick private(regularizer: Regularizer,
      * @param iterationCnt number of iteration
      * @return log likelihood of observed collection. log(P(D\ theta, phi))
      */
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double = {
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Array[Document], iterationCnt: Int): Double = {
 
-        var logLikelihood = 0f
-        for (document <- documents) {
-            logLikelihood += processSingleDocument(document, theta, phi)
+        var logLikelihood = 0d
+
+        if (parallel) {
+            logLikelihood = documents.toPar.map(doc => if (doc.contains(attribute)) processSingleDocument(doc, theta, phi) else 0d).sum
+        } else {
+            for (document <- documents if document.contains(attribute) ) {
+                logLikelihood += processSingleDocument(document, theta, phi)
+            }
         }
         if (noiseParameters.backgroundWeight > 0) background.dump()
         phi.dump()
@@ -68,10 +77,10 @@ class RobustBrick private(regularizer: Regularizer,
      * @param phi distribution of words by topics. Attribute of phi matrix should corresponds with attribute of brick
      * @return log likelihood of observed document. log(P(d\ theta, phi))
      */
-    private def processSingleDocument(document: Document,
+    override protected def processSingleDocument(document: Document,
                                       theta: Theta,
-                                      phi: AttributedPhi): Float = {
-        var logLikelihood = 0f
+                                      phi: AttributedPhi): Double = {
+        var logLikelihood = 0d
         for ((wordIndex, numberOfWords) <- document.getAttributes(attribute)) {
             logLikelihood += processOneWord(wordIndex, numberOfWords, document.serialNumber, theta, phi, noise(document.serialNumber))
         }
@@ -94,7 +103,7 @@ class RobustBrick private(regularizer: Regularizer,
                                documentIndex: Int,
                                theta: Theta,
                                phi: AttributedPhi,
-                               noise: mutable.Map[Int, Float]): Float = {
+                               noise: mutable.Map[Int, Float]): Double = {
         val Z = (countZ(phi, theta, wordIndex, documentIndex) + noiseParameters.backgroundWeight * background.probability(wordIndex)
             + noiseParameters.noiseWeight * noise(wordIndex)) / (1 + noiseParameters.noiseWeight + noiseParameters.backgroundWeight)
 
@@ -109,7 +118,7 @@ class RobustBrick private(regularizer: Regularizer,
 
         noise(wordIndex) = numberOfWords * noise(wordIndex) * noiseParameters.noiseWeight / Z
         background.addToExpectation(wordIndex, numberOfWords * background.probability(wordIndex) * noiseParameters.backgroundWeight / Z)
-        numberOfWords * math.log(Z).toFloat
+        numberOfWords * math.log(Z)
     }
 
     /**

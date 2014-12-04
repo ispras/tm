@@ -16,13 +16,14 @@ import ru.ispras.modis.tm.stoppingcriteria.MaxNumberOfIterationStoppingCriteria
  */
 class LDABuilder(numberOfTopics: Int,
                  alphabet: Alphabet,
-                 documents: Seq[Document],
+                 documents: Array[Document],
                  private val alpha: Float,
                  private val beta: Float,
                  private val random: Random = new Random(),
                  private val maxNumberOfIteration: Int = 100,
-                 attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float]())
-    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight) {
+                 attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float](),
+                    parallel : Boolean = false)
+    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight,parallel ) {
     initialApproximationGenerator = new RandomInitialApproximationGenerator(random) //TODO use setters
 
     stoppingCriteria = new MaxNumberOfIterationStoppingCriteria(maxNumberOfIteration)

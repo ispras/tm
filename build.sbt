@@ -26,6 +26,7 @@ libraryDependencies += "org.mockito" % "mockito-core" % "1.8.5"
 
 libraryDependencies += "com.esotericsoftware.kryo" % "kryo" % "2.10"
 
+libraryDependencies += "com.github.scala-blitz" %% "scala-blitz" % "1.1"
 
 organization := "ru.ispras.modis"
 

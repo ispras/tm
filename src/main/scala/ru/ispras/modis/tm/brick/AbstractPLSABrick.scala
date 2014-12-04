@@ -7,6 +7,7 @@ import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.utils.ModelParameters
 
+
 /**
  * Created with IntelliJ IDEA.
  * User: padre
@@ -36,7 +37,7 @@ abstract class AbstractPLSABrick(private val regularizer: Regularizer,
      * @param iterationCnt number of iteration
      * @return log likelihood of observed collection. log(P(D\ theta, phi))
      */
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Seq[Document], iterationCnt: Int): Double
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Array[Document], iterationCnt: Int): Double
 
     /**
      * apply regularizer
@@ -66,6 +67,5 @@ abstract class AbstractPLSABrick(private val regularizer: Regularizer,
         }
         sum / attributeWeight
     }
-
 
 }

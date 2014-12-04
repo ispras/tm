@@ -30,7 +30,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
            private val stoppingCriteria: StoppingCriteria,
            private val thetaSparsifier: Sparsifier,
            private val regularizer: Regularizer,
-           private val documents: Seq[Document],
+           private val documents: Array[Document],
            private val phi: Map[AttributeType, AttributedPhi],
            private val theta: Theta) extends Logging {
 
@@ -47,7 +47,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
         var newPpx = 0d
         while (!stoppingCriteria(numberOfIteration, oldPpx, newPpx)) {
             oldPpx = newPpx
-            newPpx = makeIteration(numberOfIteration: Int, collectionLength: Int, documents: Seq[Document])
+            newPpx = makeIteration(numberOfIteration, collectionLength, documents)
             numberOfIteration += 1
         }
 
@@ -69,7 +69,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
      * @param documents sequence of input documents
      * @return perplexity of model after iteration
      */
-    protected def makeIteration(iterationCnt: Int, collectionLength: Int, documents: Seq[Document]) = {
+    protected def makeIteration(iterationCnt: Int, collectionLength: Int, documents: Array[Document]) = {
         val logLikelihood = bricks.foldLeft(0d) { case (sum, (attribute, brick)) =>
             sum + brick.makeIteration(theta, phi(attribute), documents, iterationCnt)
         }

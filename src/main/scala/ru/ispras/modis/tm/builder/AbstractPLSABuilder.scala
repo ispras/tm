@@ -25,8 +25,9 @@ import ru.ispras.modis.tm.utils.ModelParameters
  */
 abstract class AbstractPLSABuilder(protected val numberOfTopics: Int,
                                    protected val alphabet: Alphabet,
-                                   protected val documents: Seq[Document],
-                                   protected val attributeWeight: Map[AttributeType, Float]) {
+                                   protected val documents: Array[Document],
+                                   protected val attributeWeight: Map[AttributeType, Float],
+                                   private val parallel : Boolean) {
 
     protected val modelParameters = new ModelParameters(numberOfTopics, alphabet.numberOfWords())
 
@@ -75,12 +76,12 @@ abstract class AbstractPLSABuilder(protected val numberOfTopics: Int,
     protected def buildBricks(modelParameters: ModelParameters): Map[AttributeType, AbstractPLSABrick] = {
         modelParameters.numberOfWords.map {
             case (attribute, numberOfWords) => (attribute,
-                new NonRobustBrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight.getOrElse(attribute, 1f)))
+                new NonRobustBrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight.getOrElse(attribute, 1f), parallel))
         }
     }
 
     def build(): PLSA = {
-        val (theta, phi) = initialApproximationGenerator.apply(modelParameters, documents)
+        val (theta, phi) = initialApproximationGenerator(modelParameters, documents)
         val bricks = buildBricks(modelParameters: ModelParameters)
         new PLSA(bricks, stoppingCriteria, thetaSparsifier, regularizer, documents, phi, theta)
     }

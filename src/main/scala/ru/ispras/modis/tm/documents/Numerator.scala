@@ -23,7 +23,7 @@ object Numerator extends Logging {
      * @param rareTokenThreshold remove the words that occur less than rareTokenThreshold
      * @return documents with numbers, alphabet
      */
-    def apply(textDocuments: Iterator[TextualDocument], rareTokenThreshold: Int = 0): (Seq[Document], Alphabet) = {
+    def apply(textDocuments: Iterator[TextualDocument], rareTokenThreshold: Int = 0): (Array[Document], Alphabet) = {
         val numberOfWords = mutable.Map[AttributeType, Int]().withDefaultValue(0)
         val wordsToNumber = mutable.Map[AttributeType, TObjectIntHashMap[String]]()
         var documentIndex = -1
@@ -35,7 +35,7 @@ object Numerator extends Logging {
             documentIndex += 1
             if (documentIndex % 1000 == 0) info("done " + documentIndex)
             processDocument(textDocument, numberOfWords, wordsToNumber, freqTokens, documentIndex)
-        }.toVector
+        }.toArray
         info("numerator done")
         (documents, Alphabet(wordsToNumber.toMap))
     }

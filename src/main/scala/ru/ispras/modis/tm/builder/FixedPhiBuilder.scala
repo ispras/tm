@@ -16,11 +16,11 @@ import ru.ispras.modis.tm.utils.ModelParameters
  * Time: 15:54
  */
 class FixedPhiBuilder(alphabet: Alphabet,
-                      documents: Seq[Document],
+                      documents: Array[Document],
                       numberOfIterations: Int,
                       private val phi: Map[AttributeType, AttributedPhi],
                       attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float]())
-    extends AbstractPLSABuilder(phi.head._2.numberOfRows, alphabet, documents, attributeWeight) {
+    extends AbstractPLSABuilder(phi.head._2.numberOfRows, alphabet, documents, attributeWeight, false) {
 
     override protected def buildBricks(modelParameters: ModelParameters): Map[AttributeType, AbstractPLSABrick] = {
         modelParameters.numberOfWords.map { case (attribute, numberOfWords) =>
