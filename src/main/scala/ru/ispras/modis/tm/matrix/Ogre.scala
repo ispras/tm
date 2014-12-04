@@ -4,6 +4,10 @@ import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import scala.math.max
 
+import scala.collection.par._
+import scala.collection.par.Scheduler.Implicits.global
+import scala.collection.optimizer._
+
 /**
  * Created with IntelliJ IDEA.
  * User: padre
@@ -129,18 +133,14 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         }
     }
 
-    private def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit) = {
-        var columnIndex = 0
-        var rowIndex = 0
+    private val parallelRows: Par[Range] = (0 until numberOfRows).toPar
 
-        while (rowIndex < numberOfRows) {
+    private def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit) = {
+        for (rowIndex <- parallelRows) {
             val intermediate = rowOp(rowIndex)
-            while (columnIndex < numberOfColumns) {
+            for (columnIndex <- 0 until numberOfColumns) {
                 rowColOp(rowIndex, columnIndex, intermediate)
-                columnIndex += 1
             }
-            columnIndex = 0
-            rowIndex += 1
         }
     }
 
