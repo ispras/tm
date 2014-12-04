@@ -6,9 +6,6 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.utils.ModelParameters
-import scala.collection.par._
-import scala.collection.par.Scheduler.Implicits.global
-import scala.collection.optimizer._
 
 import scala.math.log
 
@@ -76,7 +73,7 @@ class NonRobustBrick(regularizer: Regularizer,
      */
     protected def processOneWord(wordIndex: Int, numberOfWords: Int, documentIndex: Int, phi: AttributedPhi, theta: Theta): Double = {
         val Z = countZ(phi, theta, wordIndex, documentIndex)
-        var likelihood = 0f
+        var likelihood = 0d
         var topic = 0
         while (topic < modelParameters.numberOfTopics) {
             val ndwt = numberOfWords * theta.probability(documentIndex, topic) * phi.probability(topic, wordIndex) / Z

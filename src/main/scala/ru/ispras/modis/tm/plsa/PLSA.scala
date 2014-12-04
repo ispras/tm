@@ -43,8 +43,8 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
             (sum, document) => sum + document.numberOfWords()
         }
         var numberOfIteration = 0
-        var oldPpx = 0d
-        var newPpx = 0d
+        var oldPpx = Double.PositiveInfinity
+        var newPpx = Double.PositiveInfinity
         while (!stoppingCriteria(numberOfIteration, oldPpx, newPpx)) {
             oldPpx = newPpx
             newPpx = makeIteration(numberOfIteration, collectionLength, documents)

@@ -22,8 +22,9 @@ class LDABuilder(numberOfTopics: Int,
                  private val random: Random = new Random(),
                  private val maxNumberOfIteration: Int = 100,
                  attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float](),
+                 numberOfThetaIterations : Map[AttributeType, Int] = Map[AttributeType, Int](),
                     parallel : Boolean = false)
-    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight,parallel ) {
+    extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight, parallel, numberOfThetaIterations ) {
     initialApproximationGenerator = new RandomInitialApproximationGenerator(random) //TODO use setters
 
     stoppingCriteria = new MaxNumberOfIterationStoppingCriteria(maxNumberOfIteration)

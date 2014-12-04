@@ -3,7 +3,7 @@ package ru.ispras.modis.tm.builder
 import java.util.Random
 
 import ru.ispras.modis.tm.attribute.AttributeType
-import ru.ispras.modis.tm.brick.{AbstractPLSABrick, NonRobustBrick}
+import ru.ispras.modis.tm.brick.{NonRobustPreciseThetaPLSABrick, AbstractPLSABrick, NonRobustBrick}
 import ru.ispras.modis.tm.documents.{Alphabet, Document}
 import ru.ispras.modis.tm.initialapproximationgenerator.{InitialApproximationGenerator, RandomInitialApproximationGenerator}
 import ru.ispras.modis.tm.plsa.PLSA
@@ -27,7 +27,8 @@ abstract class AbstractPLSABuilder(protected val numberOfTopics: Int,
                                    protected val alphabet: Alphabet,
                                    protected val documents: Array[Document],
                                    protected val attributeWeight: Map[AttributeType, Float],
-                                   private val parallel : Boolean) {
+                                   private val parallel : Boolean,
+                                   private val numberOfThetaIterations : Map[AttributeType, Int] = Map[AttributeType, Int]()) {
 
     protected val modelParameters = new ModelParameters(numberOfTopics, alphabet.numberOfWords())
 
@@ -75,9 +76,16 @@ abstract class AbstractPLSABuilder(protected val numberOfTopics: Int,
 
     protected def buildBricks(modelParameters: ModelParameters): Map[AttributeType, AbstractPLSABrick] = {
         modelParameters.numberOfWords.map {
-            case (attribute, numberOfWords) => (attribute,
-                new NonRobustBrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight.getOrElse(attribute, 1f), parallel))
+            case (attribute, numberOfWords) => (attribute, buildBrick(modelParameters, attribute,numberOfWords ))
         }
+    }
+
+    private def buildBrick(modelParameters: ModelParameters, attribute : AttributeType, numberOfWords : Int) = {
+        val thetaIter: Int = numberOfThetaIterations.getOrElse(attribute, 1)
+        if (thetaIter == 1)
+            new NonRobustBrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight.getOrElse(attribute, 1f), parallel)
+        else
+            new NonRobustPreciseThetaPLSABrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight.getOrElse(attribute, 1f), thetaIter, parallel)
     }
 
     def build(): PLSA = {

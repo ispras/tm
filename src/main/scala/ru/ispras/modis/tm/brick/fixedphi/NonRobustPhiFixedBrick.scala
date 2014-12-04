@@ -4,6 +4,9 @@ import ru.ispras.modis.tm.attribute.AttributeType
 import ru.ispras.modis.tm.documents.Document
 import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 import ru.ispras.modis.tm.utils.ModelParameters
+import scala.collection.par._
+import scala.collection.par.Scheduler.Implicits.global
+import scala.collection.optimizer._
 
 import scala.math.log
 
@@ -23,8 +26,8 @@ class NonRobustPhiFixedBrick(attribute: AttributeType, modelParameters: ModelPar
      * @param iterationCnt number of iteration
      * @return log likelihood of observed collection. log(P(D | theta, phi))
      */
-    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Array[Document], iterationCnt: Int): Double = {
-        documents.foldLeft(0d)((logLikelihood, document) => logLikelihood + processSingleDocument(theta, phi, document))
+    def makeIteration(theta: Theta, phi: AttributedPhi, documents: Array[Document], iterationCnt: Int): Double = optimize {
+        documents.toPar.aggregate(0d)(_ + _)((sum, doc) => sum + (if (doc.contains(attribute)) processSingleDocument(theta, phi, doc) else 0d) )
     }
 
     private def processSingleDocument(theta: Theta, phi: AttributedPhi, document: Document) = {

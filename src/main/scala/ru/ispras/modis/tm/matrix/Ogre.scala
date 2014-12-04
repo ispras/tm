@@ -18,6 +18,8 @@ import scala.math.max
 abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]])
     extends Logging {
 
+    private var canDump = false
+
     require(expectationMatrix.length == stochasticMatrix.length && expectationMatrix.head.length == stochasticMatrix.head.length,
         "stochastic and expectation matrix should have the same number of rows and number of columns")
 
@@ -44,6 +46,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * @param value value to add
      */
     def addToExpectation(rowIndex: Int, columnIndex: Int, value: Float) {
+        canDump = true
         expectationMatrix(rowIndex)(columnIndex) += value
     }
 
