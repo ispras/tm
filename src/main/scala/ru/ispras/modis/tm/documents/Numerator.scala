@@ -1,9 +1,9 @@
 package ru.ispras.modis.tm.documents
 
-import gnu.trove.map.hash.TObjectIntHashMap
+import gnu.trove.map.hash.{TIntIntHashMap, TObjectIntHashMap}
 import gnu.trove.procedure.TObjectIntProcedure
 import grizzled.slf4j.Logging
-import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
 
 import scala.collection.mutable
 
@@ -26,16 +26,16 @@ object Numerator extends Logging {
     def apply(textDocuments: Iterator[TextualDocument], rareTokenThreshold: Int = 0): (Array[Document], Alphabet) = {
         val numberOfWords = mutable.Map[AttributeType, Int]().withDefaultValue(0)
         val wordsToNumber = mutable.Map[AttributeType, TObjectIntHashMap[String]]()
+        val freqTokens = mutable.Map[AttributeType, TIntIntHashMap]()
         var documentIndex = -1
 
-        val (itForMapping, itForCnt) = if (rareTokenThreshold == 0) (textDocuments, textDocuments) else textDocuments.duplicate
-        val freqTokens = findFrequentTokens(itForCnt, rareTokenThreshold)
-
-        val documents = itForMapping.map { case (textDocument) =>
+        val documents = textDocuments.map { case (textDocument) =>
             documentIndex += 1
             if (documentIndex % 1000 == 0) info("done " + documentIndex)
-            processDocument(textDocument, numberOfWords, wordsToNumber, freqTokens, documentIndex)
+            processDocument(textDocument, numberOfWords, wordsToNumber, documentIndex, freqTokens)
         }.toArray
+
+        if(rareTokenThreshold > 0) removeRareTokens(documents, freqTokens, wordsToNumber, rareTokenThreshold)
         info("numerator done")
         (documents, Alphabet(wordsToNumber.toMap))
     }
@@ -48,8 +48,17 @@ object Numerator extends Logging {
     def apply(textDocuments: Iterator[TextualDocument], alphabet: Alphabet): Seq[Document] =
         (for ((doc, index) <- textDocuments.zipWithIndex) yield processDocument(doc, alphabet, index)).toVector
 
-    private def processDocument(text: TextualDocument, alphabet: Alphabet, docIndex: Int): Document =
-        new Document(text.attributeSet().map(attr => (attr, text.words(attr)))
+    /**
+     * replace words by index in given document with fixed alphabet (i.e. we read the main part of the
+     * collection and want to add a few documents) All words not in alphabet are omited
+     * @param textualDocument documents with words
+     * @param alphabet map from words to index
+     * @param docIndex serial number of document in collection
+     * @return  new Document
+    */
+
+    private def processDocument(textualDocument: TextualDocument, alphabet: Alphabet, docIndex: Int): Document =
+        new Document(textualDocument.attributeSet().map(attr => (attr, textualDocument.words(attr)))
             .map { case (attr, tokens) => attr -> tokens.map(w => alphabet.getIndex(attr, w)).flatten.groupBy(x => x).map { case (w, cnt) => (w, cnt.size.toShort)}.toSeq}.toMap, docIndex)
 
     /**
@@ -57,19 +66,17 @@ object Numerator extends Logging {
      * @param textualDocument documents with words
      * @param numberOfWords map from attribute to max number of word, corresponding to this attribute
      * @param wordsToNumber is map from word(String) to serial number of this word(Int)
-     * @param frequentWords set of words that should not be removed from the dataset
      * @param documentIndex serial number of document in collection
      * @return new Document
      */
     private def processDocument(textualDocument: TextualDocument,
                                 numberOfWords: mutable.Map[AttributeType, Int],
                                 wordsToNumber: mutable.Map[AttributeType, TObjectIntHashMap[String]],
-                                frequentWords: mutable.Map[AttributeType, mutable.Set[String]],
-                                documentIndex: Int) = {
+                                documentIndex: Int,
+                                freqTokens: mutable.Map[AttributeType, TIntIntHashMap]) = {
         val document = textualDocument.attributeSet().foldLeft(Map[AttributeType, Array[(Int, Short)]]()) {
             case (wordsInDocument, attribute) =>
-                wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute)
-                    .filter(word => frequentWords(attribute).contains(word)), attribute, numberOfWords, wordsToNumber))
+                wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute), attribute, numberOfWords, wordsToNumber, freqTokens))
         }
 
         new Document(document.map { case (key, value) => (key, value.toSeq)}, documentIndex)
@@ -86,75 +93,68 @@ object Numerator extends Logging {
     private def replaceWordsByIndexes(words: Seq[String],
                                       attribute: AttributeType,
                                       numberOfWords: mutable.Map[AttributeType, Int],
-                                      wordsToNumber: mutable.Map[AttributeType, TObjectIntHashMap[String]]) = {
-        val map = mutable.Map[Int, Short]().withDefaultValue(1)
+                                      wordsToNumber: mutable.Map[AttributeType, TObjectIntHashMap[String]],
+                                      freqTokens: mutable.Map[AttributeType, TIntIntHashMap]) = {
+
+        if (!freqTokens.contains(attribute)) freqTokens(attribute) = new TIntIntHashMap()
+        if (!wordsToNumber.contains(attribute)) wordsToNumber(attribute) = new TObjectIntHashMap[String]()
+
+        val map = mutable.Map[Int, Short]().withDefaultValue(0)
         for (word <- words) {
-            if (!wordsToNumber.contains(attribute)) wordsToNumber(attribute) = new TObjectIntHashMap[String]()
             if (!wordsToNumber(attribute).containsKey(word)) {
                 wordsToNumber(attribute).put(word, numberOfWords(attribute))
+                freqTokens(attribute).put(numberOfWords(attribute), 0)
                 numberOfWords(attribute) += 1
             }
-            map(wordsToNumber(attribute).get(word)) = (map(wordsToNumber(attribute).get(word)) + 1).toShort
-
+            val wordId = wordsToNumber(attribute).get(word)
+            map(wordId) = (map(wordId) + 1).toShort
+            freqTokens(attribute).increment(wordId)
         }
         map.toArray
     }
 
-    /**
-     * this methods look throw the collection and if word "frequent" or not. Frequent means that word occur >= than rareTokenThreshold
-     * in collection. Experiments shows that rare tokens present a 50-60%% of vocabulary, but this word may be omitted
-     * without drop of model quality.
-     * @param textDocuments sequence of textual documents
-     * @param rareTokenThreshold threshold for rare tokens. Each token which occur >= rareTokenThreshold are frequent
-     * @return set with all frequent topics. It set provide method contains which return true if and only if a token is
-     *         frequent
-     */
-    private def findFrequentTokens(textDocuments: Iterator[TextualDocument], rareTokenThreshold: Int)
-    : mutable.Map[AttributeType, mutable.Set[String]] = {
-
-        /**
-         * if rareTokenThreshold < 1, we don't want to remove any of words, so every word is
-         * "frequent". In order to avoid unnecessary traversing over collection, we instantiate a set,
-         * that includes every element.
-         *
-         * Yes, this set violates contract, but the only thing we need is contains(...) method
-         */
-        val allIncludingSet = new mutable.Set[String] {
-            override def +=(elem: String): this.type = ???
-
-            override def -=(elem: String): this.type = ???
-
-            override def contains(elem: String): Boolean = true
-
-            override def iterator: Iterator[String] = ???
-        }
-
-        if (rareTokenThreshold < 1) mutable.Map[AttributeType, mutable.Set[String]]().withDefaultValue(allIncludingSet)
-        else {
-            val counters = mutable.Map[AttributeType, TObjectIntHashMap[String]]()
-
-            textDocuments.foreach(doc =>
-                for ((attr, tokens) <- doc.attributes) {
-                    if (!counters.contains(attr)) counters.put(attr, new TObjectIntHashMap[String]())
-
-                    for (token <- tokens) counters(attr).adjustOrPutValue(token, 1, 1)
-                }
-            )
+    private def removeRareTokens(documents: Array[Document],
+                                 freqTokens: mutable.Map[AttributeType, TIntIntHashMap],
+                                 wordsToNumber: mutable.Map[AttributeType, TObjectIntHashMap[String]],
+                                 threshold: Int) = {
 
 
-            /**
-             * this strange peace of code  simply convert trove map to set
-             */
-            counters.map { case (attr, map) =>
-                val set = mutable.HashSet[String]()
-                map.forEachEntry(new TObjectIntProcedure[String] {
-                    override def execute(token: String, cnt: Int): Boolean = {
-                        if (cnt > rareTokenThreshold) set += token
-                        true
-                    }
-                })
-                attr -> set
+        modifyFreqTokenMap(freqTokens, threshold)
+        0.until(documents.length).foreach(docId => documents(docId) = removeRareTokenInSingleDocument(documents(docId), freqTokens))
+        modifyWordsToNumber(wordsToNumber, freqTokens)
+    }
+
+    private def modifyFreqTokenMap(freqTokens: mutable.Map[AttributeType, TIntIntHashMap], threshold: Int) {
+        freqTokens.foreach{case(attribute, map) =>
+            map.keys().foldLeft(0){(nonRareIndex, key) =>
+                if (map.get(key) <= threshold) {map.put(key, -1); nonRareIndex}
+                else {map.put(key, nonRareIndex); nonRareIndex + 1}
             }
         }
     }
+
+    private def removeRareTokenInSingleDocument(document: Document, freqTokens: mutable.Map[AttributeType, TIntIntHashMap]) = {
+        val filteredWords = document.attributeSet().map{attribute => val words = document.getAttributes(attribute)
+                attribute -> words.map{case(wordId, wordNum) => (freqTokens(attribute).get(wordId), wordNum)}.filter(_._1 >= 0)
+        }.toMap
+        new Document(filteredWords, document.serialNumber)
+    }
+
+    private def modifyWordsToNumber(wordsToNumber: mutable.Map[AttributeType, TObjectIntHashMap[String]],
+                                    freqTokens: mutable.Map[AttributeType, TIntIntHashMap] ) {
+        wordsToNumber.keys.foreach(attribute => modifyWordsToNumberGivenAttribute(attribute, wordsToNumber(attribute), freqTokens(attribute)))
+    }
+
+    private def modifyWordsToNumberGivenAttribute(attribute: AttributeType,
+                                                  words2Number: TObjectIntHashMap[String],
+                                                  freqTokens: TIntIntHashMap) {
+        words2Number.keys().foreach{word =>
+            val wordNewId = freqTokens.get(words2Number.get(word.toString))
+            if (wordNewId >= 0) words2Number.put(word.toString, wordNewId)
+            else words2Number.remove(word.toString)
+        }
+    }
+
+
+
 }
