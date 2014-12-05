@@ -134,8 +134,9 @@ object Numerator extends Logging {
     }
 
     private def removeRareTokenInSingleDocument(document: Document, freqTokens: mutable.Map[AttributeType, TIntIntHashMap]) = {
-        val filteredWords = document.attributeSet().map{attribute => val words = document.getAttributes(attribute)
-                attribute -> words.map{case(wordId, wordNum) => (freqTokens(attribute).get(wordId), wordNum)}.filter(_._1 >= 0)
+        val filteredWords = document.attributeSet().map{attribute =>
+            val words = document.getAttributes(attribute)
+            attribute -> words.map{case(wordId, wordNum) => (freqTokens(attribute).get(wordId), wordNum)}.filter(_._1 >= 0)
         }.toMap
         new Document(filteredWords, document.serialNumber)
     }

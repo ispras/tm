@@ -16,5 +16,5 @@ object SingleAttributeNumerator {
      * @return documents with numbers, alphabet
      */
     def apply(textDocuments: Iterator[Seq[String]], rareTokenThreshold: Int = 0): (Array[Document], Alphabet) =
-        Numerator.apply(textDocuments.map(tokens => new TextualDocument(Map(DefaultAttributeType -> tokens))), rareTokenThreshold)
+        Numerator(textDocuments.map(tokens => new TextualDocument(Map(DefaultAttributeType -> tokens))), rareTokenThreshold)
 }
