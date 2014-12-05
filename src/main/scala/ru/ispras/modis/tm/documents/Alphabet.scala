@@ -55,11 +55,24 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
      * @param word input word
      * @return true if word in alphabet, false otherwise
      */
-    def contain(attribute: AttributeType, word: String) = wordsIndexMap(attribute).contains(word)
+    def contain(attribute: AttributeType, word: String): Boolean = wordsIndexMap(attribute).contains(word)
 
-    def getIndex(attribute: AttributeType, word: String) = {
+    def contain(word: String): Boolean = {
+        require(indexWordsMap.keys.size == 1, "do not use this method with more than one attribute")
+        require(indexWordsMap.contains(DefaultAttributeType), "does not contain default attribute type")
+        contain(DefaultAttributeType, word)
+    }
+
+    def getIndex(attribute: AttributeType, word: String): Option[Int] = {
         if (contain(attribute, word)) Some(wordsIndexMap(attribute).get(word)) else None
     }
+
+    def getIndex(word: String): Option[Int] = {
+        require(indexWordsMap.keys.size == 1, "do not use this method with more than one attribute")
+        require(indexWordsMap.contains(DefaultAttributeType), "does not contain default attribute type")
+        getIndex(DefaultAttributeType, word: String)
+    }
+
 }
 
 /**
