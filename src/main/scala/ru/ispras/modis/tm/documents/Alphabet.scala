@@ -13,8 +13,8 @@ import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
  * hold mapping form words index to words (string) and word to it serial number
  * @param indexWordsMap attribute -> (index of word from it attribute -> word from it attribute)
  */
-class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[String]],
-               private val wordsIndexMap: Map[AttributeType, TObjectIntHashMap[String]]) {
+class Alphabet(private[documents] val indexWordsMap: Map[AttributeType, TIntObjectHashMap[String]],
+               private[documents] val wordsIndexMap: Map[AttributeType, TObjectIntHashMap[String]]) {
     /**
      *
      * @param attribute words attribute
@@ -69,6 +69,8 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
         checkDefault
         getIndex(DefaultAttributeType, word: String)
     }
+
+    def getAttributes() = indexWordsMap.keySet
 
     private def checkDefault {
         require(indexWordsMap.keys.size == 1, "do not use this method with more than one attribute")

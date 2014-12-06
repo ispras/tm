@@ -1,4 +1,4 @@
-package ru.ispras.modis.tm.document
+package ru.ispras.modis.tm.documents
 
 import org.scalatest.{Matchers, FlatSpec}
 import ru.ispras.modis.tm.attribute.DefaultAttributeType
