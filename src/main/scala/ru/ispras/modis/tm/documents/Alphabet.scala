@@ -2,6 +2,7 @@ package ru.ispras.modis.tm.documents
 
 import gnu.trove.map.hash.{TIntObjectHashMap, TObjectIntHashMap}
 import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
+import ru.ispras.modis.tm.utils.DefaultChecker
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +15,7 @@ import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
  * @param indexWordsMap attribute -> (index of word from it attribute -> word from it attribute)
  */
 class Alphabet(private[documents] val indexWordsMap: Map[AttributeType, TIntObjectHashMap[String]],
-               private[documents] val wordsIndexMap: Map[AttributeType, TObjectIntHashMap[String]]) {
+               private[documents] val wordsIndexMap: Map[AttributeType, TObjectIntHashMap[String]]) extends DefaultChecker {
     /**
      *
      * @param attribute words attribute
@@ -30,7 +31,7 @@ class Alphabet(private[documents] val indexWordsMap: Map[AttributeType, TIntObje
      * @return words, corresponding to index
      */
     def apply(index: Int) = {
-        checkDefault
+        checkDefault(indexWordsMap)
         indexWordsMap(DefaultAttributeType).get(index)
     }
 
@@ -57,7 +58,7 @@ class Alphabet(private[documents] val indexWordsMap: Map[AttributeType, TIntObje
     def contain(attribute: AttributeType, word: String): Boolean = wordsIndexMap(attribute).contains(word)
 
     def contain(word: String): Boolean = {
-        checkDefault
+        checkDefault(indexWordsMap)
         contain(DefaultAttributeType, word)
     }
 
@@ -66,17 +67,11 @@ class Alphabet(private[documents] val indexWordsMap: Map[AttributeType, TIntObje
     }
 
     def getIndex(word: String): Option[Int] = {
-        checkDefault
+        checkDefault(indexWordsMap)
         getIndex(DefaultAttributeType, word: String)
     }
 
     def getAttributes() = indexWordsMap.keySet
-
-    private def checkDefault {
-        require(indexWordsMap.keys.size == 1, "do not use this method with more than one attribute")
-        require(indexWordsMap.contains(DefaultAttributeType), "does not contain default attribute type")
-    }
-
 }
 
 /**

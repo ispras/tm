@@ -1,6 +1,7 @@
 package ru.ispras.modis.tm.documents
 
 import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
+import ru.ispras.modis.tm.utils.DefaultChecker
 
 import scala.collection.mutable
 
@@ -15,7 +16,7 @@ import scala.collection.mutable
  * @param attributes map from attribute to words, corresponding to this attribute
  * @param serialNumber serial number of document in collection
  */
-class Document(private val attributes: Map[AttributeType, Seq[(Int, Short)]], val serialNumber: Int) {
+class Document(private val attributes: Map[AttributeType, Seq[(Int, Short)]], val serialNumber: Int) extends DefaultChecker {
     /**
      * return words, corresponding to given attribute
      * @param attributeType type of attribute
@@ -33,7 +34,7 @@ class Document(private val attributes: Map[AttributeType, Seq[(Int, Short)]], va
     def attributeSet() = attributes.keySet
 
     def getWords = {
-        require(attributes.contains(DefaultAttributeType) && attributeSet().size == 1, "use this method only in case of a single attribute -- DefaultAttributeType")
+        checkDefault(attributes)
         attributes(DefaultAttributeType)
     }
 

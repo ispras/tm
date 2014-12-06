@@ -1,6 +1,7 @@
 package ru.ispras.modis.tm.documents
 
 import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
+import ru.ispras.modis.tm.utils.DefaultChecker
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +13,7 @@ import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
  * holds words, related to the given attribute
  * @param attributes map from attribute to sequence of words
  */
-class TextualDocument(private[documents] val attributes: Map[AttributeType, Seq[String]]) {
+class TextualDocument(private[documents] val attributes: Map[AttributeType, Seq[String]]) extends DefaultChecker {
     require(attributes.values.forall(_.nonEmpty), "empty document")
 
     /**
@@ -28,7 +29,7 @@ class TextualDocument(private[documents] val attributes: Map[AttributeType, Seq[
      * @return sequence of words
      */
     def words: Seq[String] = {
-        require(attributes.contains(DefaultAttributeType), "Use this method only if your model contain only one attribute DefaultAttributeType")
+        checkDefault(attributes)
         attributes(DefaultAttributeType)
     }
 
