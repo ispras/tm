@@ -7,6 +7,7 @@ import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.DefaultAttributeType
 import ru.ispras.modis.tm.builder.LDABuilder
 import ru.ispras.modis.tm.documents.{Numerator, TextualDocument}
+import ru.ispras.modis.tm.utils.ElapsedTime
 
 import scala.io.Source
 
@@ -16,7 +17,7 @@ import scala.io.Source
  * Date: 28.03.14
  * Time: 13:49
  */
-object NotSoBigData extends App with Logging {
+object NotSoBigData extends App with  ElapsedTime {
 
     def getDocs(path: String, param: Float) = {
         val lines = Source.fromFile(new File(path)).getLines().take(30000).map(line => new TextualDocument(Map(DefaultAttributeType -> line.split(" "))))
@@ -29,21 +30,21 @@ object NotSoBigData extends App with Logging {
             0.05f,
             param,
             random,
-            100).build()
+            10).build()
 
 
         (plsa, docs, alphabet)
     }
 
     def doIt(param: Float) {
-        val readDataTime = System.currentTimeMillis()
-        val (plsa, docs, alphabet) = getDocs("examples/arxiv.part", param)
+        val (plsa, docs, alphabet) = time("reading documents") {
+            getDocs("examples/arxiv.part", param)
+        }
 
-        println("number of words " + alphabet.numberOfWords()(DefaultAttributeType))
-        println(" readDataTime " + (System.currentTimeMillis() * 0.001 - readDataTime / 1000))
-        val start = System.currentTimeMillis()
-        val trainedModel = plsa.train
-        println("training time " + (System.currentTimeMillis() * 0.001 - start / 1000))
+        info("number of words " + alphabet.numberOfWords()(DefaultAttributeType))
+        val trainedModel = time("plsa training ") {
+            plsa.train
+        }
 
         println(trainedModel)
         //        TopicHelper.saveMatrix("/home/padre/tmp/Theta" + param, trainedModel.theta)
