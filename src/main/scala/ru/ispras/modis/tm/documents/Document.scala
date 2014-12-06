@@ -2,6 +2,8 @@ package ru.ispras.modis.tm.documents
 
 import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
 
+import scala.collection.mutable
+
 /**
  * Created with IntelliJ IDEA.
  * User: padre
@@ -20,6 +22,9 @@ class Document(private val attributes: Map[AttributeType, Seq[(Int, Short)]], va
      * @return array (index of word, number of occurrence in given document
      */
     def getAttributes(attributeType: AttributeType): Seq[(Int, Short)] = attributes.getOrElse(attributeType, Seq[(Int, Short)]())
+
+    val m = new mutable.HashMap[Int,Int]()
+    m.toSeq
 
     /**
      *

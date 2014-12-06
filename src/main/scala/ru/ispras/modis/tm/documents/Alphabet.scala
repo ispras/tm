@@ -30,8 +30,7 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
      * @return words, corresponding to index
      */
     def apply(index: Int) = {
-        require(indexWordsMap.keys.size == 1, "do not use this method with more than one attribute")
-        require(indexWordsMap.contains(DefaultAttributeType), "does not contain default attribute type")
+        checkDefault
         indexWordsMap(DefaultAttributeType).get(index)
     }
 
@@ -58,8 +57,7 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
     def contain(attribute: AttributeType, word: String): Boolean = wordsIndexMap(attribute).contains(word)
 
     def contain(word: String): Boolean = {
-        require(indexWordsMap.keys.size == 1, "do not use this method with more than one attribute")
-        require(indexWordsMap.contains(DefaultAttributeType), "does not contain default attribute type")
+        checkDefault
         contain(DefaultAttributeType, word)
     }
 
@@ -68,9 +66,13 @@ class Alphabet(private val indexWordsMap: Map[AttributeType, TIntObjectHashMap[S
     }
 
     def getIndex(word: String): Option[Int] = {
+        checkDefault
+        getIndex(DefaultAttributeType, word: String)
+    }
+
+    private def checkDefault {
         require(indexWordsMap.keys.size == 1, "do not use this method with more than one attribute")
         require(indexWordsMap.contains(DefaultAttributeType), "does not contain default attribute type")
-        getIndex(DefaultAttributeType, word: String)
     }
 
 }
