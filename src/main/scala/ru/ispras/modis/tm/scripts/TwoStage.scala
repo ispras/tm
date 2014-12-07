@@ -26,7 +26,7 @@ object TwoStage extends App with Logging {
 
     val plsaSUb = new LDABuilder(25,
         alphabet,
-        docs,
+        docsSample,
         0.3f,
         0.2f,
         random,
