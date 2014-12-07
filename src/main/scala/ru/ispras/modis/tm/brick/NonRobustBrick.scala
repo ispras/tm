@@ -77,9 +77,6 @@ class NonRobustBrick(regularizer: Regularizer,
         var topic = 0
         while (topic < modelParameters.numberOfTopics) {
             val ndwt = numberOfWords * theta.probability(documentIndex, topic) * phi.probability(topic, wordIndex) / Z
-            if (ndwt.isNaN) {
-                var a = 1
-            }
             theta.addToExpectation(documentIndex, topic, ndwt)
             phi.addToExpectation(topic, wordIndex, ndwt)
             likelihood += phi.probability(topic, wordIndex) * theta.probability(documentIndex, topic)
