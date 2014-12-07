@@ -19,18 +19,18 @@ import scala.io.Source
  */
 object NotSoBigData extends App with  ElapsedTime {
 
-    def getDocs(path: String, param: Float) = {
+    def getDocs(path: String, beta: Float) = {
         val lines = Source.fromFile(new File(path)).getLines().take(30000).map(line => new TextualDocument(Map(DefaultAttributeType -> line.split(" "))))
         val random = new Random(13)
-        val (docs, alphabet) = Numerator(lines)
+        val (docs, alphabet) = Numerator(lines, 5)
 
         val plsa = new LDABuilder(25,
             alphabet,
             docs,
-            0.05f,
-            param,
+            0f,
+            beta,
             random,
-            10).build()
+            30).build()
 
 
         (plsa, docs, alphabet)
@@ -63,7 +63,7 @@ object NotSoBigData extends App with  ElapsedTime {
         //        println(" calculatePMI time " + (System.currentTimeMillis() * 0.001 - calculatePMI / 1000))
     }
 
-    doIt(0f)
+    doIt(0.0f)
 
 
 }

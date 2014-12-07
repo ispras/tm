@@ -20,6 +20,6 @@ class UniformThetaApproximationGenerator(phi: Map[AttributeType, AttributedPhi])
      * @param documents sequence of documents
      * @param theta matrix with zero values in expectation and stochastic matrix
      */
-    protected def fullMatrixTheta(parameters: ModelParameters, documents: Seq[Document], theta: Theta): Unit =
+    protected def fillMatrixTheta(parameters: ModelParameters, documents: Array[Document], theta: Theta): Unit =
         theta.addToExpectation(1f)
 }

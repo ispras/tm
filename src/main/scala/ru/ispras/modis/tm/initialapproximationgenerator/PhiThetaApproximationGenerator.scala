@@ -22,7 +22,7 @@ trait PhiThetaApproximationGenerator extends InitialApproximationGenerator {
      * @param documents sequence of inputdocuments
      * @return initializedmatrix theta and phi
      */
-    def apply(parameters: ModelParameters, documents: Seq[Document]): (Theta, Map[AttributeType, AttributedPhi]) = {
+    def apply(parameters: ModelParameters, documents: Array[Document]): (Theta, Map[AttributeType, AttributedPhi]) = {
         val theta = Theta(createMatrix(documents.length, parameters.numberOfTopics))
         val phi = parameters.numberOfWords.map {
             case (attribute, numberOfWords) => (attribute, AttributedPhi(createMatrix(parameters.numberOfTopics, numberOfWords), attribute))

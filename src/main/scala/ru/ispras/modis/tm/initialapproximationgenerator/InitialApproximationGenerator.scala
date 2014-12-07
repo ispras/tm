@@ -18,7 +18,7 @@ trait InitialApproximationGenerator {
      * @param documents sequence of input documents
      * @return initialized matrix theta and phi
      */
-    def apply(parameters: ModelParameters, documents: Seq[Document]): (Theta, Map[AttributeType, AttributedPhi])
+    def apply(parameters: ModelParameters, documents: Array[Document]): (Theta, Map[AttributeType, AttributedPhi])
 
 
     protected def createMatrix(numberOfRows: Int, numberOfColumns: Int): Array[Array[Float]] = {

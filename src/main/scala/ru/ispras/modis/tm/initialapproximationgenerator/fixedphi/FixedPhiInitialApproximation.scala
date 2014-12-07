@@ -19,9 +19,9 @@ abstract class FixedPhiInitialApproximation(private val phi: Map[AttributeType, 
      * @param documents sequence of input documents
      * @return initialized matrix theta and phi
      */
-    def apply(parameters: ModelParameters, documents: Seq[Document]): (Theta, Map[AttributeType, AttributedPhi]) = {
+    def apply(parameters: ModelParameters, documents: Array[Document]): (Theta, Map[AttributeType, AttributedPhi]) = {
         val theta = Theta(createMatrix(documents.length, parameters.numberOfTopics))
-        fullMatrixTheta(parameters, documents, theta)
+        fillMatrixTheta(parameters, documents, theta)
         theta.dump()
         (theta, phi)
     }
@@ -33,5 +33,5 @@ abstract class FixedPhiInitialApproximation(private val phi: Map[AttributeType, 
      * @param documents sequence of documents
      * @param theta matrix with zero values in expectation and stochastic matrix
      */
-    protected def fullMatrixTheta(parameters: ModelParameters, documents: Seq[Document], theta: Theta): Unit
+    protected def fillMatrixTheta(parameters: ModelParameters, documents: Array[Document], theta: Theta): Unit
 }

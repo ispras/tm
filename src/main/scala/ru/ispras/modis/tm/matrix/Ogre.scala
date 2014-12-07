@@ -107,7 +107,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
 
 
     private def checkSum(rowIndex: Int, sum: Float) {
-        require(!sum.toDouble.isNaN, "NaN is somewhere in expectation")
+        require(!sum.toDouble.isNaN, "NaN is somewhere in expectation in the row " + rowIndex)
         if (sum <= 2 * Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row. " +
             "May be the number of topics you have set is too damn high. " +
             "May be regularization is too strict. " +

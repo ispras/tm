@@ -16,16 +16,13 @@ import scala.collection.mutable
  * @param attributes map from attribute to words, corresponding to this attribute
  * @param serialNumber serial number of document in collection
  */
-class Document(private val attributes: Map[AttributeType, Seq[(Int, Short)]], val serialNumber: Int) extends DefaultChecker {
+class Document(private[documents] val attributes: Map[AttributeType, Seq[(Int, Short)]], val serialNumber: Int) extends DefaultChecker {
     /**
      * return words, corresponding to given attribute
      * @param attributeType type of attribute
      * @return array (index of word, number of occurrence in given document
      */
     def getAttributes(attributeType: AttributeType): Seq[(Int, Short)] = attributes.getOrElse(attributeType, Seq[(Int, Short)]())
-
-    val m = new mutable.HashMap[Int,Int]()
-    m.toSeq
 
     /**
      *

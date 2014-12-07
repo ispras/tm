@@ -33,10 +33,10 @@ class SymmetricDirichlet(private val alphaForPhi: Map[AttributeType, Float], pri
     def this(alphaForPhi: Float, alphaForTheta: Float) = this(Map[AttributeType, Float](DefaultAttributeType -> alphaForPhi), alphaForTheta)
 
     if (!alphaForPhi.forall(_._2 > -1)) {
-        warn("Dirichlet distribution define only for alphaForPhi > -1 but alphaForPhi = " + alphaForPhi + " Use this alphaForPhi at yours own risk ")
+        warn("Dirichlet distribution is defined only for alphaForPhi > -1 but alphaForPhi = " + alphaForPhi + " Use this alphaForPhi at your own risk ")
     }
     if (alphaForTheta <= -1) {
-        warn("Dirichlet distribution define only for alphaForTheta > -1 but alphaForTheta = " + alphaForTheta + " Use this alphaForTheta at yours own risk ")
+        warn("Dirichlet distribution is defined only for alphaForTheta > -1 but alphaForTheta = " + alphaForTheta + " Use this alphaForTheta at your own risk ")
     }
 
     /**
