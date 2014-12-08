@@ -71,9 +71,8 @@ object TopicHelper {
      * @param alphabet map from words to it's index and vice versa
      */
     def printAllTopics(n: Int, phi: AttributedPhi, alphabet: Alphabet) {
-        (0 until phi.numberOfRows).foreach { topicIndex =>
+        for (topicIndex <- 0 until phi.numberOfRows)
             println(getTopWords(phi, topicIndex, n).map(word => alphabet.apply(phi.attribute, word)).mkString(" "))
-        }
     }
 
     /**

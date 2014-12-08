@@ -20,7 +20,7 @@ import scala.io.Source
 object NotSoBigData extends App with  ElapsedTime {
 
     def getDocs(path: String, beta: Float) = {
-        val lines = Source.fromFile(new File(path)).getLines().take(30000).map(line => new TextualDocument(Map(DefaultAttributeType -> line.split(" "))))
+        val lines = Source.fromFile(new File(path)).getLines().take(30000).map(line => new TextualDocument(Map(DefaultAttributeType -> line.split("\\s+"))))
         val random = new Random(13)
         val (docs, alphabet) = Numerator(lines, 5)
 
