@@ -51,7 +51,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
             numberOfIteration += 1
         }
 
-        new TrainedModel(phi, theta, newPpx)
+        new TrainedModel(phi, theta, newPpx, bricks.map{case(attr, brick) => (attr, brick.attributeWeight)})
     }
 
     /**

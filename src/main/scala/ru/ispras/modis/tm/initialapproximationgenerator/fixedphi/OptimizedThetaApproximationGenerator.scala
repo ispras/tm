@@ -1,18 +1,16 @@
 package ru.ispras.modis.tm.initialapproximationgenerator.fixedphi
 
-import ru.ispras.modis.tm.attribute.AttributeType
 import ru.ispras.modis.tm.builder.FixedPhiBuilder
 import ru.ispras.modis.tm.documents.{Alphabet, Document}
-import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
-import ru.ispras.modis.tm.plsa.PLSA
+import ru.ispras.modis.tm.matrix.Theta
+import ru.ispras.modis.tm.plsa.TrainedModel
 import ru.ispras.modis.tm.utils.ModelParameters
 
 /**
  * Created by valerij on 07.12.14.
  */
-class OptimizedThetaApproximationGenerator(phi: Map[AttributeType, AttributedPhi],
-                                           alphabet : Alphabet,
-                                           attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float]()) extends FixedPhiInitialApproximation(phi) {
+class OptimizedThetaApproximationGenerator(private val alphabet : Alphabet,
+                                           private val trainedModel : TrainedModel) extends FixedPhiInitialApproximation(trainedModel.phi) {
     
     /**
      * this method full matrices theta by some initial values.
@@ -22,7 +20,7 @@ class OptimizedThetaApproximationGenerator(phi: Map[AttributeType, AttributedPhi
      * @param theta matrix with zero values in expectation and stochastic matrix
      */
     override protected def fillMatrixTheta(parameters: ModelParameters, documents: Array[Document], theta: Theta): Unit = {
-        val fixedPLSA = new FixedPhiBuilder(alphabet, documents, 5, phi, attributeWeight).build()
+        val fixedPLSA = new FixedPhiBuilder(alphabet, documents, 5, trainedModel.phi, trainedModel.attributeWeight).build()
 
         val obtainedTheta = fixedPLSA.train.theta
 

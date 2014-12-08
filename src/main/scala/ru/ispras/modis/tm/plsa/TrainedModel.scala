@@ -16,7 +16,10 @@ import ru.ispras.modis.tm.utils.DefaultChecker
  * @param perplexity perplexity value obtained on the training of this model
  * @param theta distribution of document by topic
  */
-class TrainedModel(val phi: Map[AttributeType, AttributedPhi], val theta: Theta, val perplexity: Double) extends DefaultChecker {
+class TrainedModel(val phi: Map[AttributeType, AttributedPhi], 
+                   val theta: Theta, 
+                   val perplexity: Double,
+                   val attributeWeight: Map[AttributeType, Float]) extends DefaultChecker {
 
     def getPhi = {
         checkDefault(phi)

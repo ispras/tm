@@ -4,10 +4,9 @@ import java.io.File
 import java.util.Random
 
 import grizzled.slf4j.Logging
-import ru.ispras.modis.tm.attribute.DefaultAttributeType
 import ru.ispras.modis.tm.builder.LDABuilder
 import ru.ispras.modis.tm.documents._
-import ru.ispras.modis.tm.initialapproximationgenerator.fixedphi.{OptimizedThetaApproximationGenerator, FixedPhiInitialApproximation}
+import ru.ispras.modis.tm.initialapproximationgenerator.fixedphi.OptimizedThetaApproximationGenerator
 import ru.ispras.modis.tm.plsa.TrainedModel
 
 import scala.io.Source
@@ -24,7 +23,7 @@ object TwoStage extends App with Logging {
 
     val docsSample = new DatasetSampler(random).apply(docs, 0.5)
 
-    val plsaSUb = new LDABuilder(25,
+    val plsaSub = new LDABuilder(25,
         alphabet,
         docsSample,
         0.3f,
@@ -32,19 +31,10 @@ object TwoStage extends App with Logging {
         random,
         30).build()
 
-    val words = docs.flatMap(_.getAttributes(DefaultAttributeType).map(_._1)).toSet
-    val subWords = docsSample.flatMap(_.getAttributes(DefaultAttributeType).map(_._1)).toSet
-
-    val badWords = words -- subWords
-
-    val trainedSubModel: TrainedModel = plsaSUb.train
+    val trainedSubModel: TrainedModel = plsaSub.train
     info("submodel trained")
 
-    val phi = alphabet.getAttributes().toSeq.map(attr => attr -> trainedSubModel.getPhi(attr)).toMap
-
-    val defaultPhi = phi(DefaultAttributeType)
-
-    val initialApproximation = new OptimizedThetaApproximationGenerator(phi, alphabet)
+    val initialApproximation = new OptimizedThetaApproximationGenerator(alphabet, trainedSubModel)
 
     val plsa = new LDABuilder(25,
         alphabet,

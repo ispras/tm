@@ -27,7 +27,7 @@ abstract class AbstractPLSABrick(private val regularizer: Regularizer,
                                  private val phiSparsifier: Sparsifier,
                                  protected val attribute: AttributeType,
                                  protected val modelParameters: ModelParameters,
-                                 private val attributeWeight: Float) {
+                                 private[tm] val attributeWeight: Float) {
 
     /**
      * execute one iteration

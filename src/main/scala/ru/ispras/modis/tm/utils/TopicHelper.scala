@@ -35,7 +35,7 @@ object TopicHelper {
         for ((_, phi) <- densePhi) phi.dump()
         denseTheta.dump()
 
-        new TrainedModel(densePhi, denseTheta, sparseModel.perplexity)
+        new TrainedModel(densePhi, denseTheta, sparseModel.perplexity, sparseModel.attributeWeight)
     }
 
     private def densifyTheta(matrix: Array[Array[Float]], significantTopics: Seq[Int]) =
