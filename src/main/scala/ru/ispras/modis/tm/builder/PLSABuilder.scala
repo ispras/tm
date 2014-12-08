@@ -36,8 +36,4 @@ class PLSABuilder(numberOfTopics: Int,
 
     regularizer = new ZeroRegularizer()
 
-    protected def brickBuilder(modelParameters: ModelParameters): Map[AttributeType, AbstractPLSABrick] = modelParameters.numberOfWords.map {
-        case (attribute, value) => (attribute,
-            new NonRobustBrick(regularizer, phiSparsifier, attribute, modelParameters, attributeWeight.getOrElse(attribute, 1f)))
-    }
 }
