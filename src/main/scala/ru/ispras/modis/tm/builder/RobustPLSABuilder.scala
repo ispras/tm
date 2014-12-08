@@ -34,7 +34,7 @@ class RobustPLSABuilder(numberOfTopics: Int,
         }
     }
 
-    stoppingCriteria = new MaxNumberOfIterationStoppingCriteria(numberOfIteration) // TODO if it is possible to avoid messing around with other class fields, AVOID it
-    // use setters
-    initialApproximationGenerator = new RandomInitialApproximationGenerator(random)
+    setStoppingCriteria(new MaxNumberOfIterationStoppingCriteria(numberOfIteration))
+
+    setInitialApproximationGenerator(new RandomInitialApproximationGenerator(random))
 }

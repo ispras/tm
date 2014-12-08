@@ -24,6 +24,9 @@ class LDABuilder(numberOfTopics: Int,
                  attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float](),
                     parallel : Boolean = false)
     extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight,parallel ) {
+
+
+
     initialApproximationGenerator = new RandomInitialApproximationGenerator(random) //TODO use setters
 
     stoppingCriteria = new MaxNumberOfIterationStoppingCriteria(maxNumberOfIteration)

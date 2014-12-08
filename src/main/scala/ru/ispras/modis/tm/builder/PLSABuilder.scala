@@ -3,13 +3,11 @@ package ru.ispras.modis.tm.builder
 import java.util.Random
 
 import ru.ispras.modis.tm.attribute.AttributeType
-import ru.ispras.modis.tm.brick.{AbstractPLSABrick, NonRobustBrick}
 import ru.ispras.modis.tm.documents.{Alphabet, Document}
 import ru.ispras.modis.tm.initialapproximationgenerator.RandomInitialApproximationGenerator
 import ru.ispras.modis.tm.regularizer.ZeroRegularizer
 import ru.ispras.modis.tm.sparsifier.ZeroSparsifier
 import ru.ispras.modis.tm.stoppingcriteria.MaxNumberOfIterationStoppingCriteria
-import ru.ispras.modis.tm.utils.ModelParameters
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,14 +24,14 @@ class PLSABuilder(numberOfTopics: Int,
                   parallel : Boolean = false)
     extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight, parallel) {
 
-    initialApproximationGenerator = new RandomInitialApproximationGenerator(random) //TODO user setters
+    setInitialApproximationGenerator(new RandomInitialApproximationGenerator(random))
 
-    thetaSparsifier = new ZeroSparsifier()
+    setThetaSparsifier(new ZeroSparsifier())
 
-    phiSparsifier = new ZeroSparsifier()
+    setPhiSparsifier(new ZeroSparsifier())
 
-    stoppingCriteria = new MaxNumberOfIterationStoppingCriteria(numberOfIteration)
 
-    regularizer = new ZeroRegularizer()
+    setStoppingCriteria(new MaxNumberOfIterationStoppingCriteria(numberOfIteration))
 
+    setRegularizer(new ZeroRegularizer())
 }

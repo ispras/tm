@@ -28,6 +28,7 @@ class FixedPhiBuilder(alphabet: Alphabet,
         }
     }
 
-    initialApproximationGenerator = new UniformThetaApproximationGenerator(phi)
-    stoppingCriteria = new MaxNumberOfIterationStoppingCriteria(numberOfIterations)
+    setInitialApproximationGenerator(new UniformThetaApproximationGenerator(phi))
+
+    setStoppingCriteria(new MaxNumberOfIterationStoppingCriteria(numberOfIterations))
 }
