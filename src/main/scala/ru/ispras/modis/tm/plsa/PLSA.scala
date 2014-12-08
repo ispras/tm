@@ -1,6 +1,5 @@
 package ru.ispras.modis.tm.plsa
 
-import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.AttributeType
 import ru.ispras.modis.tm.brick.AbstractPLSABrick
 import ru.ispras.modis.tm.documents.Document
@@ -8,7 +7,7 @@ import ru.ispras.modis.tm.matrix.{AttributedPhi, Theta}
 import ru.ispras.modis.tm.regularizer.Regularizer
 import ru.ispras.modis.tm.sparsifier.Sparsifier
 import ru.ispras.modis.tm.stoppingcriteria.StoppingCriteria
-import ru.ispras.modis.tm.utils.TopicHelper
+import ru.ispras.modis.tm.utils.{ElapsedTime, TopicHelper}
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,7 +31,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
            private val regularizer: Regularizer,
            private val documents: Array[Document],
            private val phi: Map[AttributeType, AttributedPhi],
-           private val theta: Theta) extends Logging {
+           private val theta: Theta) extends ElapsedTime  {
 
     /**
      * take sequence of documents into input and train model on it
@@ -45,7 +44,7 @@ class PLSA(private val bricks: Map[AttributeType, AbstractPLSABrick],
         var numberOfIteration = 0
         var oldPpx = 0d
         var newPpx = 0d
-        while (!stoppingCriteria(numberOfIteration, oldPpx, newPpx)) {
+        while (!stoppingCriteria(numberOfIteration, oldPpx, newPpx)) time("iteration")  {
             oldPpx = newPpx
             newPpx = makeIteration(numberOfIteration, collectionLength, documents)
             numberOfIteration += 1
