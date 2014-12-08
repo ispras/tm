@@ -9,9 +9,9 @@ import ru.ispras.modis.tm.documents.{Alphabet, Document}
  * Created by valerij on 12/5/14.
  */
 object WriteDatasetForBigARTM {
-    def apply(documents: Array[Document], alphabet : Alphabet) : Unit = {
-        val docWriter = new BufferedWriter(new FileWriter(new File("/home/valerij/bigartm/src/python/examples/docword.kos.txt" )))
-        val vocabWriter = new BufferedWriter(new FileWriter(new File("/home/valerij/bigartm/src/python/examples/vocab.kos.txt" )))
+    def apply(documents: Array[Document], alphabet : Alphabet, pathForDocs: String , pathForVocab: String) : Unit = {
+        val docWriter = new BufferedWriter(new FileWriter(new File(pathForDocs )))
+        val vocabWriter = new BufferedWriter(new FileWriter(new File(pathForVocab )))
 
         docWriter.write(documents.length + "\n")
         docWriter.write(alphabet.numberOfWords(DefaultAttributeType) + "\n")
