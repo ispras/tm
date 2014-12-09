@@ -4,6 +4,7 @@ import gnu.trove.map.hash.{TIntIntHashMap, TObjectIntHashMap}
 import gnu.trove.procedure.TObjectIntProcedure
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
+import ru.ispras.modis.tm.utils.TupleArraySeq
 
 import scala.collection.mutable
 
@@ -79,7 +80,7 @@ object Numerator extends Logging {
                 wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute), attribute, numberOfWords, wordsToNumber, freqTokens))
         }
 
-        new Document(document.map { case (key, value) => (key, value.toSeq)}, documentIndex)
+        new Document(document.map { case (key, value) => (key, TupleArraySeq(value)  )}, documentIndex)
     }
 
     /**
