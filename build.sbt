@@ -28,9 +28,12 @@ libraryDependencies += "com.esotericsoftware.kryo" % "kryo" % "2.10"
 
 libraryDependencies += "com.github.scala-blitz" %% "scala-blitz" % "1.1"
 
+libraryDependencies += "joda-time" % "joda-time" % "2.6"
+
 organization := "ru.ispras.modis"
 
 profileName := "ru.ispras"
+
 
 //mainClass in assembly := Some("ru.ispras.modis.tm.wtf.ModelTrainer")
 
