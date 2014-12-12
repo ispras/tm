@@ -60,7 +60,7 @@ object Numerator extends Logging {
     private def processDocument(textualDocument: TextualDocument, alphabet: Alphabet, docIndex: Int): Document =
         new Document(textualDocument.attributeSet().map(attr => (attr, textualDocument.words(attr)))
             .map { case (attr, tokens) =>
-                attr -> TupleArraySeq(tokens.map(w => alphabet.getIndex(attr, w)).flatten.groupBy(x => x).map { case (w, cnt) => (w, cnt.size.toShort)}.toArray)
+                attr -> TupleArraySeq(tokens.map(w => alphabet.getIndex(attr, w)).flatten.groupBy(x => x).map { case (w, cnt) => (w, cnt.size)}.toArray)
             }.toMap,
             docIndex)
 
@@ -77,7 +77,7 @@ object Numerator extends Logging {
                                 wordsToNumber: mutable.Map[AttributeType, TObjectIntHashMap[String]],
                                 documentIndex: Int,
                                 freqTokens: mutable.Map[AttributeType, TIntIntHashMap]) = {
-        val document = textualDocument.attributeSet().foldLeft(Map[AttributeType, Array[(Int, Short)]]()) {
+        val document = textualDocument.attributeSet().foldLeft(Map[AttributeType, Array[(Int, Int)]]()) {
             case (wordsInDocument, attribute) =>
                 wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute), attribute, numberOfWords, wordsToNumber, freqTokens))
         }
@@ -102,7 +102,7 @@ object Numerator extends Logging {
         if (!freqTokens.contains(attribute)) freqTokens(attribute) = new TIntIntHashMap()
         if (!wordsToNumber.contains(attribute)) wordsToNumber(attribute) = new TObjectIntHashMap[String]()
 
-        val map = mutable.Map[Int, Short]().withDefaultValue(0)
+        val map = mutable.Map[Int, Int]().withDefaultValue(0)
         for (word <- words) {
             if (!wordsToNumber(attribute).containsKey(word)) {
                 wordsToNumber(attribute).put(word, numberOfWords(attribute))
@@ -110,7 +110,7 @@ object Numerator extends Logging {
                 numberOfWords(attribute) += 1
             }
             val wordId = wordsToNumber(attribute).get(word)
-            map(wordId) = (map(wordId) + 1).toShort
+            map(wordId) = (map(wordId) + 1)
             freqTokens(attribute).increment(wordId)
         }
         map.toArray

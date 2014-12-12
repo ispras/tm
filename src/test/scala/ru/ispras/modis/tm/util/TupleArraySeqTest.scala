@@ -8,7 +8,7 @@ import ru.ispras.modis.tm.utils.TupleArraySeq
  */
 class TupleArraySeqTest extends FlatSpec with Matchers {
     "iterator" should "iterate" in {
-        val int2short = Seq((1, 2:Short), (2, 3:Short), (4, 5:Short))
+        val int2short = Seq((1, 2), (2, 3), (4, 5))
         val tupleArray = TupleArraySeq(int2short.toArray)
 
         tupleArray.toVector should be (int2short.toVector)
