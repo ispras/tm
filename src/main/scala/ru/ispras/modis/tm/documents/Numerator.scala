@@ -1,10 +1,9 @@
 package ru.ispras.modis.tm.documents
 
 import gnu.trove.map.hash.{TIntIntHashMap, TObjectIntHashMap}
-import gnu.trove.procedure.TObjectIntProcedure
 import grizzled.slf4j.Logging
-import ru.ispras.modis.tm.attribute.{DefaultAttributeType, AttributeType}
-import ru.ispras.modis.tm.utils.{DenisTrickTupleSeq, TupleArraySeq}
+import ru.ispras.modis.tm.attribute.AttributeType
+import ru.ispras.modis.tm.utils.DenisTrickTupleSeq
 
 import scala.collection.mutable
 
@@ -60,7 +59,10 @@ object Numerator extends Logging {
 
     private def processDocument(textualDocument: TextualDocument, alphabet: Alphabet, docIndex: Int): Document =
         new Document(textualDocument.attributeSet().map(attr => (attr, textualDocument.words(attr)))
-            .map { case (attr, tokens) => attr -> tokens.map(w => alphabet.getIndex(attr, w)).flatten.groupBy(x => x).map { case (w, cnt) => (w, cnt.size.toShort)}.toSeq}.toMap, docIndex)
+            .map { case (attr, tokens) =>
+                attr -> DenisTrickTupleSeq(tokens.map(w => alphabet.getIndex(attr, w)).flatten.groupBy(x => x).map { case (w, cnt) => (w, cnt.size.toShort)}.toArray)
+            }.toMap,
+            docIndex)
 
     /**
      * replace words by number in a single document for every attribute
@@ -137,7 +139,7 @@ object Numerator extends Logging {
     private def removeRareTokenInSingleDocument(document: Document, freqTokens: mutable.Map[AttributeType, TIntIntHashMap]) = {
         val filteredWords = document.attributeSet().map{attribute =>
             val words = document.getAttributes(attribute)
-            attribute -> words.map{case(wordId, wordNum) => (freqTokens(attribute).get(wordId), wordNum)}.filter(_._1 >= 0)
+            attribute -> DenisTrickTupleSeq(words.map{case(wordId, wordNum) => (freqTokens(attribute).get(wordId), wordNum)}.filter(_._1 >= 0).toArray)
         }.toMap
         new Document(filteredWords, document.serialNumber)
     }
