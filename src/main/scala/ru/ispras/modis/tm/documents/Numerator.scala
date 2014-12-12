@@ -3,7 +3,7 @@ package ru.ispras.modis.tm.documents
 import gnu.trove.map.hash.{TIntIntHashMap, TObjectIntHashMap}
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.AttributeType
-import ru.ispras.modis.tm.utils.DenisTrickTupleSeq
+import ru.ispras.modis.tm.utils.{TupleArraySeq}
 
 import scala.collection.mutable
 
@@ -60,7 +60,7 @@ object Numerator extends Logging {
     private def processDocument(textualDocument: TextualDocument, alphabet: Alphabet, docIndex: Int): Document =
         new Document(textualDocument.attributeSet().map(attr => (attr, textualDocument.words(attr)))
             .map { case (attr, tokens) =>
-                attr -> DenisTrickTupleSeq(tokens.map(w => alphabet.getIndex(attr, w)).flatten.groupBy(x => x).map { case (w, cnt) => (w, cnt.size.toShort)}.toArray)
+                attr -> TupleArraySeq(tokens.map(w => alphabet.getIndex(attr, w)).flatten.groupBy(x => x).map { case (w, cnt) => (w, cnt.size.toShort)}.toArray)
             }.toMap,
             docIndex)
 
@@ -82,7 +82,7 @@ object Numerator extends Logging {
                 wordsInDocument.updated(attribute, replaceWordsByIndexes(textualDocument.words(attribute), attribute, numberOfWords, wordsToNumber, freqTokens))
         }
 
-        new Document(document.map { case (key, value) => (key, DenisTrickTupleSeq(value))}, documentIndex)
+        new Document(document.map { case (key, value) => (key, TupleArraySeq(value))}, documentIndex)
     }
 
     /**
@@ -139,7 +139,7 @@ object Numerator extends Logging {
     private def removeRareTokenInSingleDocument(document: Document, freqTokens: mutable.Map[AttributeType, TIntIntHashMap]) = {
         val filteredWords = document.attributeSet().map{attribute =>
             val words = document.getAttributes(attribute)
-            attribute -> DenisTrickTupleSeq(words.map{case(wordId, wordNum) => (freqTokens(attribute).get(wordId), wordNum)}.filter(_._1 >= 0).toArray)
+            attribute -> TupleArraySeq(words.map{case(wordId, wordNum) => (freqTokens(attribute).get(wordId), wordNum)}.filter(_._1 >= 0).toArray)
         }.toMap
         new Document(filteredWords, document.serialNumber)
     }
