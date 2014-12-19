@@ -147,11 +147,12 @@ object RobustBrick extends Logging {
               modelParameters: ModelParameters,
               noiseParameters: NoiseParameters,
               documents: Seq[Document],
-              attributeWeight: Float) = {
+              attributeWeight: Float,
+              parallel : Boolean = false) = {
 
         val background = Background(attribute, modelParameters)
         val noise = generateNoise(documents: Seq[Document], attribute: AttributeType)
-        new RobustBrick(regularizer, phiSparsifier, attribute, modelParameters, noiseParameters, background, noise, attributeWeight)
+        new RobustBrick(regularizer, phiSparsifier, attribute, modelParameters, noiseParameters, background, noise, attributeWeight, parallel)
     }
 
     /**

@@ -30,7 +30,7 @@ class RobustPLSABuilder(numberOfTopics: Int,
         val noiseParameter = new NoiseParameters(noiseWeight, backgroundWeight)
         modelParameters.numberOfWords.map {
             case (attribute, value) => (attribute,
-                RobustBrick(regularizer, phiSparsifier, attribute, modelParameters, noiseParameter, documents, attributeWeight.getOrElse(attribute, 1f)))
+                RobustBrick(regularizer, phiSparsifier, attribute, modelParameters, noiseParameter, documents, attributeWeight.getOrElse(attribute, 1f), parallel))
         }
     }
 
