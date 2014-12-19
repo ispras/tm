@@ -73,15 +73,14 @@ class NonRobustBrick(regularizer: Regularizer,
      */
     protected def processOneWord(wordIndex: Int, numberOfWords: Int, documentIndex: Int, phi: AttributedPhi, theta: Theta): Double = {
         val Z = countZ(phi, theta, wordIndex, documentIndex)
-        var likelihood = 0f
         var topic = 0
         while (topic < modelParameters.numberOfTopics) {
             val ndwt = numberOfWords * theta.probability(documentIndex, topic) * phi.probability(topic, wordIndex) / Z
             theta.addToExpectation(documentIndex, topic, ndwt)
             phi.addToExpectation(topic, wordIndex, ndwt)
-            likelihood += phi.probability(topic, wordIndex) * theta.probability(documentIndex, topic)
             topic += 1
         }
-        numberOfWords * log(likelihood)
+
+        numberOfWords * log(Z)
     }
 }
