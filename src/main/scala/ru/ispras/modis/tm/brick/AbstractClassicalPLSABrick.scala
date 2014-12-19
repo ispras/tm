@@ -25,7 +25,7 @@ abstract class AbstractClassicalPLSABrick(regularizer: Regularizer,
         var logLikelihood = 0d
 
         if (parallel) {
-            logLikelihood = documents.toPar.map(doc => if (doc.contains(attribute)) processSingleDocument(doc, theta, phi) else 0d).sum
+            documents.toPar.aggregate(0d)( _ + _)((sum, doc) => sum + (if (doc.contains(attribute)) processSingleDocument(doc, theta, phi) else 0d) )
         } else {
             for (doc <- documents if doc.contains(attribute)) {
                 logLikelihood += processSingleDocument(doc, theta, phi)

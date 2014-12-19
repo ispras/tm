@@ -54,16 +54,8 @@ class RobustBrick private(regularizer: Regularizer,
      * @return log likelihood of observed collection. log(P(D\ theta, phi))
      */
     def makeIteration(theta: Theta, phi: AttributedPhi, documents: Array[Document], iterationCnt: Int): Double = {
+        val logLikelihood = processCollection(theta, phi, documents)
 
-        var logLikelihood = 0d
-
-        if (parallel) {
-            logLikelihood = documents.toPar.map(doc => if (doc.contains(attribute)) processSingleDocument(doc, theta, phi) else 0d).sum
-        } else {
-            for (document <- documents if document.contains(attribute) ) {
-                logLikelihood += processSingleDocument(document, theta, phi)
-            }
-        }
         if (noiseParameters.backgroundWeight > 0) background.dump()
         phi.dump()
         phi.sparsify(phiSparsifier, iterationCnt)

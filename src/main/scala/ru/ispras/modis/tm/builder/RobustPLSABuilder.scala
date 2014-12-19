@@ -18,11 +18,11 @@ import ru.ispras.modis.tm.utils.ModelParameters
 class RobustPLSABuilder(numberOfTopics: Int,
                         alphabet: Alphabet,
                         documents: Array[Document],
-                        private val noiseWeight: Float,
-                        private val backgroundWeight: Float,
+                        private val noiseWeight: Float = 0.01f,
+                        private val backgroundWeight: Float = 0.3f,
                         private val random: Random = new Random,
                         private val numberOfIteration: Int = 100,
-                        attributeWeight: Map[AttributeType, Float],
+                        attributeWeight: Map[AttributeType, Float] = Map[AttributeType, Float](),
                         parallel : Boolean = false)
     extends AbstractPLSABuilder(numberOfTopics, alphabet, documents, attributeWeight, parallel) {
 
