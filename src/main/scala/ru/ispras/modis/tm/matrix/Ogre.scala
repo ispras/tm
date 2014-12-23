@@ -91,16 +91,19 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
     override def toString = stochasticMatrix.map(_.mkString(", ")).mkString("\n")
 
     /**
-     * perform normalization of stochastic matrix e.g. multiply every row by 1 / (som of row)
+     * perform normalization of stochastic matrix e.g. multiply every row by 1 / (sum of row)
      */
     private def normalise() {
         forfor(calculateRowSum){ (rowIndex, columnIndex, sum) =>
-            stochasticMatrix(rowIndex)(columnIndex) /= sum
+            if (sum >= 2 * Float.MinPositiveValue)
+                stochasticMatrix(rowIndex)(columnIndex) /= sum
+            else
+                stochasticMatrix(rowIndex)(columnIndex) = 1f / numberOfColumns
         }
     }
 
     private def calculateRowSum(rowIndex: Int) = {
-        val sum = stochasticMatrix(rowIndex).sum + Float.MinPositiveValue // it's necessary to avoid division by zero
+        val sum = stochasticMatrix(rowIndex).sum
         checkSum(rowIndex, sum)
         sum
     }
@@ -111,6 +114,7 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         if (sum <= 2 * Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row. " +
             "May be the number of topics you have set is too damn high. " +
             "May be regularization is too strict. " +
+            "May be a document contains no words " +
             "row number=" + rowIndex)
     }
 
@@ -163,5 +167,3 @@ object Ogre {
     def stochasticMatrix(expectationMatrix: Array[Array[Float]]) =
         Array.ofDim[Float](expectationMatrix.length, expectationMatrix.head.length)
 }
-
-

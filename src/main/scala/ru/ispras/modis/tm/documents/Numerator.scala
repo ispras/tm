@@ -3,7 +3,7 @@ package ru.ispras.modis.tm.documents
 import gnu.trove.map.hash.{TIntIntHashMap, TObjectIntHashMap}
 import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.AttributeType
-import ru.ispras.modis.tm.utils.{TupleArraySeq}
+import ru.ispras.modis.tm.utils.TupleArraySeq
 
 import scala.collection.mutable
 
