@@ -1,5 +1,6 @@
 package ru.ispras.modis.tm.documents
 
+import grizzled.slf4j.Logging
 import ru.ispras.modis.tm.attribute.{AttributeType, DefaultAttributeType}
 import ru.ispras.modis.tm.utils.DefaultChecker
 
@@ -13,8 +14,8 @@ import ru.ispras.modis.tm.utils.DefaultChecker
  * holds words, related to the given attribute
  * @param attributes map from attribute to sequence of words
  */
-class TextualDocument(private[documents] val attributes: Map[AttributeType, Seq[String]]) extends DefaultChecker {
-    require(attributes.values.forall(_.nonEmpty), "empty document")
+class TextualDocument(private[documents] val attributes: Map[AttributeType, Seq[String]]) extends DefaultChecker with Logging{
+    if(!attributes.values.forall(_.nonEmpty)) warn("empty document")
 
     /**
      * return words, corresponding to given attribute
