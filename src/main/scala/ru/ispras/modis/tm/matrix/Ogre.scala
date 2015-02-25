@@ -21,7 +21,7 @@ import scala.collection.optimizer._
  */
 abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]])
     extends Logging {
-
+    private var wasWarned = false
     require(expectationMatrix.length == stochasticMatrix.length && expectationMatrix.head.length == stochasticMatrix.head.length,
         "stochastic and expectation matrix should have the same number of rows and number of columns")
 
@@ -111,11 +111,14 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
 
     private def checkSum(rowIndex: Int, sum: Float) {
         require(!sum.toDouble.isNaN, "NaN is somewhere in expectation in the row " + rowIndex)
-        if (sum <= 2 * Float.MinPositiveValue) warn("sum should be > 0. May be you dump twice in a row. " +
-            "May be the number of topics you have set is too damn high. " +
-            "May be regularization is too strict. " +
-            "May be a document contains no words " +
-            "row number=" + rowIndex)
+        if (sum <= 2 * Float.MinPositiveValue && !wasWarned) {
+            wasWarned = true
+            warn("sum should be > 0. May be you dump twice in a row. " +
+                "May be the number of topics you have set is too damn high. " +
+                "May be regularization is too strict. " +
+                "May be a document contains no words " +
+                "row number=" + rowIndex)
+        }
     }
 
     /**
