@@ -77,16 +77,16 @@ object TopicHelper {
 
     /**
      * save matrix (Phi - words by topic, Theta - document by topic or any other Ogre) in txt file in csv format.
-     * Each row represent the row of matrix, values are seporated by ", "
+     * Each row represent the row of matrix, values are separated by ", "
      * @param path path to file where you wont to save matrix
      * @param matrix matrix that you want to save (for example Theta)
      */
     def saveMatrix(path: String, matrix: Ogre) {
         val out = new FileWriter(path)
-        val phi = 0.until(matrix.numberOfRows).map { topicId =>
-            0.until(matrix.numberOfColumns).map(wordId => matrix.probability(topicId, wordId)).mkString(", ")
-        }.mkString("\n")
-        out.write(phi)
+        val phi = 0.until(matrix.numberOfRows).foreach{ topicId =>
+            0.until(matrix.numberOfColumns - 1).foreach(wordId => out.write(matrix.probability(topicId, wordId) + ", "))
+            out.write(matrix.probability(topicId, matrix.numberOfColumns - 1) + "\n")
+        }
         out.close()
     }
 
@@ -102,7 +102,7 @@ object TopicHelper {
     /**
      * this method copy values of matrix to Array[Array]
      * @param matrix matrix to extract values
-     * @return copy of stocastic matrix in Array[Array] format
+     * @return copy of stochastic matrix in Array[Array] format
      */
     def copyMatrixToArray(matrix: Ogre): Array[Array[Float]] = 0.until(matrix.numberOfRows).map(row =>
         0.until(matrix.numberOfColumns).map(column => matrix.probability(row, column)).toArray).toArray

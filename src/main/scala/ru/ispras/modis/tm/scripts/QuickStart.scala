@@ -105,8 +105,8 @@ object QuickStart extends App {
     TopicHelper.printAllTopics(n, trainedModel.phi(DefaultAttributeType), alphabet)
 
     /**
-     * now we save matrix Phi (words by topic ) into file examples/Phi
-     * and matrix Theta (topic by document) in file examples/Theta
+     * now we save matrix Phi (words by topic ) into textual file examples/Phi
+     * and matrix Theta (topic by document) in file textual examples/Theta
      */
     TopicHelper.saveMatrix("examples/Phi", trainedModel.phi(DefaultAttributeType))
     TopicHelper.saveMatrix("examples/Theta", trainedModel.theta)
