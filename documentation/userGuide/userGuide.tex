@@ -1,32 +1,59 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
-\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{fixltx2e}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+
+\usepackage{floatflt}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{comment}
+\usepackage{listings}
+
+\lstset{%
+    language=bash,
+    numbers=none,
+    tabsize=3,
+    breaklines=true,
+    basicstyle=\small\ttfamily,
+    framerule=0pt,
+    columns=fullflexible
+}
+
 \graphicspath{{./fig/}}
 
 \title{Topic Modeling Library and Framework User Guide}
-\author{Avanesov Valeriy\\Kozlov Ilya}
+\author{Avanesov Valeriy \\ Kozlov Ilya}
 \date{\today}
+
+
 
 \usepackage{natbib}
 \usepackage{hyperref}
 \begin{document}
 
+
+
 \maketitle
 
-\section{Input}
-    The aim of this project is to provide flexible and simple library and framework for topic modeling.
-    The main properties of this project:
-    \begin{itemize}
-	\item Ability to apply user-defined regularizer, sparsifier and stopping criteria.
-	\item Ability to use multilingual topic modeling. 
-    \end{itemize}
-    The paper is organized as follow: section \ref{intro} contains a quick introduction to topic modeling,
-    \ref{quickStart} describes how to start a project without description of details of implementation. These two sections should allow you
-    to use LDA and PLSA  model in simple use\--cases. The following section describes details of implementation and is necessary for
-    deeper understanding of project structure and implementation of your own regularizer, sparsifier and other stuff.
-    Section \ref{projectStructure} describes a structure of the project, section \ref{regularizer} describes regularizers and explains how to implement your
-    own regularizer, section \ref{sparsifier} describes what sparsifier is and how to implement you own sparsifier. Section \ref{stoppingCriteria} for the 
-    description of how to define that convergence of EM-algorithm is achieved. Section \ref{multilingual} describes (actually, it doesn't, though we are working on it) how to use model in multilingual setting. 
+\newpage
+
+\tableofcontents
+
+\clearpage	\section{Input} \label{input} \input{input.tex}
+   
+\clearpage	\section{How to build project}  \label{howToBuild} \input{howToBuild.tex}
 
 \clearpage	\section{Introduction to topic modeling}  \label{intro} \input{intro.tex}
 

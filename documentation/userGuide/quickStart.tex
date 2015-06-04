@@ -11,7 +11,7 @@ In order to use topic modeling one have to perform the following step:
 First of all one may look at tm/src/main/scala/ru/ispras/modis/tm/scripts/QuickStart.scala
 
 In this section would be shown how to perform each step. 
-\subsection{Read the data}
+\subsection*{Read the data}
     First of all we have to read the data from disc. It worth mentioning that text normalization is non\--goal of our project, thus text should be already preprocessed. 
     This step depends on the organization of input data, so it is
     no use to describe this step in general way. Instead of this we describe this step for our example file, one may easy modify this step for his own use case. % !! криво
@@ -26,13 +26,13 @@ In this section would be shown how to perform each step.
     Each TextualDocument is a map from attribute to the correspond sequence of words. For example attribute may denote language of
     text in the case of multilingual topic modeling. 
     If there is only one attribute (as in our case) one can use \texttt{DefaultAttributeType}.  Furthermore, in such a case one can use \texttt{SingleAttributeNumerator} instead on \texttt{Numerator} -- it takes \texttt{Seq[String]} as inputes and implicitly uses \texttt{DefaultAttributeType}.
-\subsection{Replace words by it serial number}
+\subsection*{Replace words by it serial number}
     In order to save the memory in our application we have to replace words by it serial number and group the same words together.
     $$ Seq(duck, \ \ duck, \ \ duck, \ \ goose) \to Seq((0, 3), (1, 1))) $$
     For this purpose we may use object Numerator. It takes into input sequence of textual documents, replace words by it serial number,
     group the same words and return sequence of documents. It also return Alphabet (map form word to serial number and vice versa)
     \texttt{val (documents, alphabet) = Numerator(textualDocuments)}.\\ 
-    \subsubsection{How to use alphabet}
+    \subsubsection*{How to use alphabet}
 	Alphabet holds a map from words to their indices and vice versa. Thus it allow to
 	\begin{enumerate}
 	    \item get words by it index and attribute:\\
@@ -43,7 +43,7 @@ In this section would be shown how to perform each step.
 		\texttt{alphabet.numberOfWords(Category) // 100500}
 	\end{enumerate}
 	
-\subsection{Build model}
+\subsection*{Build model}
     One can build model with class Builder (see package ru.ispras.modis.builder). Our project provides three types of builders:
     \begin{enumerate}
 	\item PLSABuilder \--- builds a standard PLSA (as it is described in original paper \cite{PLSA_original})
@@ -62,7 +62,7 @@ In this section would be shown how to perform each step.
 	\item And build the model: \\ \texttt{ val builder = new PLSABuilder(numberOfTopics, alphabet, documents, random,  numberOfIteration)}
     \end{enumerate}
 
-\subsection{Training a model}
+\subsection*{Training a model}
     Now we build a model and can perform stochastic matrix decomposition(train the model) \\
     \texttt{val trainedModel = plsa.train(documents)}\\
     trainedModel holds the matrices $\Phi$ and $\Theta$ (see \ref{matrixDecomposition})
@@ -75,14 +75,14 @@ In this section would be shown how to perform each step.
     To obtain matrix $\Theta$: \\
     \texttt{val theta = trainedModel.theta}\\
 
-    \subsubsection{How to interpret the results}
+    \subsubsection*{How to interpret the results}
 	If you are not familiar with topic modeling read \ref{generativeModel}. In our library we store the distribution of words by topic in matrix $\Phi$,
 	distribution of documents by topics in matrix $\Theta$. In order to obtain the probability to generate word $w$ from topic $t$ one may use method \\
 	\texttt{trainedModel.phi(Category).probability(t, w)}\\
 	In order to obtain the probability to generate topic $t$ in document $d$ \\
 	\texttt{trainedModel.theta.probability(d, t)}\\
     
-    \subsubsection{How to deal with matrices}
+    \subsubsection*{How to deal with matrices}
 	Matrices $\Phi$ and $\Theta$ hold different information, but support the similar methods.
 	Both classes hold matrix of expectation and stochastic matrix. Expectation matrix holds values, estimated by E\--step (see \ref{EMAlgorithm}),
 	stochastic matrix contain a probability. Method of classes Phi and Theta are explained in table \ref{phiAndThetaMethods}

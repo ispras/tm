@@ -1,0 +1,37 @@
+In this section we will describe how to build a project. 
+To build this project you need to have the following program:
+\begin{enumerate}
+    \item git. It is necessary to obtain source from github. 
+	In Ubuntu one can obtain git by typo 
+	\begin{lstlisting} 
+	    sudo apt-get install git 
+	\end{lstlisting}
+
+	
+    \item The project is written on Scala, thus you need to have Scala. One can obtain the latest version from \url{http://www.scala-lang.org/}. 
+    
+    \item Java is also would be useful. One can obtain the latest version from \url{https://www.oracle.com/java/}
+    
+    \item To build the project you need to have sbt. One can obtain the latest version from \url{http://www.scala-sbt.org/}
+\end{enumerate}
+
+Now lets build tm. First of all we have to obtain the source:
+\begin{lstlisting}
+    git clone https://github.com/ispras/tm.git 
+\end{lstlisting}
+Go to the directory with tm:
+\begin{lstlisting}
+    cd tm
+\end{lstlisting}
+And now we can build project:
+\begin{lstlisting}
+    sbt assembly
+\end{lstlisting}
+The .jar file will occur in target/scala\--2.11/ directory. 
+Lets run an example task 
+\begin{lstlisting}
+    java -classpath target/scala-2.11/tm-assembly-1.0.jar ru.ispras.modis.tm.scripts.QuickStart
+\end{lstlisting}
+It will start topic modeling on the 1000 scientific articles. You can add .jar file in you 
+project.
+
