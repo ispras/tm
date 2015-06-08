@@ -20,7 +20,7 @@ import scala.collection.optimizer._
  * @param stochasticMatrix hold probabilities, so sum of any row is equal to 1 and every element non-negative
  */
 abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]], private val stochasticMatrix: Array[Array[Float]])
-    extends Logging {
+    extends Logging with Serializable {
     private var wasWarned = false
     require(expectationMatrix.length == stochasticMatrix.length && expectationMatrix.head.length == stochasticMatrix.head.length,
         "stochastic and expectation matrix should have the same number of rows and number of columns")
@@ -140,10 +140,9 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         }
     }
 
-    private val parallelRows: Par[Range] = (0 until numberOfRows).toPar
-
     private def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit) = {
-        for (rowIndex <- parallelRows) {
+        val parallelRows = (0 until numberOfRows)
+        for (rowIndex <- parallelRows.toPar) {
             val intermediate = rowOp(rowIndex)
             for (columnIndex <- 0 until numberOfColumns) {
                 rowColOp(rowIndex, columnIndex, intermediate)

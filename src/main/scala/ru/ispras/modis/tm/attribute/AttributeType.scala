@@ -6,4 +6,4 @@ package ru.ispras.modis.tm.attribute
  * Date: 24.03.14
  * Time: 19:31
  */
-trait AttributeType
+trait AttributeType extends Serializable

@@ -19,7 +19,7 @@ import ru.ispras.modis.tm.utils.DefaultChecker
 class TrainedModel(val phi: Map[AttributeType, AttributedPhi], 
                    val theta: Theta, 
                    val perplexity: Double,
-                   val attributeWeight: Map[AttributeType, Float]) extends DefaultChecker {
+                   val attributeWeight: Map[AttributeType, Float]) extends DefaultChecker with Serializable{
 
     def getPhi = {
         checkDefault(phi)

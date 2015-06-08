@@ -15,7 +15,7 @@ import ru.ispras.modis.tm.utils.DefaultChecker
  * @param indexWordsMap attribute -> (index of word from it attribute -> word from it attribute)
  */
 class Alphabet(private[documents] val indexWordsMap: Map[AttributeType, TIntObjectHashMap[String]],
-               private[documents] val wordsIndexMap: Map[AttributeType, TObjectIntHashMap[String]]) extends DefaultChecker {
+               private[documents] val wordsIndexMap: Map[AttributeType, TObjectIntHashMap[String]]) extends DefaultChecker with Serializable {
     /**
      *
      * @param attribute words attribute
