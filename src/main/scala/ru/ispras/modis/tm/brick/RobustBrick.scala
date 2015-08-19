@@ -55,6 +55,7 @@ class RobustBrick private(regularizer: Regularizer,
      */
     def makeIteration(theta: Theta, phi: AttributedPhi, documents: Array[Document], iterationCnt: Int): Double = {
         val logLikelihood = processCollection(theta, phi, documents)
+        applyRegularizer(theta, phi)
 
         if (noiseParameters.backgroundWeight > 0) background.dump()
         phi.dump()
