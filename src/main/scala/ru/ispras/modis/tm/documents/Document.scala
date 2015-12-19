@@ -20,7 +20,7 @@ class Document(private[documents] val attributes: Map[AttributeType, Seq[(Int, I
     /**
      * return words, corresponding to given attribute
      * @param attributeType type of attribute
-     * @return array (index of word, number of occurrence in given document
+     * @return array (index of word, number of occurrence in given document)
      */
     def getAttributes(attributeType: AttributeType): Seq[(Int, Int)] = attributes.getOrElse(attributeType, Seq[(Int, Int)]())
 
@@ -31,6 +31,10 @@ class Document(private[documents] val attributes: Map[AttributeType, Seq[(Int, I
     def attributeSet() = attributes.keySet
 
     def getWords = {
+        /**
+         * Work's only on documents with one default attribute
+         * @return array (index of word, number of occurrence in given document)
+         */
         checkDefault(attributes)
         attributes(DefaultAttributeType)
     }

@@ -12,7 +12,7 @@ import ru.ispras.modis.tm.plsa.TrainedModel
 import scala.io.Source
 
 /**
- * Created by valerij on 07.12.14.
+ * Created by valerij on 07.12.14
  */
 object TwoStage extends App with Logging {
     val path = "examples/arxiv.part" 

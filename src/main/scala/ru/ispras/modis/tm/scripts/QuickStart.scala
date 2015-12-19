@@ -26,7 +26,7 @@ object QuickStart extends App {
      * We read textual documents from a textual file, one document per line. Words are separated by space.
      * Documents should be preprocessed.
      */
-    def getTextualDocuments(): Iterator[TextualDocument] = {
+    def getTextualDocuments: Iterator[TextualDocument] = {
         /**
          * read lines from textual file with a 1000 scientific articles
          */
@@ -55,7 +55,7 @@ object QuickStart extends App {
     /**
      * read textual documents from file (see functions getTextualDocuments for details)
      */
-    val textualDocuments = getTextualDocuments()
+    val textualDocuments = getTextualDocuments
     /**
      * now we have to replace words by it serial number. For this purposes we would use object Numerator
      * Numerator take into input iterator of TextualDocuments, replace words by it serial numbers and return
@@ -113,13 +113,14 @@ object QuickStart extends App {
 
     /**
      * and now we can serialize trainedModel using kryo. Kryo saves objects in binary format, so do not try to open
-     * model by textual redactor.
+     * model by textual redactor. You can save model in ordinary file or in gzipped (compressed) file. Gzipped file
+     * takes much less space on hdd.
      */
-    TrainedModelSerializer.save(trainedModel, "examples/model")
+    TrainedModelSerializer.save(trainedModel, "examples/model.gz")
 
     /**
      * and now we may load model
      */
-    TrainedModelSerializer.load("examples/model").getPhi.probability(1, 1)
+    TrainedModelSerializer.load("examples/model.gz").getPhi.probability(1, 1)
 
 }
