@@ -41,6 +41,6 @@ class GibbsInitialApproximationGenerator(private val random: Random) extends Phi
     }
 
     private def smooth(matrix: Ogre) {
-        matrix.addToExpectation(random.nextFloat())
+        matrix.addToExpectation(random.nextFloat() + 2 * math.sqrt(Float.MinPositiveValue).toFloat)
     }
 }
