@@ -33,6 +33,6 @@ class RandomInitialApproximationGenerator(private val random: Random) extends Ph
     }
 
     private def fillSingleMatrix(matrix: Ogre) {
-        matrix.addToExpectation(random.nextFloat() + 2 * math.sqrt(Float.MinPositiveValue).toFloat)
+        matrix.addToExpectation((_, _) => random.nextFloat() + 2 * math.sqrt(Float.MinPositiveValue).toFloat, parallel = false)
     }
 }

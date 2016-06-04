@@ -44,7 +44,7 @@ class Theta private(expectationMatrix: Array[Array[Float]], stochasticMatrix: Ar
      * @param documentNumberTopic2Addition a function that takes a pair of indexes (document and topic number respectively)
      *                                     and returns a value that will be added to expectationMatrix(doc, topic) element
      */
-    override def addToExpectation(documentNumberTopic2Addition: (Int, Int) => Float): Unit = super.addToExpectation(documentNumberTopic2Addition)
+    override def addToExpectation(documentNumberTopic2Addition: (Int, Int) => Float, parallel : Boolean = true): Unit = super.addToExpectation(documentNumberTopic2Addition, parallel)
 
     def numberOfTopics = numberOfColumns
 
