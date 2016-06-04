@@ -56,10 +56,10 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
      * @param addition a function that takes a pair of indexes (row and column respectively)
      *                 and returns a value that will be added to expectationMatrix(row, column) element
      */
-    def addToExpectation(addition: (Int, Int) => Float) {
-        forforfor{ (row, col) =>
+    def addToExpectation(addition: (Int, Int) => Float, parallel : Boolean = true) {
+        forforfor({ (row, col) =>
             addToExpectation(row, col, addition(row, col))
-        }
+        }, parallel)
     }
 
     def numberOfRows = expectationMatrix.length
@@ -140,18 +140,28 @@ abstract class Ogre protected(private val expectationMatrix: Array[Array[Float]]
         }
     }
 
-    private def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit) = {
-        val parallelRows = (0 until numberOfRows)
-        for (rowIndex <- parallelRows.toPar) {
-            val intermediate = rowOp(rowIndex)
-            for (columnIndex <- 0 until numberOfColumns) {
-                rowColOp(rowIndex, columnIndex, intermediate)
+    private def forfor(rowOp: Int => Float)(rowColOp: (Int, Int, Float) => Unit, parallel : Boolean = true) = {
+        val rowsIndexes = 0 until numberOfRows
+
+        if (parallel) {
+            for (rowIndex <- rowsIndexes.toPar) {
+                val intermediate = rowOp(rowIndex)
+                for (columnIndex <- 0 until numberOfColumns) {
+                    rowColOp(rowIndex, columnIndex, intermediate)
+                }
+            }
+        } else {
+            for (rowIndex <- rowsIndexes) {
+                val intermediate = rowOp(rowIndex)
+                for (columnIndex <- 0 until numberOfColumns) {
+                    rowColOp(rowIndex, columnIndex, intermediate)
+                }
             }
         }
     }
 
-    private def forforfor(rowColOp: (Int, Int) => Unit) {
-        forfor{ x => 0} { (x, y, z) => rowColOp(x, y)}
+    private def forforfor(rowColOp: (Int, Int) => Unit, parallel : Boolean = true) {
+        forfor{ x => 0} ( {(x, y, z) => rowColOp(x, y)}, parallel)
     }
 }
 
